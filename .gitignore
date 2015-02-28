@@ -1,0 +1,7 @@
+.bundle
+.DS_Store
+*.swp
+*.gem
+Gemfile.lock
+vendor
+coverage/
