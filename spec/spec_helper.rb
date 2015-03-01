@@ -6,8 +6,12 @@ require 'simplecov'
 require 'vcr'
 require 'webmock'
 require 'marathon'
+require 'codeclimate-test-reporter'
+
+CodeClimate::TestReporter.start
 
 VCR.configure do |c|
+  c.ignore_hosts 'codeclimate.com'
   c.allow_http_connections_when_no_cassette = false
   c.cassette_library_dir = "fixtures/vcr"
   c.hook_into :webmock
