@@ -47,12 +47,18 @@ private
     }.merge(opts).reject { |_, v| v.nil? }
   end
 
+  def build_url(url, query)
+    url = URI.escape(url)
+    if query.size > 0
+      url += '?' + query_params(request[:query])
+    end
+    url
+  end
+
   # Send a request to the server
   def request(*args)
     request = compile_request_params(*args)
-    # TODO add query params
-    url = URI.escape(request[:url])
-    url += '?' + query_params(request[:query]) if request[:query].size > 0
+    url = build_url(request[:url], request[:query])
     http = self.class.send(request[:method], url, request)
     json = JSON.parse(http.body)
     if http.success?

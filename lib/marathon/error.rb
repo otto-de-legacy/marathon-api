@@ -35,22 +35,33 @@ module Marathon::Error
   class IOError < MarathonError; end
 
   def from_response(response)
-    json = JSON.parse(response.body)
+    error_class(response).new(error_message(response))
+  end
+
+  private
+
+  def error_class(response)
     case response.code
     when 400
-      ClientError.new(json['message'] || response.body)
+      ClientError
     when 401
-      UnauthorizedError.new(json['message'] || response.body)
+      UnauthorizedError
     when 404
-      NotFoundError.new(json['message'] || response.body)
+      NotFoundError
     when 409
-      ConflictError.new(json['message'] || response.body)
+      ConflictError
     when 500
-      ServerError.new(json['message'] || response.body)
+      ServerError
     else
-      UnexpectedResponseError.new(json['message'] || response.body)
+      UnexpectedResponseError
     end
   end
 
-  module_function :from_response
+  def error_message(response)
+    json = JSON.parse(response.body)
+    json['message'] || response.body
+  end
+
+  module_function :error_class, :error_message, :from_response
+
 end
