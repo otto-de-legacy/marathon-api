@@ -16,4 +16,10 @@ describe Marathon do
       expect(info.keys.sort).to eq keys
     end
   end
+
+  describe '#ping', :vcr do
+    subject { described_class }
+
+    its(:ping) { should == "pong\n" }
+  end
 end

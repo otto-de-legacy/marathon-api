@@ -35,7 +35,7 @@ class Marathon::App
 
     # List the application with id.
     def get(id)
-      json = Marathon.connection.get("/apps/#{id}")['app']
+      json = Marathon.connection.get("/v2/apps/#{id}")['app']
       new(json)
     end
 
@@ -46,19 +46,19 @@ class Marathon::App
     #                      "apps.tasks". Apps' tasks are not embedded in the response by default.
     #                      "apps.failures". Apps' last failures are not embedded in the response by default.
     def list(opts = {})
-      json = Marathon.connection.get('/apps', opts)['apps']
+      json = Marathon.connection.get('/v2/apps', opts)['apps']
       json.map { |j| new(j) }
     end
 
     # Delete the application with id.
     def delete(id)
-      Marathon.connection.delete("/apps/#{id}")
+      Marathon.connection.delete("/v2/apps/#{id}")
     end
     alias :remove :delete
 
     # Create and start an application.
     def start(json)
-      json = Marathon.connection.post('/apps', nil, :body => json)
+      json = Marathon.connection.post('/v2/apps', nil, :body => json)
       new(json)
     end
     alias :create :start
@@ -67,7 +67,7 @@ class Marathon::App
     # Valid options are:
     # ++:force++ => true|false
     def restart(id, opts = {})
-      json = Marathon.connection.post("/apps/#{id}/restart", opts)
+      json = Marathon.connection.post("/v2/apps/#{id}/restart", opts)
       # TODO parse deploymentId + version
     end
   end

@@ -58,8 +58,12 @@ module Marathon::Error
   end
 
   def error_message(response)
-    json = JSON.parse(response.body)
-    json['message'] || response.body
+    body = response.parsed_response
+    if body.is_a?(Hash)
+      body['message']
+    else
+      body
+    end
   end
 
   module_function :error_class, :error_message, :from_response

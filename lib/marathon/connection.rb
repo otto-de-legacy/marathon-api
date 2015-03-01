@@ -42,7 +42,7 @@ private
     opts[:body] = opts[:body].to_json unless opts[:body].nil?
     {
       :method        => http_method,
-      :url           => "#{@url}/v2#{path}",
+      :url           => "#{@url}#{path}",
       :query         => query
     }.merge(opts).reject { |_, v| v.nil? }
   end
@@ -59,12 +59,11 @@ private
   def request(*args)
     request = compile_request_params(*args)
     url = build_url(request[:url], request[:query])
-    http = self.class.send(request[:method], url, request)
-    json = JSON.parse(http.body)
-    if http.success?
-      return json
+    response = self.class.send(request[:method], url, request)
+    if response.success?
+      response.parsed_response
     else
-      raise Marathon::Error.from_response(http)
+      raise Marathon::Error.from_response(response)
     end
   rescue MarathonError => e
     raise e
