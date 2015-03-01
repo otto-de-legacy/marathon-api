@@ -9,20 +9,24 @@ class Marathon::App
   end
 
   # Shortcuts for reaching attributes
-  %w[ id env instances cpus mem ].each do |method|
+  %w[ id args cmd cpus disk env executor instances mem ports requirePorts
+      storeUris tasksRunning tasksStaged uris user version ].each do |method|
     define_method(method) { |*args, &block| json[method] }
   end
 
-  def start!
-    new_app = self.class.start(json)
-    @json = new_app.json
-  end
-
+  # Reload attributes from marathon API
   def refresh!
     new_app = self.class.get(id)
     @json = new_app.json
   end
 
+  # Create and start the application
+  def start!
+    new_app = self.class.start(json)
+    @json = new_app.json
+  end
+
+  # Restart all instances of the application
   def restart!(force = false)
     self.class.restart(id, {:force => force})
   end

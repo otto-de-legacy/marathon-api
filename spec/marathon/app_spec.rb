@@ -36,7 +36,6 @@ describe Marathon::App do
     end
   end
 
-
   describe '#restart!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
@@ -53,15 +52,30 @@ describe Marathon::App do
     end
   end
 
+  describe '.list' do
+    subject { described_class }
+
+    it 'lists apps', :vcr do
+      apps = described_class.list
+      expect(apps.size).to eq(2)
+      expect(apps.first).to be_instance_of(described_class)
+      expect(apps.first.id).to eq('/ubuntu')
+      expect(apps.first.cpus).to eq(0.1)
+      expect(apps.first.mem).to eq(64)
+    end
+
+  end
+
   describe '.get' do
     subject { described_class }
 
     it 'gets the app', :vcr do
       app = described_class.get('/ubuntu')
+      expect(app).to be_instance_of(described_class)
       expect(app.id).to eq('/ubuntu')
       expect(app.instances).to eq(1)
-      expect(app.cpus).to eq(0.5)
-      expect(app.mem).to eq(128)
+      expect(app.cpus).to eq(0.1)
+      expect(app.mem).to eq(64)
     end
 
     it 'fails getting not existing app', :vcr do

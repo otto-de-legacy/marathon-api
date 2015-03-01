@@ -1,2 +1,0 @@
-class Marathon::Util
-end

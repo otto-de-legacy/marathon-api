@@ -5,7 +5,7 @@
       "image": "libmesos/ubuntu"
     }
   },
-  "id": "/ubuntu",
+  "id": "/ubuntu2",
   "instances": 1,
   "cpus": 0.1,
   "mem": 64,

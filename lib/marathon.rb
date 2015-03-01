@@ -13,7 +13,7 @@ module Marathon
   require 'marathon/connection'
   require 'marathon/app'
   require 'marathon/leader'
-  require 'marathon/util'
+  require 'marathon/task'
   require 'marathon/version'
 
   DEFAULT_URL = 'http://localhost:8080'

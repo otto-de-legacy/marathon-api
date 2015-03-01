@@ -22,8 +22,10 @@ namespace :vcr do
   desc 'Run spec tests and record VCR cassettes'
   task :record do
     FileUtils.remove_dir("#{dir}/fixtures/vcr", true)
-    ubuntu_json = JSON.parse(File.read("#{dir}/fixtures/marathon_docker_sample.json"))
-    Marathon::App.new(ubuntu_json).start!
+    json = JSON.parse(File.read("#{dir}/fixtures/marathon_docker_sample.json"))
+    Marathon::App.new(json).start!
+    json = JSON.parse(File.read("#{dir}/fixtures/marathon_docker_sample_2.json"))
+    Marathon::App.new(json).start!
 
     # finally run spec tests
     Rake::Task["spec"].invoke
