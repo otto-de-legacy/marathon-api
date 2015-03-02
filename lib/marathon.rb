@@ -32,6 +32,7 @@ module Marathon
   # Set a new url
   def url=(new_url)
     @url = new_url
+    reset_connection!
   end
 
   # Set a new connection

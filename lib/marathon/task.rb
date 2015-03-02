@@ -57,7 +57,7 @@ class Marathon::Task
     def delete(appId, id, scale = false)
       opts = {}
       opts[:scale] = scale if scale
-      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks/#{id}")
+      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks/#{id}", opts)
       new(json)
     end
     alias :remove :delete
@@ -71,7 +71,7 @@ class Marathon::Task
       opts = {}
       opts[:host] = host if host
       opts[:scale] = scale if scale
-      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks")['tasks']
+      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks", opts)['tasks']
       json.map { |j| new(j) }
     end
     alias :remove_all :delete_all

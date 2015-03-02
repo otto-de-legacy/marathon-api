@@ -66,6 +66,25 @@ describe Marathon::App do
 
   end
 
+  describe '.start' do
+    subject { described_class }
+
+    it 'starts the app', :vcr do
+      app = described_class.start({ :id => '/test', :cmd => 'sleep 10', :instances => 1, :cpus => 0.1, :mem => 32})
+      expect(app).to be_instance_of(described_class)
+      expect(app.id).to eq('/test')
+      expect(app.instances).to eq(1)
+      expect(app.cpus).to eq(0.1)
+      expect(app.mem).to eq(32)
+    end
+
+    it 'fails getting not existing app', :vcr do
+      expect {
+        described_class.get('fooo app')
+      }.to raise_error(Marathon::Error::NotFoundError)
+    end
+  end
+
   describe '.get' do
     subject { described_class }
 

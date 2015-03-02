@@ -2,7 +2,29 @@ require 'spec_helper'
 
 describe Marathon do
 
-  describe '#info' do
+  describe '.url=' do
+    subject { described_class }
+
+    it 'sets new url' do
+      described_class.url = 'http://foo'
+      expect(described_class.url).to eq('http://foo')
+
+      # reset connection after running this spec
+      described_class.url = nil
+    end
+
+    it 'resets connection' do
+      old_connection = described_class.connection
+      described_class.url = 'http://bar'
+
+      expect(described_class.connection).not_to be(old_connection)
+
+      # reset connection after running this spec
+      described_class.url = nil
+    end
+  end
+
+  describe '.info' do
     subject { described_class }
 
     let(:info) { subject.info }
@@ -17,7 +39,7 @@ describe Marathon do
     end
   end
 
-  describe '#ping', :vcr do
+  describe '.ping', :vcr do
     subject { described_class }
 
     its(:ping) { should == "pong\n" }

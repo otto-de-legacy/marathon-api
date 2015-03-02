@@ -50,7 +50,7 @@ private
   def build_url(url, query)
     url = URI.escape(url)
     if query.size > 0
-      url += '?' + query_params(request[:query])
+      url += '?' + query_params(query)
     end
     url
   end
@@ -67,6 +67,8 @@ private
     end
   rescue MarathonError => e
     raise e
+  rescue SocketError => e
+    raise IOError, "HTTP call failed: #{e.message}"
   rescue SystemCallError => e
     if e.class.name.start_with?('Errno::')
       raise IOError, "HTTP call failed: #{e.message}"

@@ -47,6 +47,13 @@ describe Marathon::Task do
       expect(tasks.first).to be_instance_of(described_class)
       expect(tasks.first.appId).to start_with('/ubuntu')
     end
+
+    it 'lists running tasks', :vcr do
+      tasks = described_class.list('running')
+      expect(tasks.size).to be_within(1).of(2)
+      expect(tasks.first).to be_instance_of(described_class)
+      expect(tasks.first.appId).to start_with('/ubuntu')
+    end
   end
 
   describe '.get' do

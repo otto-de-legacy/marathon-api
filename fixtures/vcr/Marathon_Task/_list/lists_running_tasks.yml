@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://localhost:8080/v2/tasks
+    uri: http://localhost:8080/v2/tasks?status=running
     body:
       encoding: US-ASCII
       string: ''

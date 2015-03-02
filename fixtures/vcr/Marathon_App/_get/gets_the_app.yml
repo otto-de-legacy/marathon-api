@@ -24,7 +24,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"app":{"id":"/ubuntu","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-02T10:49:27.014Z","tasksStaged":0,"tasksRunning":0,"deployments":[{"id":"235b52ba-b0d9-4e08-8c72-83ce268c70df"}],"tasks":[],"lastTaskFailure":null}}'
+      string: '{"app":{"id":"/ubuntu","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-02T11:30:29.159Z","tasksStaged":0,"tasksRunning":1,"deployments":[{"id":"38735f5f-6f21-4683-a946-f0be527a03a2"}],"tasks":[{"id":"ubuntu.87c8bb6c-c0cf-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31005],"startedAt":"2015-03-02T11:30:30.440Z","stagedAt":"2015-03-02T11:30:29.680Z","version":"2015-03-02T11:30:29.159Z","appId":"/ubuntu"}],"lastTaskFailure":null}}'
     http_version: 
-  recorded_at: Mon, 02 Mar 2015 10:49:27 GMT
+  recorded_at: Mon, 02 Mar 2015 11:30:30 GMT
 recorded_with: VCR 2.9.3
