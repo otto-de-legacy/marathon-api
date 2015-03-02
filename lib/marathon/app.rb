@@ -14,6 +14,17 @@ class Marathon::App
     define_method(method) { |*args, &block| json[method] }
   end
 
+  # Get list of tasks
+  def tasks
+    unless @json['tasks']
+      refresh!
+    end
+
+    raise Marathon::Error::UnexpectedResponseError, "Expected to find tasks element in app's json" unless @json['tasks']
+
+    @json['tasks'].map { |e| Marathon::Task.new(e) }
+  end
+
   # Reload attributes from marathon API
   def refresh!
     new_app = self.class.get(id)

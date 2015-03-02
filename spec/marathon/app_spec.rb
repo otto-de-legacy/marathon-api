@@ -22,6 +22,30 @@ describe Marathon::App do
     its(:to_json) { should == expected_string }
   end
 
+  describe '#tasks' do
+    subject { described_class.new({ 'id' => '/ubuntu2' }) }
+
+    it 'has tasks', :vcr do
+      tasks = subject.tasks
+      expect(tasks).to be_instance_of(Array)
+      expect(tasks.size).to eq(1)
+      expect(tasks.first).to be_instance_of(Marathon::Task)
+      expect(tasks.first.appId).to eq(subject.id)
+    end
+
+    it 'loads tasks from API when not loaded already' do
+      subject.json['tasks'] = nil
+      expect(subject).to receive(:refresh!) { subject.json['tasks'] = [] }
+      expect(subject.tasks).to eq([])
+    end
+
+    it 'shows already loaded tasks w/o API call' do
+      subject.json['tasks'] = []
+      expect(subject).not_to receive(:refresh!)
+      expect(subject.tasks).to eq([])
+    end
+  end
+
   describe '#start!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
