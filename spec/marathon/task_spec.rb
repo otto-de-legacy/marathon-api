@@ -16,6 +16,20 @@ describe Marathon::Task do
     its(:to_s) { should == expected_string }
   end
 
+  describe '#to_json' do
+    subject { described_class.new({
+        'id'    => 'task-id-foo',
+        'appId' => '/app/foo',
+        'host'  => 'foo-host',
+      }) }
+
+    let(:expected_string) do
+      '{"id":"task-id-foo","appId":"/app/foo","host":"foo-host"}'
+    end
+
+    its(:to_json) { should == expected_string }
+  end
+
   describe '#delete!' do
     let(:task) { described_class.new({
       'id' => 'task_123', 'appId' => '/app/foo'

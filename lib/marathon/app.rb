@@ -35,6 +35,11 @@ class Marathon::App
     "Marathon::App { :id => #{self.id} }"
   end
 
+  # Get app as json formatted string.
+  def to_json
+    json.to_json
+  end
+
   class << self
 
     # List the application with id.

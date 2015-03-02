@@ -25,6 +25,11 @@ class Marathon::Task
     "Marathon::Task { :id => #{self.id} :appId => #{appId} :host => #{host} }"
   end
 
+  # Get task as json formatted string.
+  def to_json
+    json.to_json
+  end
+
   class << self
 
     # List all tasks.

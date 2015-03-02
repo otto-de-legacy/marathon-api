@@ -12,6 +12,16 @@ describe Marathon::App do
     its(:to_s) { should == expected_string }
   end
 
+  describe '#to_json' do
+    subject { described_class.new({ 'id' => '/app/foo' }) }
+
+    let(:expected_string) do
+      '{"id":"/app/foo"}'
+    end
+
+    its(:to_json) { should == expected_string }
+  end
+
   describe '#start!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
