@@ -61,7 +61,7 @@ class Marathon::Task
     #            after killing the specified tasks.
     def delete(appId, id, scale = false)
       opts = {}
-      opts[:scale] = scale if scale
+      opts[:scale] = true if scale
       json = Marathon.connection.delete("/v2/apps/#{appId}/tasks/#{id}", opts)
       new(json)
     end
@@ -75,7 +75,7 @@ class Marathon::Task
     def delete_all(appId, host = nil, scale = false)
       opts = {}
       opts[:host] = host if host
-      opts[:scale] = scale if scale
+      opts[:scale] = true if scale
       json = Marathon.connection.delete("/v2/apps/#{appId}/tasks", opts)['tasks']
       json.map { |j| new(j) }
     end

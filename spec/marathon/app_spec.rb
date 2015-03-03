@@ -75,19 +75,32 @@ describe Marathon::App do
 
     it 'restarts the app' do
       expect(described_class).to receive(:restart)
-        .with('/app/foo', {:force => false})
+        .with('/app/foo', false)
       app.restart!
     end
 
     it 'restarts the app, force' do
       expect(described_class).to receive(:restart)
-        .with('/app/foo', {:force => true})
+        .with('/app/foo', true)
       app.restart!(true)
     end
   end
 
   describe '.list' do
     subject { described_class }
+
+    it 'passes arguments to api call' do
+      expect(Marathon.connection).to receive(:get)
+        .with('/v2/apps', {:cmd => 'foo', :embed => 'apps.tasks'})
+        .and_return({ 'apps' => [] })
+      described_class.list('foo', 'apps.tasks')
+    end
+
+    it 'raises error when run with strange embed' do
+      expect {
+        described_class.list(nil, 'foo')
+      }.to raise_error(Marathon::Error::ArgumentError)
+    end
 
     it 'lists apps', :vcr do
       apps = described_class.list

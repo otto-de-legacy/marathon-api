@@ -39,7 +39,7 @@ class Marathon::App
 
   # Restart all instances of the application
   def restart!(force = false)
-    self.class.restart(id, {:force => force})
+    self.class.restart(id, force)
   end
 
   def to_s
@@ -59,13 +59,21 @@ class Marathon::App
       new(json)
     end
 
-    # List all apps
-    # Valid options are:
-    # ++:cmd++: string - Filter apps to only those whose commands contain cmd. Default: "".
-    # ++:embed++: string - Embeds nested resources that match the supplied path. Default: none. Possible values:
-    #                      "apps.tasks". Apps' tasks are not embedded in the response by default.
-    #                      "apps.failures". Apps' last failures are not embedded in the response by default.
-    def list(opts = {})
+    # List all apps.
+    # ++:cmd++: Filter apps to only those whose commands contain cmd.
+    # ++:embed++: Embeds nested resources that match the supplied path.
+    #             Possible values:
+    #               "apps.tasks". Apps' tasks are not embedded in the response by default.
+    #               "apps.failures". Apps' last failures are not embedded in the response by default.
+    def list(cmd = nil, embed = nil)
+      opts = {}
+      opts[:cmd] = cmd if cmd
+      if embed
+        if embed != 'apps.tasks' and embed != 'apps.failures'
+          raise Marathon::Error::ArgumentError, 'embed must be nil, apps.tasks or apps.failures'
+        end
+        opts[:embed] = embed
+      end
       json = Marathon.connection.get('/v2/apps', opts)['apps']
       json.map { |j| new(j) }
     end
@@ -84,9 +92,11 @@ class Marathon::App
     alias :create :start
 
     # Restart the application with id.
-    # Valid options are:
-    # ++:force++ => true|false
-    def restart(id, opts = {})
+    # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+    #            The current deployment can be overridden by setting the `force` query parameter.
+    def restart(id, force = false)
+      opts = {}
+      opts[:force] = true if force
       json = Marathon.connection.post("/v2/apps/#{id}/restart", opts)
       # TODO parse deploymentId + version
     end
