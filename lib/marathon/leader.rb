@@ -2,12 +2,13 @@
 class Marathon::Leader
 
   class << self
-    # Return a specific app.
+    # Get current leader.
     def get
       json = Marathon.connection.get('/v2/leader')
       json['leader']
     end
 
+    # Force voting a new leader.
     def delete
       json = Marathon.connection.delete('/v2/leader')
       json['message']
