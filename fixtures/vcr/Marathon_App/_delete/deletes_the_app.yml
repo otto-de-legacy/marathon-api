@@ -24,7 +24,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-02T11:30:30.536Z","deploymentId":"56c519d9-62ed-4925-93b5-4aea2eabed25"}'
+      string: '{"version":"2015-03-03T18:08:29.568Z","deploymentId":"475735d1-4c08-439d-8687-d13626e512a1"}'
     http_version: 
-  recorded_at: Mon, 02 Mar 2015 11:30:30 GMT
+  recorded_at: Tue, 03 Mar 2015 18:08:29 GMT
 recorded_with: VCR 2.9.3

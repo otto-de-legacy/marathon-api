@@ -24,7 +24,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"tasks":[{"appId":"/ubuntu","id":"ubuntu.87c8bb6c-c0cf-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31005],"startedAt":"2015-03-02T11:30:30.440Z","stagedAt":"2015-03-02T11:30:29.680Z","version":"2015-03-02T11:30:29.159Z"},{"appId":"/ubuntu2","id":"ubuntu2.3a0c5f3b-c0cf-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31157],"startedAt":"2015-03-02T11:28:19.959Z","stagedAt":"2015-03-02T11:28:19.264Z","version":"2015-03-02T10:25:16.810Z","servicePorts":[10001]}]}'
+      string: '{"tasks":[{"appId":"/test","id":"test.482155d0-c1d0-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31026],"startedAt":"2015-03-03T18:08:24.116Z","stagedAt":"2015-03-03T18:08:23.546Z","version":"2015-03-02T11:30:30.096Z","servicePorts":[10002]},{"appId":"/ubuntu2","id":"ubuntu2.37fbe1bc-c1d0-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31290],"startedAt":"2015-03-03T18:07:57.097Z","stagedAt":"2015-03-03T18:07:56.457Z","version":"2015-03-03T18:07:47.581Z","servicePorts":[10001]}]}'
     http_version: 
-  recorded_at: Mon, 02 Mar 2015 11:30:30 GMT
+  recorded_at: Tue, 03 Mar 2015 18:08:30 GMT
 recorded_with: VCR 2.9.3

@@ -26,7 +26,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"id":"/test","cmd":"sleep 10","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":32.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[0],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-02T11:30:30.096Z"}'
+      string: '{"id":"/test","cmd":"sleep 10","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":32.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[0],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-03T18:08:29.318Z"}'
     http_version: 
-  recorded_at: Mon, 02 Mar 2015 11:30:30 GMT
+  recorded_at: Tue, 03 Mar 2015 18:08:29 GMT
 recorded_with: VCR 2.9.3

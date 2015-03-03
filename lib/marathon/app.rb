@@ -42,6 +42,21 @@ class Marathon::App
     self.class.restart(id, force)
   end
 
+  # Change the application.
+  def change!(json, force = false)
+    self.class.change(id, json, force)
+  end
+
+  # Scales the number of instances of an application.
+  def scale!(instances, force = false)
+    change!({'instances' => instances}, force)
+  end
+
+  # Scales the number of instances of an application down to 0.
+  def suspend!(force = false)
+    scale!(0, force)
+  end
+
   def to_s
     "Marathon::App { :id => #{self.id} }"
   end
@@ -66,15 +81,15 @@ class Marathon::App
     #               "apps.tasks". Apps' tasks are not embedded in the response by default.
     #               "apps.failures". Apps' last failures are not embedded in the response by default.
     def list(cmd = nil, embed = nil)
-      opts = {}
-      opts[:cmd] = cmd if cmd
+      query = {}
+      query[:cmd] = cmd if cmd
       if embed
         if embed != 'apps.tasks' and embed != 'apps.failures'
           raise Marathon::Error::ArgumentError, 'embed must be nil, apps.tasks or apps.failures'
         end
-        opts[:embed] = embed
+        query[:embed] = embed
       end
-      json = Marathon.connection.get('/v2/apps', opts)['apps']
+      json = Marathon.connection.get('/v2/apps', query)['apps']
       json.map { |j| new(j) }
     end
 
@@ -95,9 +110,21 @@ class Marathon::App
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def restart(id, force = false)
-      opts = {}
-      opts[:force] = true if force
-      json = Marathon.connection.post("/v2/apps/#{id}/restart", opts)
+      query = {}
+      query[:force] = true if force
+      json = Marathon.connection.post("/v2/apps/#{id}/restart", query)
+      # TODO parse deploymentId + version
+    end
+
+    # Change parameters of a running application. The new application parameters apply only to subsequently
+    # created tasks. Currently running tasks are restarted, while maintaining the minimumHealthCapacity.
+    # ++json++: A subset of app's attributes.
+    # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+    #            The current deployment can be overridden by setting the `force` query parameter.
+    def change(id, json, force = false)
+      query = {}
+      query[:force] = true if force
+      json = Marathon.connection.put("/v2/apps/#{id}", query, :body => json)
       # TODO parse deploymentId + version
     end
   end

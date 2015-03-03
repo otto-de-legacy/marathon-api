@@ -86,6 +86,43 @@ describe Marathon::App do
     end
   end
 
+  describe '#change!' do
+    let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+
+    it 'changes the app' do
+      expect(described_class).to receive(:change).with('/app/foo', {'instances' => 9000 }, false)
+      app.change!('instances' => 9000)
+    end
+  end
+
+  describe '#scale!' do
+    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+
+    it 'changes the app' do
+      expect(app).to receive(:change!).with({'instances' => 9000 }, false)
+      app.scale!(9000)
+    end
+
+    it 'changes the app with force' do
+      expect(app).to receive(:change!).with({'instances' => 9000 }, true)
+      app.scale!(9000, true)
+    end
+  end
+
+  describe '#suspend!' do
+    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+
+    it 'scales the app to 0' do
+      expect(app).to receive(:scale!).with(0, false)
+      app.suspend!
+    end
+
+    it 'scales the app to 0 with force' do
+      expect(app).to receive(:scale!).with(0, true)
+      app.suspend!(true)
+    end
+  end
+
   describe '.list' do
     subject { described_class }
 
@@ -104,11 +141,9 @@ describe Marathon::App do
 
     it 'lists apps', :vcr do
       apps = described_class.list
-      expect(apps.size).to eq(2)
+      expect(apps.size).not_to eq(0)
       expect(apps.first).to be_instance_of(described_class)
-      expect(apps.first.id).to eq('/ubuntu')
       expect(apps.first.cpus).to eq(0.1)
-      expect(apps.first.mem).to eq(64)
     end
 
   end
@@ -172,6 +207,15 @@ describe Marathon::App do
       expect {
         described_class.restart('fooo app')
       }.to raise_error(Marathon::Error::NotFoundError)
+    end
+  end
+
+  describe '.changes' do
+    subject { described_class }
+
+    it 'changes the app', :vcr do
+      described_class.change('/ubuntu2', { 'instances' => 2 })
+      described_class.change('/ubuntu2', { 'instances' => 1 }, true)
     end
   end
 
