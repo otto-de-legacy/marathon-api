@@ -15,6 +15,7 @@ module Marathon
   require 'marathon/app'
   require 'marathon/event_subscriptions'
   require 'marathon/leader'
+  require 'marathon/queue'
   require 'marathon/task'
   require 'marathon/version'
 
