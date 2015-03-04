@@ -6,7 +6,8 @@ class Marathon::Connection
 
   headers(
     'Content-Type' => 'application/json',
-    'Accept' => 'application/json'
+    'Accept' => 'application/json',
+    'User-Agent' => "ub0r/Marathon-API #{Marathon::VERSION}"
   )
 
   default_timeout 5
