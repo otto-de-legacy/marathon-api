@@ -42,7 +42,7 @@ describe Marathon::Task do
         })
       end
       task.delete!
-      expect(task.json['deleted']).to be(true)
+      expect(task.info['deleted']).to be(true)
     end
   end
 

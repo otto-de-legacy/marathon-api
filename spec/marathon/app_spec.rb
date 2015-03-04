@@ -34,14 +34,14 @@ describe Marathon::App do
     end
 
     it 'loads tasks from API when not loaded already' do
-      subject.json['tasks'] = nil
-      expect(subject).to receive(:refresh!) { subject.json['tasks'] = [] }
+      subject.info['tasks'] = nil
+      expect(subject).to receive(:refresh) { subject.info['tasks'] = [] }
       expect(subject.tasks).to eq([])
     end
 
     it 'shows already loaded tasks w/o API call' do
-      subject.json['tasks'] = []
-      expect(subject).not_to receive(:refresh!)
+      subject.info['tasks'] = []
+      expect(subject).not_to receive(:refresh)
       expect(subject.tasks).to eq([])
     end
   end
@@ -54,19 +54,19 @@ describe Marathon::App do
         described_class.new({ 'id' => '/app/foo', 'started' => true })
       end
       app.start!
-      expect(app.json['started']).to be(true)
+      expect(app.info['started']).to be(true)
     end
   end
 
-  describe '#refresh!' do
+  describe '#refresh' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'refreshs the app' do
       expect(described_class).to receive(:get).with('/app/foo') do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
       end
-      app.refresh!
-      expect(app.json['refreshed']).to be(true)
+      app.refresh
+      expect(app.info['refreshed']).to be(true)
     end
   end
 

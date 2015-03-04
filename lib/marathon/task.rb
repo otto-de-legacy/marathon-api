@@ -1,16 +1,17 @@
 # This class represents a Marathon Task.
 class Marathon::Task
 
-  attr_reader :json
+  attr_reader :info
 
-  # Create a new task
-  def initialize(json)
-    @json = json
+  # Create a new task.
+  # ++hash++: Hash including all attributes
+  def initialize(hash = {})
+    @info = hash
   end
 
   # Shortcuts for reaching attributes
   %w[ id appId host ports servicePorts version stagedAt startedAt ].each do |method|
-    define_method(method) { |*args, &block| json[method] }
+    define_method(method) { |*args, &block| info[method] }
   end
 
   # Delete the task
@@ -18,7 +19,7 @@ class Marathon::Task
   #            after killing the specified tasks.
   def delete!(scale = false)
     new_task = self.class.delete(appId, id, scale)
-    @json = new_task.json
+    @info = new_task.info
   end
 
   def to_s
@@ -27,7 +28,7 @@ class Marathon::Task
 
   # Get task as json formatted string.
   def to_json
-    json.to_json
+    info.to_json
   end
 
   class << self
