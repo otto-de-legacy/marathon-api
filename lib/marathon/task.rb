@@ -37,12 +37,7 @@ class Marathon::Task
     #             If not specified, all tasks are returned. Possible values: running, staging.
     def list(status = nil)
       query = {}
-      if status
-        if status != 'running' and status != 'staging'
-          raise Marathon::Error::ArgumentError, 'status must be nil, running or staging'
-        end
-        query[:status] = status
-      end
+      Marathon::Util.add_choice(query, :status, status, %w[running staging])
       json = Marathon.connection.get('/v2/tasks', query)['tasks']
       json.map { |j| new(j) }
     end

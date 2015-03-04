@@ -83,12 +83,7 @@ class Marathon::App
     def list(cmd = nil, embed = nil)
       query = {}
       query[:cmd] = cmd if cmd
-      if embed
-        if embed != 'apps.tasks' and embed != 'apps.failures'
-          raise Marathon::Error::ArgumentError, 'embed must be nil, apps.tasks or apps.failures'
-        end
-        query[:embed] = embed
-      end
+      Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.failures])
       json = Marathon.connection.get('/v2/apps', query)['apps']
       json.map { |j| new(j) }
     end

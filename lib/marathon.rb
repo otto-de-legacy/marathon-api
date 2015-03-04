@@ -9,6 +9,7 @@ module Marathon
 
   attr_accessor :logger
 
+  require 'marathon/util'
   require 'marathon/error'
   require 'marathon/connection'
   require 'marathon/app'
