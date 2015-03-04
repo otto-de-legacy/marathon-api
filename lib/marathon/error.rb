@@ -10,17 +10,8 @@ module Marathon::Error
   # Raised when a request returns a 400.
   class ClientError < MarathonError; end
 
-  # Raised when a request returns a 401.
-  class UnauthorizedError < MarathonError; end
-
   # Raised when a request returns a 404.
   class NotFoundError < MarathonError; end
-
-  # Raised when a request returns a 409.
-  class ConflictError < MarathonError; end
-
-  # Raised when a request returns a 500.
-  class ServerError < MarathonError; end
 
   # Raised when there is an unexpected response code / body.
   class UnexpectedResponseError < MarathonError; end
@@ -44,14 +35,8 @@ module Marathon::Error
     case response.code
     when 400
       ClientError
-    when 401
-      UnauthorizedError
     when 404
       NotFoundError
-    when 409
-      ConflictError
-    when 500
-      ServerError
     else
       UnexpectedResponseError
     end
