@@ -217,6 +217,12 @@ describe Marathon::App do
       described_class.change('/ubuntu2', { 'instances' => 2 })
       described_class.change('/ubuntu2', { 'instances' => 1 }, true)
     end
+
+    it 'fails with stange attributes', :vcr do
+      expect {
+        described_class.change('/ubuntu2', { 'instances' => 'foo' })
+      }.to raise_error(Marathon::Error::ClientError)
+    end
   end
 
 end
