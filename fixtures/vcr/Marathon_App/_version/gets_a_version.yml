@@ -1,0 +1,61 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/v2/apps//ubuntu2/versions
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.8.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"versions":["2015-03-04T16:34:15.691Z"]}'
+    http_version: 
+  recorded_at: Thu, 05 Mar 2015 16:53:32 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/v2/apps//ubuntu2/versions/2015-03-04T16:34:15.691Z
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.8.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"id":"/ubuntu2","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10001],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-04T16:34:15.691Z"}'
+    http_version: 
+  recorded_at: Thu, 05 Mar 2015 16:53:32 GMT
+recorded_with: VCR 2.9.3

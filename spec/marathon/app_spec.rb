@@ -60,6 +60,22 @@ describe Marathon::App do
     end
   end
 
+  describe '#versions' do
+    subject { described_class.new({ 'id' => '/ubuntu2' }) }
+
+    it 'loads versions from API' do
+      expect(described_class).to receive(:versions).with('/ubuntu2') { ['foo-version'] }
+      expect(subject.versions).to eq(['foo-version'])
+    end
+
+    it 'loads version from API' do
+      expect(described_class).to receive(:version).with('/ubuntu2', 'foo-version') {
+        Marathon::App.new({'id' => '/ubuntu2', 'version' => 'foo-version'}, true)
+      }
+      expect(subject.versions('foo-version').version).to eq('foo-version')
+    end
+  end
+
   describe '#start!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
@@ -275,4 +291,24 @@ describe Marathon::App do
     end
   end
 
+  describe '.versions' do
+    subject { described_class }
+
+    it 'gets versions', :vcr do
+      versions = subject.versions('/ubuntu2')
+      expect(versions).to be_instance_of(Array)
+      expect(versions.first).to be_instance_of(String)
+    end
+  end
+
+  describe '.version' do
+    subject { described_class }
+
+    it 'gets a version', :vcr do
+      versions = subject.versions('/ubuntu2')
+      version = subject.version('/ubuntu2', versions.first)
+      expect(version).to be_instance_of(Marathon::App)
+      expect(version.read_only).to be(true)
+    end
+  end
 end

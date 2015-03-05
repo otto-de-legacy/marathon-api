@@ -36,6 +36,16 @@ class Marathon::App
     @info['tasks'].map { |e| Marathon::Task.new(e) }
   end
 
+  # List the versions of the application.
+  # ++version++: Get a specific versions
+  def versions(version = nil)
+    if version
+      self.class.version(id, version)
+    else
+      self.class.versions(id)
+    end
+  end
+
   # Reload attributes from marathon API
   def refresh
     check_read_only
@@ -136,6 +146,21 @@ class Marathon::App
       query[:force] = true if force
       json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash)
       # TODO parse deploymentId + version
+    end
+
+    # List the versions of the application with id.
+    # ++id++: Application id
+    def versions(id)
+      json = Marathon.connection.get("/v2/apps/#{id}/versions")
+      json['versions']
+    end
+
+    # List the configuration of the application with id at version.
+    # ++id++: Application id
+    # ++version++: Version name
+    def version(id, version)
+      json = Marathon.connection.get("/v2/apps/#{id}/versions/#{version}")
+      new(json, true)
     end
   end
 end
