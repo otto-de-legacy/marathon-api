@@ -1,4 +1,4 @@
-# This class represents a Marathon Task.
+# This class represents a Marathon Queue element.
 class Marathon::Queue
 
   attr_reader :app

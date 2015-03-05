@@ -1,0 +1,90 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: http://localhost:8080/v2/apps//test
+    body:
+      encoding: UTF-8
+      string: '{"instances":0}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.8.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-05T17:28:59.786Z","deploymentId":"05c3689c-6156-451a-901e-c86aef5e2762"}'
+    http_version: 
+  recorded_at: Thu, 05 Mar 2015 17:28:59 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/v2/apps//test
+    body:
+      encoding: UTF-8
+      string: '{"instances":2}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.8.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-05T17:29:00.939Z","deploymentId":"2e4201a2-96f2-4e72-a1a1-153689b5b583"}'
+    http_version: 
+  recorded_at: Thu, 05 Mar 2015 17:29:01 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/v2/deployments
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.8.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '[{"currentStep":1,"currentActions":[{"action":"ScaleApplication","app":"/test"}],"affectedApps":["/test"],"version":"2015-03-05T17:29:00.939Z","id":"2e4201a2-96f2-4e72-a1a1-153689b5b583","totalSteps":1,"steps":[[{"action":"ScaleApplication","app":"/test"}]]}]'
+    http_version: 
+  recorded_at: Thu, 05 Mar 2015 17:29:02 GMT
+recorded_with: VCR 2.9.3

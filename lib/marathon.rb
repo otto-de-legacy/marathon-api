@@ -13,6 +13,7 @@ module Marathon
   require 'marathon/error'
   require 'marathon/connection'
   require 'marathon/app'
+  require 'marathon/deployment'
   require 'marathon/event_subscriptions'
   require 'marathon/leader'
   require 'marathon/queue'
