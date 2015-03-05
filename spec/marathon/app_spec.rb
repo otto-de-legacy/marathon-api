@@ -22,8 +22,22 @@ describe Marathon::App do
     its(:to_json) { should == expected_string }
   end
 
+  describe '#check_read_only' do
+    subject { described_class.new({ 'id' => '/ubuntu2' }, true) }
+
+    it 'does not allow changing the app' do
+      expect { subject.change!({}) }.to raise_error(Marathon::Error::ArgumentError)
+    end
+  end
+
   describe '#tasks' do
     subject { described_class.new({ 'id' => '/ubuntu2' }) }
+
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      subject.info['tasks'] = []
+      subject.tasks
+    end
 
     it 'has tasks', :vcr do
       tasks = subject.tasks
@@ -49,6 +63,12 @@ describe Marathon::App do
   describe '#start!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:start) { described_class.new }
+      subject.start!
+    end
+
     it 'starts the app' do
       expect(described_class).to receive(:start).with({ 'id' => '/app/foo'}) do
         described_class.new({ 'id' => '/app/foo', 'started' => true })
@@ -61,6 +81,12 @@ describe Marathon::App do
   describe '#refresh' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:get) { described_class.new }
+      subject.refresh
+    end
+
     it 'refreshs the app' do
       expect(described_class).to receive(:get).with('/app/foo') do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
@@ -72,6 +98,12 @@ describe Marathon::App do
 
   describe '#restart!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:restart)
+      subject.restart!
+    end
 
     it 'restarts the app' do
       expect(described_class).to receive(:restart)
@@ -89,6 +121,12 @@ describe Marathon::App do
   describe '#change!' do
     let(:app) { described_class.new({ 'id' => '/app/foo' }) }
 
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:change)
+      subject.change!({})
+    end
+
     it 'changes the app' do
       expect(described_class).to receive(:change).with('/app/foo', {'instances' => 9000 }, false)
       app.change!('instances' => 9000)
@@ -97,6 +135,12 @@ describe Marathon::App do
 
   describe '#scale!' do
     let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:change)
+      subject.scale!(5)
+    end
 
     it 'changes the app' do
       expect(app).to receive(:change!).with({'instances' => 9000 }, false)
@@ -111,6 +155,12 @@ describe Marathon::App do
 
   describe '#suspend!' do
     let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:change)
+      subject.suspend!
+    end
 
     it 'scales the app to 0' do
       expect(app).to receive(:scale!).with(0, false)

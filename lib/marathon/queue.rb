@@ -7,7 +7,7 @@ class Marathon::Queue
   # Create a new queue element.
   # ++hash++: Hash including 'app' and 'delay'
   def initialize(hash = {})
-    @app = Marathon::App.new(hash['app'])
+    @app = Marathon::App.new(hash['app'], true)
     @delay = hash['delay']
   end
 

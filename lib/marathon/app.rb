@@ -1,12 +1,14 @@
 # This class represents a Marathon App.
 class Marathon::App
 
-  attr_reader :info
+  attr_reader :info, :read_only
 
   # Create a new app.
   # ++hash++: Hash including all attributes
-  def initialize(hash = {})
+  # ++read_only++: prevent actions on this app
+  def initialize(hash = {}, read_only = false)
     @info = hash
+    @read_only = read_only
   end
 
   # Shortcuts for reaching attributes
@@ -15,8 +17,16 @@ class Marathon::App
     define_method(method) { |*args, &block| info[method] }
   end
 
+  # Prevent actions on read only instances
+  def check_read_only
+    if read_only
+      raise Marathon::Error::ArgumentError, "This app is 'read only' and does not support any actions"
+    end
+  end
+
   # Get list of tasks
   def tasks
+    check_read_only
     unless @info['tasks']
       refresh
     end
@@ -28,23 +38,27 @@ class Marathon::App
 
   # Reload attributes from marathon API
   def refresh
+    check_read_only
     new_app = self.class.get(id)
     @info = new_app.info
   end
 
   # Create and start the application
   def start!
+    check_read_only
     new_app = self.class.start(info)
     @info = new_app.info
   end
 
   # Restart all instances of the application
   def restart!(force = false)
+    check_read_only
     self.class.restart(id, force)
   end
 
   # Change the application.
   def change!(hash, force = false)
+    check_read_only
     self.class.change(id, hash, force)
   end
 

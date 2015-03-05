@@ -13,12 +13,15 @@ describe Marathon::Queue do
       expect(subject.app.id).to eq('/app/foo')
     end
 
+    it 'has a read only app' do
+      expect(subject.app.read_only).to be(true)
+    end
+
     it 'has delay' do
       expect(subject.delay).to be_instance_of(Hash)
       expect(subject.delay['overdue']).to be(true)
     end
   end
-
 
   describe '#to_s' do
     subject { described_class.new({
