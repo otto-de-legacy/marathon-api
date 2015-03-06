@@ -1,7 +1,7 @@
 marathon-api
 ============
 
-[![travis-ci](https://travis-ci.org/felixb/marathon-api.png?branch=master)](https://travis-ci.org/felixb/marathon-api) [![Code Climate](https://codeclimate.com/github/felixb/marathon-api/badges/gpa.svg)](https://codeclimate.com/github/felixb/marathon-api) [![Test Coverage](https://codeclimate.com/github/felixb/marathon-api/badges/coverage.svg)](https://codeclimate.com/github/felixb/marathon-api)
+[![Gem Version](https://badge.fury.io/rb/marathon-api.svg)](http://badge.fury.io/rb/marathon-api) [![travis-ci](https://travis-ci.org/felixb/marathon-api.png?branch=master)](https://travis-ci.org/felixb/marathon-api) [![Code Climate](https://codeclimate.com/github/felixb/marathon-api/badges/gpa.svg)](https://codeclimate.com/github/felixb/marathon-api) [![Test Coverage](https://codeclimate.com/github/felixb/marathon-api/badges/coverage.svg)](https://codeclimate.com/github/felixb/marathon-api)
 
 This gem provides an object oriented interface to the [Marathon Remote API][1]. At the time if this writing, marathon-api is meant to interface with Marathon version 0.8.0.
 
