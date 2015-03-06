@@ -1,9 +1,10 @@
 # This class represents a Marathon Task.
+# See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/tasks for full list of API's methods.
 class Marathon::Task
 
   attr_reader :info
 
-  # Create a new task.
+  # Create a new task object.
   # ++hash++: Hash including all attributes
   def initialize(hash = {})
     @info = hash
@@ -14,26 +15,27 @@ class Marathon::Task
     define_method(method) { |*args, &block| info[method] }
   end
 
-  # Delete the task
+  # Kill the task that belongs to an application.
   # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
   #            after killing the specified tasks.
   def delete!(scale = false)
     new_task = self.class.delete(appId, id, scale)
     @info = new_task.info
   end
+  alias :kill! :delete!
 
   def to_s
     "Marathon::Task { :id => #{self.id} :appId => #{appId} :host => #{host} }"
   end
 
-  # Get task as json formatted string.
+  # Return task as JSON formatted string.
   def to_json
     info.to_json
   end
 
   class << self
 
-    # List all tasks.
+    # List tasks of all applications.
     # ++status++: Return only those tasks whose status matches this parameter.
     #             If not specified, all tasks are returned. Possible values: running, staging.
     def list(status = nil)
@@ -43,15 +45,15 @@ class Marathon::Task
       json.map { |j| new(j) }
     end
 
-    # Get tasks of an app.
-    # ++appId++: Id of tasks' app.
+    # List all running tasks for application appId.
+    # ++appId++: Application's id
     def get(appId)
       json = Marathon.connection.get("/v2/apps/#{appId}/tasks")['tasks']
       json.map { |j| new(j) }
     end
 
-    # Delete a task.
-    # ++appId++: Id of tasks' app.
+    # Kill the task that belongs to the application appId.
+    # ++appId++: Application's id
     # ++id++: Id of target task.
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
@@ -62,9 +64,10 @@ class Marathon::Task
       new(json)
     end
     alias :remove :delete
+    alias :kill :delete
 
-    # Delete all tasks of an app.
-    # ++appId++: Id of tasks' app.
+    # Kill tasks that belong to the application appId.
+    # ++appId++: Application's id
     # ++host++: Kill only those tasks running on host host.
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
@@ -76,6 +79,7 @@ class Marathon::Task
       json.map { |j| new(j) }
     end
     alias :remove_all :delete_all
+    alias :kill_all :delete_all
   end
 
 end

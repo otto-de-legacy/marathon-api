@@ -1,10 +1,12 @@
 # This class represents a Marathon Deployment.
+# See https://mesosphere.github.io/marathon/docs/rest-api.html#deployments for full list of API's methods.
 class Marathon::Deployment
 
   attr_reader :info
 
-  # Create a new deployment.
-  # ++hash++: Hash including all attributes
+  # Create a new deployment object.
+  # ++hash++: Hash including all attributes.
+  #           See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/deployments for full details.
   def initialize(hash = {})
     @info = hash
   end
@@ -28,7 +30,7 @@ class Marathon::Deployment
       + ":id => #{id} :affectedApps => #{affectedApps} :currentStep => #{currentStep} :totalSteps => #{totalSteps} }"
   end
 
-  # Get queue as json formatted string.
+  # Return deployment as JSON formatted string.
   def to_json
     info.to_json
   end

@@ -1,4 +1,4 @@
-# Some helper things
+# Some helper things.
 class Marathon::Util
   class << self
 

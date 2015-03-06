@@ -1,11 +1,13 @@
 # This class represents a Marathon App.
+# See https://mesosphere.github.io/marathon/docs/rest-api.html#apps for full list of API's methods.
 class Marathon::App
 
   attr_reader :info, :read_only
 
-  # Create a new app.
-  # ++hash++: Hash including all attributes
-  # ++read_only++: prevent actions on this app
+  # Create a new application object.
+  # ++hash++: Hash including all attributes.
+  #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
+  # ++read_only++: prevent actions on this application
   def initialize(hash = {}, read_only = false)
     @info = hash
     @read_only = read_only
@@ -17,14 +19,16 @@ class Marathon::App
     define_method(method) { |*args, &block| info[method] }
   end
 
-  # Prevent actions on read only instances
+  # Prevent actions on read only instances.
+  # Raises an ArgumentError when triying to change read_only instances.
   def check_read_only
     if read_only
       raise Marathon::Error::ArgumentError, "This app is 'read only' and does not support any actions"
     end
   end
 
-  # Get list of tasks
+  # List all running tasks for the application.
+  # Returns an Array of Task objects.
   def tasks
     check_read_only
     unless @info['tasks']
@@ -38,6 +42,8 @@ class Marathon::App
 
   # List the versions of the application.
   # ++version++: Get a specific versions
+  # Returns Array of Strings if ++version = nil++,
+  # else returns Hash with version information.
   def versions(version = nil)
     if version
       self.class.version(id, version)
@@ -46,38 +52,60 @@ class Marathon::App
     end
   end
 
-  # Reload attributes from marathon API
+  # Reload attributes from marathon API.
   def refresh
     check_read_only
     new_app = self.class.get(id)
     @info = new_app.info
   end
 
-  # Create and start the application
+  # Create and start the application.
   def start!
     check_read_only
     new_app = self.class.start(info)
     @info = new_app.info
   end
 
-  # Restart all instances of the application
+  # Initiates a rolling restart of all running tasks of the given app.
+  # This call respects the configured minimumHealthCapacity.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
   def restart!(force = false)
     check_read_only
     self.class.restart(id, force)
   end
 
-  # Change the application.
+  # Change parameters of a running application.
+  # The new application parameters apply only to subsequently created tasks.
+  # Currently running tasks are restarted, while maintaining the minimumHealthCapacity.
+  # ++hash++: Hash of attributes to change.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
   def change!(hash, force = false)
     check_read_only
     self.class.change(id, hash, force)
   end
 
-  # Scales the number of instances of an application.
+  # Create a new version with parameters of an old version.
+  # Currently running tasks are restarted, while maintaining the minimumHealthCapacity.
+  # ++version++: Version name of the old version.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
+  def roll_back!(version, force = false)
+    change!({'version' => version}, force)
+  end
+
+  # Change the number of desired instances.
+  # ++instances++: Number of running instances.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
   def scale!(instances, force = false)
     change!({'instances' => instances}, force)
   end
 
-  # Scales the number of instances of an application down to 0.
+  # Change the number of desired instances to 0.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
   def suspend!(force = false)
     scale!(0, force)
   end
@@ -86,7 +114,7 @@ class Marathon::App
     "Marathon::App { :id => #{self.id} }"
   end
 
-  # Get app as json formatted string.
+  # Return application as JSON formatted string.
   def to_json
     info.to_json
   end
@@ -94,12 +122,13 @@ class Marathon::App
   class << self
 
     # List the application with id.
+    # ++id++: Application's id.
     def get(id)
       json = Marathon.connection.get("/v2/apps/#{id}")['app']
       new(json)
     end
 
-    # List all apps.
+    # List all applications.
     # ++:cmd++: Filter apps to only those whose commands contain cmd.
     # ++:embed++: Embeds nested resources that match the supplied path.
     #             Possible values:
@@ -114,12 +143,15 @@ class Marathon::App
     end
 
     # Delete the application with id.
+    # ++id++: Application's id.
     def delete(id)
       Marathon.connection.delete("/v2/apps/#{id}")
     end
     alias :remove :delete
 
     # Create and start an application.
+    # ++hash++: Hash including all attributes
+    #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
     def start(hash)
       json = Marathon.connection.post('/v2/apps', nil, :body => hash)
       new(json)
@@ -127,6 +159,7 @@ class Marathon::App
     alias :create :start
 
     # Restart the application with id.
+    # ++id++: Application's id.
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def restart(id, force = false)
@@ -138,6 +171,7 @@ class Marathon::App
 
     # Change parameters of a running application. The new application parameters apply only to subsequently
     # created tasks. Currently running tasks are restarted, while maintaining the minimumHealthCapacity.
+    # ++id++: Application's id.
     # ++hash++: A subset of app's attributes.
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.

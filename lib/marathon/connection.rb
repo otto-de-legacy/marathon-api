@@ -15,6 +15,8 @@ class Marathon::Connection
 
   attr_reader :url
 
+  # Create a new API connection.
+  # ++url++: URL of the marathon API.
   def initialize(url)
     @url = url
   end
@@ -30,12 +32,19 @@ class Marathon::Connection
 
 private
 
+  # Create URL suffix for a hash of query parameters.
+  # URL escaping is done internally.
+  # ++query++: Hash of query parameters.
   def query_params(query)
     query = query.select { |k,v| !v.nil? }
     URI.escape(query.map { |k,v| "#{k}=#{v}" }.join('&'))
   end
 
-  # Given an HTTP method, path, optional query
+  # Create request object.
+  # ++http_method++: GET/POST/PUT/DELETE.
+  # ++path++: Relative path to connection's URL.
+  # ++query++: Optional query parameters.
+  # ++opts++: Optional options. Ex. opts[:body] is used for PUT/POST request.
   def compile_request_params(http_method, path, query = nil, opts = nil)
     query ||= {}
     opts ||= {}
@@ -48,6 +57,9 @@ private
     }.merge(opts).reject { |_, v| v.nil? }
   end
 
+  # Create full URL with query parameters.
+  # ++url++: Base URL.
+  # ++query++: Hash of query parameters.
   def build_url(url, query)
     url = URI.escape(url)
     if query.size > 0
@@ -56,7 +68,11 @@ private
     url
   end
 
-  # Send a request to the server
+  # Send a request to the server and parse response.
+  # ++http_method++: GET/POST/PUT/DELETE.
+  # ++path++: Relative path to connection's URL.
+  # ++query++: Optional query parameters.
+  # ++opts++: Optional options. Ex. opts[:body] is used for PUT/POST request.
   def request(*args)
     request = compile_request_params(*args)
     url = build_url(request[:url], request[:query])

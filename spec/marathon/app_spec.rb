@@ -149,6 +149,26 @@ describe Marathon::App do
     end
   end
 
+  describe '#roll_back!' do
+    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+
+    it 'checks for read only' do
+      expect(subject).to receive(:check_read_only)
+      expect(described_class).to receive(:change)
+      subject.roll_back!('old_version')
+    end
+
+    it 'changes the app' do
+      expect(app).to receive(:change!).with({'version' => 'old_version' }, false)
+      app.roll_back!('old_version')
+    end
+
+    it 'changes the app with force' do
+      expect(app).to receive(:change!).with({'version' => 'old_version' }, true)
+      app.roll_back!('old_version', true)
+    end
+  end
+
   describe '#scale!' do
     let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
 

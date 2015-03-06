@@ -25,12 +25,16 @@ module Marathon::Error
   # Raised when an IO action fails.
   class IOError < MarathonError; end
 
+  # Raise error specific to http response.
+  # ++response++: HTTParty response object.
   def from_response(response)
     error_class(response).new(error_message(response))
   end
 
   private
 
+  # Get reponse code specific error class.
+  # ++response++: HTTParty response object.
   def error_class(response)
     case response.code
     when 400
@@ -42,6 +46,8 @@ module Marathon::Error
     end
   end
 
+  # Get response code from http response.
+  # ++response++: HTTParty response object.
   def error_message(response)
     body = response.parsed_response
     if body.is_a?(Hash)
