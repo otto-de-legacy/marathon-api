@@ -6,7 +6,7 @@ describe Marathon::Connection do
     subject { described_class.new('http://foo:8080') }
 
     let(:expected_string) do
-      "Marathon::Connection { :url => http://foo:8080 }"
+      "Marathon::Connection { :url => http://foo:8080 :options => {} }"
     end
 
     its(:to_s) { should == expected_string }

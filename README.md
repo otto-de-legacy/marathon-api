@@ -11,7 +11,7 @@ Installation
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'marathon-api',  :require => 'marathon',  :git => 'https://github.com/felixb/marathon-api.git'
+gem 'marathon-api',  :require => 'marathon'
 ```
 
 And then run:
@@ -47,6 +47,26 @@ irb(main):001:0> require 'marathon'
 => true
 irb(main):002:0> Marathon.url
 => "http://remote.marathon.example.com:8080"
+```
+
+## Authentification
+
+You have two options to set authentification if your Marathon API requires it:
+
+```ruby
+Marathon.options = {:username => 'your-user-name', :password => 'your-secret-password'}
+```
+
+or
+
+```shell
+$ export MARATHON_USER=your-user-name
+$ export MARATHON_PASSWORD=your-secret-password
+$ irb
+irb(main):001:0> require 'marathon'
+=> true
+irb(main):002:0> Marathon.options
+=> {:username => "your-user-name", :password => "your-secret-password"}
 ```
 
 ## Global calls

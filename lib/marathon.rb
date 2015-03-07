@@ -27,10 +27,23 @@ module Marathon
     ENV['MARATHON_URL']
   end
 
-  # Get the marathon url
+  # Get marathon options from environment
+  def env_options
+    opts = {}
+    opts[:username] = ENV['MARATHON_USER'] if ENV['MARATHON_USER']
+    opts[:password] = ENV['MARATHON_PASSWORD'] if ENV['MARATHON_PASSWORD']
+    opts
+  end
+
+  # Get the marathon API URL
   def url
     @url ||= env_url || DEFAULT_URL
     @url
+  end
+
+  # Get options for connecting to marathon API
+  def options
+    @options ||= env_options
   end
 
   # Set a new url
@@ -39,9 +52,15 @@ module Marathon
     reset_connection!
   end
 
+  # Set new options
+  def options=(new_options)
+    @options = env_options.merge(new_options || {})
+    reset_connection!
+  end
+
   # Set a new connection
   def connection
-    @connection ||= Connection.new(url)
+    @connection ||= Connection.new(url, options)
   end
 
   # Reset the connection
@@ -59,7 +78,7 @@ module Marathon
     connection.get('/ping')
   end
 
-  module_function :connection, :env_url, :info, :logger, :logger=,
-                  :ping, :url, :url= ,:reset_connection!
+  module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping,
+                  :options, :options=, :url, :url= ,:reset_connection!
 
 end

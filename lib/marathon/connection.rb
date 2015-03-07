@@ -13,12 +13,22 @@ class Marathon::Connection
   default_timeout 5
   maintain_method_across_redirects
 
-  attr_reader :url
+  attr_reader :url, :options
 
   # Create a new API connection.
   # ++url++: URL of the marathon API.
-  def initialize(url)
+  # ++options++: Hash with options for marathon API.
+  def initialize(url, options = {})
     @url = url
+    @options = options
+    if @options[:username] and @options[:password]
+      @options[:basic_auth] = {
+        :username => @options[:username],
+        :password => @options[:password]
+      }
+      @options.delete(:username)
+      @options.delete(:password)
+    end
   end
 
   # Delegate all HTTP methods to the #request.
@@ -27,7 +37,7 @@ class Marathon::Connection
   end
 
   def to_s
-    "Marathon::Connection { :url => #{url} }"
+    "Marathon::Connection { :url => #{url} :options => #{options} }"
   end
 
 private
