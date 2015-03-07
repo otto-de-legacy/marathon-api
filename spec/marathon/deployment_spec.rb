@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-EXAMPLE = {
+DEPLOYMENT_EXAMPLE = {
   "affectedApps" => ["/test"],
   "id" => "867ed450-f6a8-4d33-9b0e-e11c5513990b",
   "steps" => [
@@ -25,7 +25,7 @@ EXAMPLE = {
 describe Marathon::Deployment do
 
   describe '#to_s' do
-    subject { described_class.new(EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
 
     let(:expected_string) do
       'Marathon::Deployment { ' \
@@ -36,31 +36,31 @@ describe Marathon::Deployment do
   end
 
   describe '#to_json' do
-    subject { described_class.new(EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
 
-    its(:to_json) { should == EXAMPLE.to_json }
+    its(:to_json) { should == DEPLOYMENT_EXAMPLE.to_json }
   end
 
   describe 'attributes' do
-    subject { described_class.new(EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
 
-    its(:id) { should == EXAMPLE['id'] }
-    its(:affectedApps) { should == EXAMPLE['affectedApps'] }
-    its(:version) { should == EXAMPLE['version'] }
-    its(:currentStep) { should == EXAMPLE['currentStep'] }
-    its(:totalSteps) { should == EXAMPLE['totalSteps'] }
+    its(:id) { should == DEPLOYMENT_EXAMPLE['id'] }
+    its(:affectedApps) { should == DEPLOYMENT_EXAMPLE['affectedApps'] }
+    its(:version) { should == DEPLOYMENT_EXAMPLE['version'] }
+    its(:currentStep) { should == DEPLOYMENT_EXAMPLE['currentStep'] }
+    its(:totalSteps) { should == DEPLOYMENT_EXAMPLE['totalSteps'] }
   end
 
   describe '#delete' do
-    subject { described_class.new(EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
 
     it 'deletes the deployment' do
-      expect(described_class).to receive(:delete).with(EXAMPLE['id'], false)
+      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE['id'], false)
       subject.delete
     end
 
     it 'force deletes the deployment' do
-      expect(described_class).to receive(:delete).with(EXAMPLE['id'], true)
+      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE['id'], true)
       subject.delete(true)
     end
   end
@@ -86,9 +86,8 @@ describe Marathon::Deployment do
 
     it 'deletes deployments', :vcr do
       # start a deployment
-      json = Marathon::App.change('/test', {'instances' => 1})
-      id = json['deploymentId']
-      subject.delete(id)
+      info = Marathon::App.change('/test', {'instances' => 1})
+      expect(subject.delete(info.deploymentId)).to be_instance_of(Marathon::DeploymentInfo)
     end
   end
 

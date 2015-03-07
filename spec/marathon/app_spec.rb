@@ -216,17 +216,17 @@ describe Marathon::App do
       expect(Marathon.connection).to receive(:get)
         .with('/v2/apps', {:cmd => 'foo', :embed => 'apps.tasks'})
         .and_return({ 'apps' => [] })
-      described_class.list('foo', 'apps.tasks')
+      subject.list('foo', 'apps.tasks')
     end
 
     it 'raises error when run with strange embed' do
       expect {
-        described_class.list(nil, 'foo')
+        subject.list(nil, 'foo')
       }.to raise_error(Marathon::Error::ArgumentError)
     end
 
     it 'lists apps', :vcr do
-      apps = described_class.list
+      apps = subject.list
       expect(apps.size).not_to eq(0)
       expect(apps.first).to be_instance_of(described_class)
       expect(apps.first.cpus).to eq(0.1)
@@ -238,7 +238,7 @@ describe Marathon::App do
     subject { described_class }
 
     it 'starts the app', :vcr do
-      app = described_class.start({ :id => '/test', :cmd => 'sleep 10', :instances => 1, :cpus => 0.1, :mem => 32})
+      app = subject.start({ :id => '/test', :cmd => 'sleep 10', :instances => 1, :cpus => 0.1, :mem => 32})
       expect(app).to be_instance_of(described_class)
       expect(app.id).to eq('/test')
       expect(app.instances).to eq(1)
@@ -248,7 +248,7 @@ describe Marathon::App do
 
     it 'fails getting not existing app', :vcr do
       expect {
-        described_class.get('fooo app')
+        subject.get('fooo app')
       }.to raise_error(Marathon::Error::NotFoundError)
     end
   end
@@ -257,7 +257,7 @@ describe Marathon::App do
     subject { described_class }
 
     it 'gets the app', :vcr do
-      app = described_class.get('/ubuntu')
+      app = subject.get('/ubuntu')
       expect(app).to be_instance_of(described_class)
       expect(app.id).to eq('/ubuntu')
       expect(app.instances).to eq(1)
@@ -267,7 +267,7 @@ describe Marathon::App do
 
     it 'fails getting not existing app', :vcr do
       expect {
-        described_class.get('fooo app')
+        subject.get('fooo app')
       }.to raise_error(Marathon::Error::NotFoundError)
     end
   end
@@ -276,12 +276,12 @@ describe Marathon::App do
     subject { described_class }
 
     it 'deletes the app', :vcr do
-      described_class.delete('/ubuntu')
+      subject.delete('/ubuntu')
     end
 
     it 'fails deleting not existing app', :vcr do
       expect {
-        described_class.delete('fooo app')
+        subject.delete('fooo app')
       }.to raise_error(Marathon::Error::NotFoundError)
     end
   end
@@ -289,9 +289,13 @@ describe Marathon::App do
   describe '.restart' do
     subject { described_class }
 
+    it 'restarts an app', :vcr do
+      expect(subject.restart('/ubuntu2')).to be_instance_of(Marathon::DeploymentInfo)
+    end
+
     it 'fails restarting not existing app', :vcr do
       expect {
-        described_class.restart('fooo app')
+        subject.restart('fooo app')
       }.to raise_error(Marathon::Error::NotFoundError)
     end
   end
@@ -300,13 +304,15 @@ describe Marathon::App do
     subject { described_class }
 
     it 'changes the app', :vcr do
-      described_class.change('/ubuntu2', { 'instances' => 2 })
-      described_class.change('/ubuntu2', { 'instances' => 1 }, true)
+      expect(subject.change('/ubuntu2', { 'instances' => 2 }))
+        .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/ubuntu2', { 'instances' => 1 }, true))
+        .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails with stange attributes', :vcr do
       expect {
-        described_class.change('/ubuntu2', { 'instances' => 'foo' })
+        subject.change('/ubuntu2', { 'instances' => 'foo' })
       }.to raise_error(Marathon::Error::ClientError)
     end
   end

@@ -1,0 +1,32 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/v2/apps//ubuntu2/restart
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.9.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-07T14:15:30.159Z","deploymentId":"d38f8d55-b8b0-4893-ab16-ae474e282263"}'
+    http_version: 
+  recorded_at: Sat, 07 Mar 2015 14:15:30 GMT
+recorded_with: VCR 2.9.3

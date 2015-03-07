@@ -52,7 +52,7 @@ class Marathon::Deployment
       query = {}
       query[:force] = true if force
       json = Marathon.connection.delete("/v2/deployments/#{id}")
-      # TODO parse deploymentId + version
+      Marathon::DeploymentInfo.new(json)
     end
     alias :cancel :delete
     alias :remove :delete

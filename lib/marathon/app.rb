@@ -166,7 +166,7 @@ class Marathon::App
       query = {}
       query[:force] = true if force
       json = Marathon.connection.post("/v2/apps/#{id}/restart", query)
-      # TODO parse deploymentId + version
+      Marathon::DeploymentInfo.new(json)
     end
 
     # Change parameters of a running application. The new application parameters apply only to subsequently
@@ -179,7 +179,7 @@ class Marathon::App
       query = {}
       query[:force] = true if force
       json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash)
-      # TODO parse deploymentId + version
+      Marathon::DeploymentInfo.new(json)
     end
 
     # List the versions of the application with id.
