@@ -8,9 +8,10 @@ class Marathon::App
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
   # ++read_only++: prevent actions on this application
-  def initialize(hash = {}, read_only = false)
+  def initialize(hash, read_only = false)
     @info = hash
     @read_only = read_only
+    raise Marathon::Error::ArgumentError, 'App must have an id' unless hash['id']
   end
 
   # Shortcuts for reaching attributes

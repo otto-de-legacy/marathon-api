@@ -77,11 +77,11 @@ describe Marathon::App do
   end
 
   describe '#start!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:start) { described_class.new }
+      expect(described_class).to receive(:start) { described_class.new('id' => subject.id) }
       subject.start!
     end
 
@@ -89,17 +89,17 @@ describe Marathon::App do
       expect(described_class).to receive(:start).with({ 'id' => '/app/foo'}) do
         described_class.new({ 'id' => '/app/foo', 'started' => true })
       end
-      app.start!
-      expect(app.info['started']).to be(true)
+      subject.start!
+      expect(subject.info['started']).to be(true)
     end
   end
 
   describe '#refresh' do
-    let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:get) { described_class.new }
+      expect(described_class).to receive(:get) { described_class.new('id' => subject.id) }
       subject.refresh
     end
 
@@ -107,13 +107,13 @@ describe Marathon::App do
       expect(described_class).to receive(:get).with('/app/foo') do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
       end
-      app.refresh
-      expect(app.info['refreshed']).to be(true)
+      subject.refresh
+      expect(subject.info['refreshed']).to be(true)
     end
   end
 
   describe '#restart!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -124,18 +124,18 @@ describe Marathon::App do
     it 'restarts the app' do
       expect(described_class).to receive(:restart)
         .with('/app/foo', false)
-      app.restart!
+      subject.restart!
     end
 
     it 'restarts the app, force' do
       expect(described_class).to receive(:restart)
         .with('/app/foo', true)
-      app.restart!(true)
+      subject.restart!(true)
     end
   end
 
   describe '#change!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -145,12 +145,12 @@ describe Marathon::App do
 
     it 'changes the app' do
       expect(described_class).to receive(:change).with('/app/foo', {'instances' => 9000 }, false)
-      app.change!('instances' => 9000)
+      subject.change!('instances' => 9000)
     end
   end
 
   describe '#roll_back!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -159,18 +159,18 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(app).to receive(:change!).with({'version' => 'old_version' }, false)
-      app.roll_back!('old_version')
+      expect(subject).to receive(:change!).with({'version' => 'old_version' }, false)
+      subject.roll_back!('old_version')
     end
 
     it 'changes the app with force' do
-      expect(app).to receive(:change!).with({'version' => 'old_version' }, true)
-      app.roll_back!('old_version', true)
+      expect(subject).to receive(:change!).with({'version' => 'old_version' }, true)
+      subject.roll_back!('old_version', true)
     end
   end
 
   describe '#scale!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -179,18 +179,18 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(app).to receive(:change!).with({'instances' => 9000 }, false)
-      app.scale!(9000)
+      expect(subject).to receive(:change!).with({'instances' => 9000 }, false)
+      subject.scale!(9000)
     end
 
     it 'changes the app with force' do
-      expect(app).to receive(:change!).with({'instances' => 9000 }, true)
-      app.scale!(9000, true)
+      expect(subject).to receive(:change!).with({'instances' => 9000 }, true)
+      subject.scale!(9000, true)
     end
   end
 
   describe '#suspend!' do
-    let(:app) { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -199,13 +199,13 @@ describe Marathon::App do
     end
 
     it 'scales the app to 0' do
-      expect(app).to receive(:scale!).with(0, false)
-      app.suspend!
+      expect(subject).to receive(:scale!).with(0, false)
+      subject.suspend!
     end
 
     it 'scales the app to 0 with force' do
-      expect(app).to receive(:scale!).with(0, true)
-      app.suspend!(true)
+      expect(subject).to receive(:scale!).with(0, true)
+      subject.suspend!(true)
     end
   end
 

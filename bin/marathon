@@ -1,0 +1,270 @@
+#!/usr/bin/env ruby
+
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'marathon'))
+require 'trollop'
+require 'json'
+
+SUB_COMMANDS = %w[kill kill_tasks start scale list list_tasks search]
+
+# print a list of apps to STDOUT
+def print_apps(apps)
+  if apps.empty?
+    puts "No apps currently running"
+  else
+    apps.each do |app|
+      puts "App ID:     #{app.id}"
+      puts "Instances:  #{app.tasks.size}/#{app.instances}"
+      puts "Command:    #{app.cmd}"
+      puts "CPUs:       #{app.cpus}"
+      puts "Memory:     #{app.mem} MB"
+      app.uris.each do |uri|
+        puts "URI:        #{uri}"
+      end
+      app.env.each do |k, v|
+        puts "ENV:        #{k}=#{v}"
+      end
+      app.info['constraints'].each do |constraint|
+        puts "Constraint: #{constraint.join(':')}"
+      end
+      puts "Version:    #{app.version}"
+      puts
+    end
+  end
+end
+
+# print a list of tasks to STDOUT
+def print_tasks(tasks)
+  if tasks.empty?
+    puts "No tasks currently running"
+  else
+    tasks.each do |task|
+      puts "Task ID:    #{task.id}"
+      puts "App ID:     #{task.appId}"
+      puts "Host:       #{task.host}"
+      puts "Ports:      #{task.ports.join(',')}"
+      puts "Staged at:  #{task.stagedAt}"
+      puts "Started at: #{task.startedAt}"
+      puts "Version:    #{task.version}"
+      puts
+    end
+  end
+end
+
+def copy_if_set(hash_out, key_out, hash_in, key_in)
+  v = hash_in[key_in]
+  hash_out[key_out] = v if v
+end
+
+def subcmd_list(cmd_opts)
+  apps = Marathon::App.list(cmd_opts[:command], 'apps.tasks')
+  print_apps(apps)
+end
+
+def subcmd_start(cmd_opts)
+  begin
+    if cmd_opts[:json]
+      path = cmd_opts[:json]
+      if path == '-'
+        app_opts = JSON.parse($stdin.read)
+      elsif File.exists?(path)
+        app_opts = JSON.parse(File.read(cmd_opts[:json]))
+      else
+        raise Marathon::Error::ArgumentError, "File '#{path}' does not exist"
+      end
+    else
+      app_opts = {
+        'instances' => 1,
+        'cpus' => 1,
+        'mem'  => 10,
+      }
+    end
+    copy_if_set(app_opts, 'id', cmd_opts, :id)
+    copy_if_set(app_opts, 'cmd', cmd_opts, :cmd)
+    copy_if_set(app_opts, 'cpus', cmd_opts, :cpus)
+    copy_if_set(app_opts, 'executor', cmd_opts, :executor)
+    copy_if_set(app_opts, 'instances', cmd_opts, :num_instances)
+    copy_if_set(app_opts, 'mem', cmd_opts, :mem)
+    copy_if_set(app_opts, 'uris', cmd_opts, :uris)
+    if cmd_opts[:env]
+      app_opts['env'] = Hash[cmd_opts[:env].map { |e| e.split('=', 2) }]
+    end
+    if cmd_opts[:constraints]
+      app_opts['constraints'] = cmd_opts[:constraint].map { |c| c.split(':') }
+    end
+    app = Marathon::App.new(app_opts)
+    puts "Starting app '#{app.id}'"
+    app.start!
+    print_apps([app])
+  rescue Marathon::Error::MarathonError => e
+    puts e.message
+    exit 1
+  end
+end
+
+def subcmd_scale(cmd_opts)
+  begin
+    app = Marathon::App.get(cmd_opts[:id])
+    puts "Scaling app '#{app.id}' from #{app.instances} to #{cmd_opts[:num_instances]}"
+    puts app.scale!(cmd_opts[:num_instances])
+  rescue Marathon::Error::NotFoundError => e
+    puts e.message
+    exit 1
+  end
+end
+
+def subcmd_kill(cmd_opts)
+  begin
+    puts "Removing app '#{cmd_opts[:id]}'"
+    Marathon::App.delete(cmd_opts[:id])
+    puts 'done'
+  rescue Marathon::Error::NotFoundError => e
+    puts e.message
+    exit 1
+  end
+end
+
+def subcmd_list_tasks(cmd_opts)
+  if cmd_opts[:id]
+    tasks = Marathon::Task.get(cmd_opts[:id])
+  else
+    tasks = Marathon::Task.list
+  end
+  print_tasks(tasks)
+end
+
+def subcmd_kill_tasks(cmd_opts)
+  if cmd_opts[:task_id]
+    puts "Killing task of '#{cmd_opts[:id]}' with id '#{cmd_opts[:task_id]}'"
+    tasks = [Marathon::Task.delete(cmd_opts[:id], cmd_opts[:task_id], cmd_opts[:scale])]
+  elsif cmd_opts[:host]
+    puts "Killing tasks of '#{cmd_opts[:id]}' on host '#{cmd_opts[:host]}'"
+    tasks = Marathon::Task.delete_all(cmd_opts[:id], cmd_opts[:host], cmd_opts[:scale])
+  else
+    puts "Killing tasks of '#{cmd_opts[:id]}'"
+    tasks = Marathon::Task.delete_all(cmd_opts[:id], nil, cmd_opts[:scale])
+  end
+  print_tasks(tasks)
+end
+
+# parse global options
+def parse_global_opts
+  global_opts = Trollop.options do
+    version Marathon::VERSION
+    banner <<-EOS
+Usage: marathon [global options] [command] [options]
+
+Available commands:
+
+  kill        Kill an app and remove it from Marathon.
+  kill_tasks  Kill a task or tasks belonging to a specified app.
+  list        Show a list of running apps and their options.
+  list_tasks  Show a list of an app's running tasks.
+  scale       Scale the number of app instances.
+  search      Search the current list of apps.
+  start       Start a new app.
+
+Global options:
+EOS
+
+    opt :url, 'Marathon host (default http://localhost:8080, or MARATHON_HOST)',
+      :short => '-M', :type => String
+    opt :username, 'User name to authenticate against Marathon (optional, default unset, or MARATHON_USER).',
+      :short => '-U', :type => String
+    opt :password, 'Password to authenticate against Marathon (optional, default unset, or MARATHON_PASSWORD).',
+      :short => '-P', :type => String
+    stop_on SUB_COMMANDS
+  end
+  return global_opts
+end
+
+# set global options to Marathon API
+def set_global_opts(global_opts)
+  # Set client's URL
+  Marathon.url = global_opts[:url] if global_opts[:url]
+  global_opts.delete(:url)
+  # Set client's options
+  Marathon.options = global_opts if global_opts.size > 0
+end
+
+# get the subcommand
+def parse_subcmd
+  cmd = ARGV.shift
+  return cmd
+end
+
+# parse subcommand specific options
+def parse_subcmd_opts(cmd)
+  cmd_opts = case cmd
+    when 'list'
+      Trollop.options do
+        opt :command, 'The command for the app.', :short => '-C', :type => String
+      end
+    when 'start'
+      Trollop.options do
+        opt :json, 'A json formatted file to read application details from. (use - to read from stdin)', :short => '-j', :type => String
+        opt :id, 'A unique identifier for the app.', :short => '-i', :type => String
+        opt :command, 'The command to start the app.', :short => '-C', :type => String
+        opt :executor, 'The mesos executor to be used to launch the app.', :short => '-X', :type => String
+        opt :num_instances, 'The number of instances to run (default 1).', :default => 1, :short => '-n'
+        opt :cpus, 'The number of CPUs to give to this app, can be a fraction (default 1.0).', :short => '-c'
+        opt :mem, 'The memory limit for this app, in MB, can be a fraction (default 10.0).', :short => '-m'
+        opt :uri, 'URIs to download and unpack into the working directory.', :short => '-u', :type => :strings
+        opt :env, 'Environment variables to add to the process, as NAME=VALUE.', :short => '-e', :type => :strings
+        opt :constraint, 'Placement constraint for tasks, e.g. hostname:UNIQUE or rackid:CLUSTER', :type => :strings
+      end
+    when 'scale'
+      Trollop.options do
+        opt :id, 'A unique identifier for the app.', :short => '-i', :type => String, :required => true
+        opt :num_instances, 'The number of instances to run.', :short => '-n', :type => Integer, :required => true
+      end
+    when 'kill'
+      Trollop.options do
+        opt :id, 'A unique identifier for the app.', :short => '-i', :type => String, :required => true
+      end
+    when 'list_tasks'
+      Trollop.options do
+        opt :id, 'A unique identifier for the app.', :short => '-i', :type => String, :default => nil
+      end
+    when 'kill_tasks'
+      Trollop.options do
+        opt :host, 'Scope task killing to the given host.', :short => '-H', :type => String
+        opt :id, 'A unique identifier for the app.', :short => '-i', :type => String, :required => true
+        opt :scale, 'If true, the app is scaled down after killing tasks', :short => '-s'
+        opt :task_id, 'A unique identifier for the task.', :short => '-t', :type => String
+      end
+    else
+      {}
+    end
+
+  return cmd_opts
+end
+
+# Run selected subcmd
+def run_subcmd(cmd, cmd_opts)
+  case cmd
+  when 'list'
+    subcmd_list(cmd_opts)
+  when 'start'
+    subcmd_start(cmd_opts)
+  when 'scale'
+    subcmd_scale(cmd_opts)
+  when 'kill'
+    subcmd_kill(cmd_opts)
+  when 'list_tasks'
+    subcmd_list_tasks(cmd_opts)
+  when 'kill_tasks'
+    subcmd_kill_tasks(cmd_opts)
+  else
+    Trollop.die "unknown subcommand #{cmd.inspect}"
+  end
+end
+
+if __FILE__ == $0
+  global_opts = parse_global_opts
+  set_global_opts(global_opts)
+
+  cmd = parse_subcmd
+  cmd_opts = parse_subcmd_opts(cmd)
+
+  run_subcmd(cmd, cmd_opts)
+end

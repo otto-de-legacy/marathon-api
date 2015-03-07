@@ -17,7 +17,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = %w{lib}
 
   gem.add_dependency 'json'
-  gem.add_dependency "httparty", ">= 0.11"
+  gem.add_dependency 'httparty', '>= 0.11'
+  gem.add_dependency 'trollop', '>= 2.0'
 
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec', '~> 3.0'
