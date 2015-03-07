@@ -10,5 +10,6 @@
   "cpus": 0.1,
   "mem": 64,
   "uris": [],
-  "cmd": "while sleep 10; do date -u +%T; done"
+  "cmd": "while sleep 10; do date -u +%T; done",
+  "constraints": [["hostname", "GROUP_BY"]]
 }

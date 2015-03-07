@@ -23,8 +23,8 @@ def print_apps(apps)
       app.env.each do |k, v|
         puts "ENV:        #{k}=#{v}"
       end
-      app.info['constraints'].each do |constraint|
-        puts "Constraint: #{constraint.join(':')}"
+      app.constraints.each do |constraint|
+        puts "Constraint: #{constraint.info.join(':')}"
       end
       puts "Version:    #{app.version}"
       puts

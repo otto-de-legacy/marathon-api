@@ -30,6 +30,15 @@ describe Marathon::App do
     end
   end
 
+  describe '#constraints' do
+    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] }) }
+
+    it 'has constraints' do
+      expect(subject.constraints).to be_instance_of(Array)
+      expect(subject.constraints.first).to be_instance_of(Marathon::Constraint)
+    end
+  end
+
   describe '#tasks' do
     subject { described_class.new({ 'id' => '/ubuntu2' }) }
 

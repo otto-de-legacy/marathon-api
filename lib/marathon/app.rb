@@ -28,6 +28,11 @@ class Marathon::App
     end
   end
 
+  # Get constrains.
+  def constraints
+    @info['constraints'].map { |e| Marathon::Constraint.new(e) }
+  end
+
   # List all running tasks for the application.
   # Returns an Array of Task objects.
   def tasks
