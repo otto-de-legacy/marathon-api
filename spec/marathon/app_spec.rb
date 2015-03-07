@@ -39,6 +39,15 @@ describe Marathon::App do
     end
   end
 
+  describe '#constraints' do
+    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] }) }
+
+    it 'has healthChecks' do
+      expect(subject.healthChecks).to be_instance_of(Array)
+      expect(subject.healthChecks.first).to be_instance_of(Marathon::HealthCheck)
+    end
+  end
+
   describe '#tasks' do
     subject { described_class.new({ 'id' => '/ubuntu2' }) }
 

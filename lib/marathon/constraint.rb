@@ -5,7 +5,7 @@ class Marathon::Constraint
   attr_reader :info
 
   # Create a new constraint object.
-  # ++array++: Array returned by API, attribute, operator and parameter.
+  # ++array++: Array returned by API, holds attribute, operator and parameter.
   def initialize(array)
     raise Marathon::Error::ArgumentError, 'array must be an Array' unless array.is_a?(Array)
     raise Marathon::Error::ArgumentError,

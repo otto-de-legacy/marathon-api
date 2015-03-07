@@ -33,6 +33,11 @@ class Marathon::App
     @info['constraints'].map { |e| Marathon::Constraint.new(e) }
   end
 
+  # Get health checks.
+  def healthChecks
+    @info['healthChecks'].map { |e| Marathon::HealthCheck.new(e) }
+  end
+
   # List all running tasks for the application.
   # Returns an Array of Task objects.
   def tasks
