@@ -92,12 +92,8 @@ private
     else
       raise Marathon::Error.from_response(response)
     end
-  rescue MarathonError => e
-    raise e
-  rescue SocketError => e
-    raise IOError, "HTTP call failed: #{e.message}"
-  rescue SystemCallError => e
-    if e.class.name.start_with?('Errno::')
+  rescue => e
+    if e.class == SocketError or e.class.name.start_with?('Errno::')
       raise IOError, "HTTP call failed: #{e.message}"
     else
       raise e
