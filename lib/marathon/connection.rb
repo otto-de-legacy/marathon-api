@@ -68,14 +68,23 @@ private
   end
 
   # Create full URL with query parameters.
-  # ++url++: Base URL.
-  # ++query++: Hash of query parameters.
-  def build_url(url, query)
-    url = URI.escape(url)
-    if query.size > 0
-      url += '?' + query_params(query)
+  # ++request++: hash containing :url and optional :query
+  def build_url(request)
+    url = URI.escape(request[:url])
+    if request[:query].size > 0
+      url += '?' + query_params(request[:query])
     end
     url
+  end
+
+  # Parse response or raise error.
+  # ++response++: response from HTTParty call.
+  def parse_response(response)
+    if response.success?
+      response.parsed_response
+    else
+      raise Marathon::Error.from_response(response)
+    end
   end
 
   # Send a request to the server and parse response.
@@ -85,13 +94,8 @@ private
   # ++opts++: Optional options. Ex. opts[:body] is used for PUT/POST request.
   def request(*args)
     request = compile_request_params(*args)
-    url = build_url(request[:url], request[:query])
-    response = self.class.send(request[:method], url, request)
-    if response.success?
-      response.parsed_response
-    else
-      raise Marathon::Error.from_response(response)
-    end
+    url = build_url(request)
+    parse_response(self.class.send(request[:method], url, request))
   rescue => e
     if e.class == SocketError or e.class.name.start_with?('Errno::')
       raise IOError, "HTTP call failed: #{e.message}"
