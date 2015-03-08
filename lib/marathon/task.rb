@@ -28,6 +28,18 @@ class Marathon::Task
     "Marathon::Task { :id => #{self.id} :appId => #{appId} :host => #{host} }"
   end
 
+  # Returns a string for listing the task.
+  def to_pretty_s
+    s =  "Task ID:    #{id}\n"
+    s += "App ID:     #{appId}\n"
+    s += "Host:       #{host}\n"
+    s += "Ports:      #{ports.join(',')}\n" if ports
+    s += "Staged at:  #{stagedAt}\n"
+    s += "Started at: #{startedAt}\n"
+    s += "Version:    #{version}\n"
+    s
+  end
+
   # Return task as JSON formatted string.
   def to_json
     info.to_json

@@ -10,6 +10,7 @@ describe Marathon::Constraint do
     end
 
     its(:to_s) { should == expected_string }
+    its(:to_pretty_s) { should == 'hostname:UNIQUE' }
   end
 
   describe '#to_s with parameter' do
@@ -20,6 +21,7 @@ describe Marathon::Constraint do
     end
 
     its(:to_s) { should == expected_string }
+    its(:to_pretty_s) { should == 'hostname:LIKE:foo-host' }
   end
 
   describe '#to_json' do

@@ -12,21 +12,7 @@ def print_apps(apps)
     puts "No apps currently running"
   else
     apps.each do |app|
-      puts "App ID:     #{app.id}"
-      puts "Instances:  #{app.tasks.size}/#{app.instances}"
-      puts "Command:    #{app.cmd}"
-      puts "CPUs:       #{app.cpus}"
-      puts "Memory:     #{app.mem} MB"
-      app.uris.each do |uri|
-        puts "URI:        #{uri}"
-      end
-      app.env.each do |k, v|
-        puts "ENV:        #{k}=#{v}"
-      end
-      app.constraints.each do |constraint|
-        puts "Constraint: #{constraint.info.join(':')}"
-      end
-      puts "Version:    #{app.version}"
+      puts app.to_pretty_s
       puts
     end
   end
@@ -38,13 +24,7 @@ def print_tasks(tasks)
     puts "No tasks currently running"
   else
     tasks.each do |task|
-      puts "Task ID:    #{task.id}"
-      puts "App ID:     #{task.appId}"
-      puts "Host:       #{task.host}"
-      puts "Ports:      #{task.ports.join(',')}"
-      puts "Staged at:  #{task.stagedAt}"
-      puts "Started at: #{task.startedAt}"
-      puts "Version:    #{task.version}"
+      puts task.to_pretty_s
       puts
     end
   end

@@ -30,12 +30,12 @@ class Marathon::App
 
   # Get constrains.
   def constraints
-    @info['constraints'].map { |e| Marathon::Constraint.new(e) }
+    @info.fetch('constraints', []).map { |e| Marathon::Constraint.new(e) }
   end
 
   # Get health checks.
   def healthChecks
-    @info['healthChecks'].map { |e| Marathon::HealthCheck.new(e) }
+    @info.fetch('healthChecks', []).map { |e| Marathon::HealthCheck.new(e) }
   end
 
   # List all running tasks for the application.
@@ -123,6 +123,26 @@ class Marathon::App
 
   def to_s
     "Marathon::App { :id => #{self.id} }"
+  end
+
+  # Returns a string for listing the application.
+  def to_pretty_s
+    s =  "App ID:     #{id}\n"
+    s += "Instances:  #{tasks.size}/#{instances}\n"
+    s += "Command:    #{cmd}\n"
+    s += "CPUs:       #{cpus}\n"
+    s += "Memory:     #{mem} MB\n"
+    (uris || []).each do |uri|
+      s += "URI:        #{uri}\n"
+    end
+    (env || []).each do |k, v|
+      s += "ENV:        #{k}=#{v}\n"
+    end
+    constraints.each do |constraint|
+      s += "Constraint: #{constraint.to_pretty_s}\n"
+    end
+    s += "Version:    #{version}\n"
+    s
   end
 
   # Return application as JSON formatted string.

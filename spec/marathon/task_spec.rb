@@ -13,7 +13,17 @@ describe Marathon::Task do
       "Marathon::Task { :id => task-id-foo :appId => /app/foo :host => foo-host }"
     end
 
+    let(:expected_pretty_string) do
+      "Task ID:    task-id-foo\n" + \
+      "App ID:     /app/foo\n" + \
+      "Host:       foo-host\n" + \
+      "Staged at:  \n" + \
+      "Started at: \n" + \
+      "Version:    \n"
+    end
+
     its(:to_s) { should == expected_string }
+    its(:to_pretty_s) { should == expected_pretty_string }
   end
 
   describe '#to_json' do

@@ -3,13 +3,33 @@ require 'spec_helper'
 describe Marathon::App do
 
   describe '#to_s' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({
+      'id' => '/app/foo',
+      'instances' => 1,
+      'tasks' => [],
+      'env' => {'FOO' => 'BAR'},
+      'constraints' => [['hostname', 'UNIQUE']],
+      'uris' => ['http://example.com/big.tar']
+    }) }
 
     let(:expected_string) do
       "Marathon::App { :id => /app/foo }"
     end
 
+    let(:expected_pretty_string) do
+      "App ID:     /app/foo\n" + \
+      "Instances:  0/1\n" + \
+      "Command:    \n" + \
+      "CPUs:       \n" + \
+      "Memory:      MB\n" + \
+      "URI:        http://example.com/big.tar\n" + \
+      "ENV:        FOO=BAR\n" + \
+      "Constraint: hostname:UNIQUE\n" + \
+      "Version:    \n"
+    end
+
     its(:to_s) { should == expected_string }
+    its(:to_pretty_s) { should == expected_pretty_string }
   end
 
   describe '#to_json' do

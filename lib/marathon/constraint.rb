@@ -2,8 +2,6 @@
 # See https://mesosphere.github.io/marathon/docs/constraints.html for full details.
 class Marathon::Constraint
 
-  attr_reader :info
-
   # Create a new constraint object.
   # ++array++: Array returned by API, holds attribute, operator and parameter.
   def initialize(array)
@@ -32,6 +30,11 @@ class Marathon::Constraint
     else
       "Marathon::Constraint { :attribute => #{attribute} :operator => #{operator} }"
     end
+  end
+
+  # Returns a string for listing the constraint.
+  def to_pretty_s
+    @info.join(':')
   end
 
   # Return deployment info as JSON formatted string.
