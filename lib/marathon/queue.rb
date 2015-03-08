@@ -1,27 +1,18 @@
 # This class represents a Marathon Queue element.
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#queue for full list of API's methods.
-class Marathon::Queue
+class Marathon::Queue < Marathon::Base
 
   attr_reader :app
-  attr_reader :delay
 
   # Create a new queue element object.
   # ++hash++: Hash returned by API, including 'app' and 'delay'
-  def initialize(hash = {})
-    @app = Marathon::App.new(hash['app'], true)
-    @delay = hash['delay']
+  def initialize(hash)
+    super(hash, %w[delay])
+    @app = Marathon::App.new(info[:app], true)
   end
 
   def to_s
     "Marathon::Queue { :appId => #{app.id} :delay => #{delay} }"
-  end
-
-  # Return queue element as JSON formatted string.
-  def to_json
-    {
-      'app' => @app.info,
-      'delay' => @delay
-    }.to_json
   end
 
   class << self

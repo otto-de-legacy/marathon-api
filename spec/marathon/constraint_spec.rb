@@ -24,10 +24,4 @@ describe Marathon::Constraint do
     its(:to_pretty_s) { should == 'hostname:LIKE:foo-host' }
   end
 
-  describe '#to_json' do
-    subject { described_class.new(['hostname', 'LIKE', 'foo-host']) }
-
-    its(:to_json) { should == ['hostname', 'LIKE', 'foo-host'].to_json }
-  end
-
 end

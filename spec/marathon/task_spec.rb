@@ -52,7 +52,7 @@ describe Marathon::Task do
         })
       end
       task.delete!
-      expect(task.info['deleted']).to be(true)
+      expect(task.info[:deleted]).to be(true)
     end
   end
 
@@ -61,18 +61,18 @@ describe Marathon::Task do
 
     it 'raises error when run with strange status' do
       expect {
-        described_class.list('foo')
+        subject.list('foo')
       }.to raise_error(Marathon::Error::ArgumentError)
     end
 
     it 'lists tasks', :vcr do
-      tasks = described_class.list
+      tasks = subject.list
       expect(tasks.size).to be_within(1).of(2)
       expect(tasks.first).to be_instance_of(described_class)
     end
 
     it 'lists running tasks', :vcr do
-      tasks = described_class.list('running')
+      tasks = subject.list('running')
       expect(tasks.size).to be_within(1).of(2)
       expect(tasks.first).to be_instance_of(described_class)
     end
@@ -82,7 +82,7 @@ describe Marathon::Task do
     subject { described_class }
 
     it 'gets tasks of an app', :vcr do
-      tasks = described_class.get('/ubuntu2')
+      tasks = subject.get('/ubuntu2')
       expect(tasks.size).to eq(1)
       expect(tasks.first).to be_instance_of(described_class)
       expect(tasks.first.appId).to eq('/ubuntu2')
@@ -93,8 +93,8 @@ describe Marathon::Task do
     subject { described_class }
 
     it 'kills a tasks of an app', :vcr do
-      tasks = described_class.get('/ubuntu2')
-      task = described_class.delete('/ubuntu2', tasks.first.id)
+      tasks = subject.get('/ubuntu2')
+      task = subject.delete('/ubuntu2', tasks.first.id)
       task.id == tasks.first.id
     end
   end
@@ -103,7 +103,7 @@ describe Marathon::Task do
     subject { described_class }
 
     it 'kills all tasks of an app', :vcr do
-      described_class.delete_all('/ubuntu2')
+      subject.delete_all('/ubuntu2')
     end
   end
 

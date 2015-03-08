@@ -1,18 +1,13 @@
 # This class represents a Marathon Task.
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/tasks for full list of API's methods.
-class Marathon::Task
+class Marathon::Task < Marathon::Base
 
-  attr_reader :info
+  ACCESSORS = %w[ id appId host ports servicePorts version stagedAt startedAt ]
 
   # Create a new task object.
   # ++hash++: Hash including all attributes
-  def initialize(hash = {})
-    @info = hash
-  end
-
-  # Shortcuts for reaching attributes
-  %w[ id appId host ports servicePorts version stagedAt startedAt ].each do |method|
-    define_method(method) { |*args, &block| info[method] }
+  def initialize(hash)
+    super(hash, ACCESSORS)
   end
 
   # Kill the task that belongs to an application.
@@ -38,11 +33,6 @@ class Marathon::Task
     s += "Started at: #{startedAt}\n"
     s += "Version:    #{version}\n"
     s
-  end
-
-  # Return task as JSON formatted string.
-  def to_json
-    info.to_json
   end
 
   class << self

@@ -19,7 +19,7 @@ describe Marathon::Queue do
 
     it 'has delay' do
       expect(subject.delay).to be_instance_of(Hash)
-      expect(subject.delay['overdue']).to be(true)
+      expect(subject.delay[:overdue]).to be(true)
     end
   end
 
@@ -30,7 +30,7 @@ describe Marathon::Queue do
       }) }
 
     let(:expected_string) do
-      'Marathon::Queue { :appId => /app/foo :delay => {"overdue"=>true} }'
+      'Marathon::Queue { :appId => /app/foo :delay => {:overdue=>true} }'
     end
 
     its(:to_s) { should == expected_string }

@@ -36,7 +36,7 @@ describe Marathon::App do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     let(:expected_string) do
-      '{"id":"/app/foo"}'
+      '{"constraints":[],"env":{},"ports":[],"storeUris":[],"id":"/app/foo"}'
     end
 
     its(:to_json) { should == expected_string }
@@ -73,7 +73,7 @@ describe Marathon::App do
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
-      subject.info['tasks'] = []
+      subject.info[:tasks] = []
       subject.tasks
     end
 
@@ -86,13 +86,13 @@ describe Marathon::App do
     end
 
     it 'loads tasks from API when not loaded already' do
-      subject.info['tasks'] = nil
-      expect(subject).to receive(:refresh) { subject.info['tasks'] = [] }
+      subject.info[:tasks] = nil
+      expect(subject).to receive(:refresh) { subject.info[:tasks] = [] }
       expect(subject.tasks).to eq([])
     end
 
     it 'shows already loaded tasks w/o API call' do
-      subject.info['tasks'] = []
+      subject.info[:tasks] = []
       expect(subject).not_to receive(:refresh)
       expect(subject.tasks).to eq([])
     end
@@ -124,11 +124,12 @@ describe Marathon::App do
     end
 
     it 'starts the app' do
-      expect(described_class).to receive(:start).with({ 'id' => '/app/foo'}) do
-        described_class.new({ 'id' => '/app/foo', 'started' => true })
+      expect(described_class).to receive(:start)
+        .with({:constraints=>[], :env=>{}, :ports=>[], :storeUris=>[], :id=>"/app/foo"}) do
+          described_class.new({ 'id' => '/app/foo', 'started' => true })
       end
       subject.start!
-      expect(subject.info['started']).to be(true)
+      expect(subject.info[:started]).to be(true)
     end
   end
 
@@ -146,7 +147,7 @@ describe Marathon::App do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
       end
       subject.refresh
-      expect(subject.info['refreshed']).to be(true)
+      expect(subject.info[:refreshed]).to be(true)
     end
   end
 

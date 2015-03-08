@@ -41,4 +41,22 @@ describe Marathon::Util do
     end
   end
 
+  describe '.keywordize_hash' do
+    subject { described_class }
+
+    it 'keywordizes the hash' do
+      expect(subject.keywordize_hash({
+        'foo'  => 'bar',
+        'f00'  => {'w00h00'  => 'yeah'},
+        'bang' => [{'tricky' => 'one'}],
+        'null' => nil
+      })).to eq({
+        :foo  => 'bar',
+        :f00  => {:w00h00  => 'yeah'},
+        :bang => [{:tricky => 'one'}],
+        :null => nil
+      })
+    end
+  end
+
 end

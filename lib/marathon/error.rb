@@ -7,7 +7,7 @@ module Marathon::Error
   # Raised when invalid arguments are passed to a method.
   class ArgumentError < MarathonError; end
 
-  # Raised when a request returns a 400.
+  # Raised when a request returns a 400 or 422.
   class ClientError < MarathonError; end
 
   # Raised when a request returns a 404.
@@ -39,6 +39,8 @@ module Marathon::Error
     case response.code
     when 400
       ClientError
+    when 422
+      ClientError
     when 404
       NotFoundError
     else
@@ -50,8 +52,12 @@ module Marathon::Error
   # ++response++: HTTParty response object.
   def error_message(response)
     body = response.parsed_response
-    if body.is_a?(Hash)
+    if not body.is_a?(Hash)
+      body
+    elsif body['message']
       body['message']
+    elsif body['errors']
+      body['errors']
     else
       body
     end

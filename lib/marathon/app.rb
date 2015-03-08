@@ -1,23 +1,27 @@
 # This class represents a Marathon App.
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#apps for full list of API's methods.
-class Marathon::App
+class Marathon::App < Marathon::Base
 
-  attr_reader :info, :read_only
+  ACCESSORS = %w[ id args cmd cpus disk env executor instances mem ports requirePorts
+                  storeUris tasksRunning tasksStaged uris user version ]
+
+  DEFAULTS = {
+    :constraints => [],
+    :env => {},
+    :ports => [],
+    :storeUris => []
+  }
+
+  attr_reader :read_only
 
   # Create a new application object.
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
   # ++read_only++: prevent actions on this application
   def initialize(hash, read_only = false)
-    @info = hash
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+    raise ArgumentError, 'App must have an id' unless id
     @read_only = read_only
-    raise Marathon::Error::ArgumentError, 'App must have an id' unless hash['id']
-  end
-
-  # Shortcuts for reaching attributes
-  %w[ id args cmd cpus disk env executor instances mem ports requirePorts
-      storeUris tasksRunning tasksStaged uris user version ].each do |method|
-    define_method(method) { |*args, &block| info[method] }
   end
 
   # Prevent actions on read only instances.
@@ -30,25 +34,24 @@ class Marathon::App
 
   # Get constrains.
   def constraints
-    @info.fetch('constraints', []).map { |e| Marathon::Constraint.new(e) }
+    @info[:constraints].map { |e| Marathon::Constraint.new(e) }
   end
 
   # Get health checks.
   def healthChecks
-    @info.fetch('healthChecks', []).map { |e| Marathon::HealthCheck.new(e) }
+    @info[:healthChecks].map { |e| Marathon::HealthCheck.new(e) }
   end
 
   # List all running tasks for the application.
   # Returns an Array of Task objects.
   def tasks
     check_read_only
-    unless @info['tasks']
+    unless @info[:tasks]
       refresh
     end
 
-    raise Marathon::Error::UnexpectedResponseError, "Expected to find tasks element in app's info" unless @info['tasks']
-
-    @info['tasks'].map { |e| Marathon::Task.new(e) }
+    raise UnexpectedResponseError, "Expected to find tasks element in app's info" unless @info[:tasks]
+    @info[:tasks].map { |e| Marathon::Task.new(e) }
   end
 
   # List the versions of the application.
@@ -143,11 +146,6 @@ class Marathon::App
     end
     s += "Version:    #{version}\n"
     s
-  end
-
-  # Return application as JSON formatted string.
-  def to_json
-    info.to_json
   end
 
   class << self

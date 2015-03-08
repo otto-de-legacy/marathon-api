@@ -1,31 +1,25 @@
 # This class represents a Marathon HealthCheck.
 # See https://mesosphere.github.io/marathon/docs/health-checks.html for full details.
-class Marathon::HealthCheck
+class Marathon::HealthCheck < Marathon::Base
 
   DEFAULTS = {
-    'gracePeriodSeconds' => 300,
-    'intervalSeconds' => 60,
-    'maxConsecutiveFailures' => 3,
-    'path' => '/',
-    'portIndex' => 0,
-    'protocol' => 'HTTP',
-    'timeoutSeconds' => 20
+    :gracePeriodSeconds => 300,
+    :intervalSeconds => 60,
+    :maxConsecutiveFailures => 3,
+    :path => '/',
+    :portIndex => 0,
+    :protocol => 'HTTP',
+    :timeoutSeconds => 20
   }
 
-  attr_reader :info
+  ACCESSORS = %w[ command gracePeriodSeconds intervalSeconds maxConsecutiveFailures
+                  path portIndex protocol timeoutSeconds ]
 
   # Create a new health check object.
   # ++hash++: Hash returned by API.
   def initialize(hash)
-    raise Marathon::Error::ArgumentError, 'hash must be an Hash' unless hash.is_a?(Hash)
-    @info = DEFAULTS.merge(hash)
-    Marathon::Util.validate_choice('protocol', protocol, %[HTTP TCP COMMAND], false)
-  end
-
-  # Shortcuts for reaching attributes
-  %w[ command gracePeriodSeconds intervalSeconds maxConsecutiveFailures
-      path portIndex protocol timeoutSeconds ].each do |method|
-    define_method(method) { |*args, &block| info[method] }
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+    Marathon::Util.validate_choice(:protocol, protocol, %w[HTTP TCP COMMAND])
   end
 
   def to_s
@@ -38,8 +32,4 @@ class Marathon::HealthCheck
     end
   end
 
-  # Return deployment info as JSON formatted string.
-  def to_json
-    @info.to_json
-  end
 end

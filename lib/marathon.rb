@@ -12,6 +12,7 @@ module Marathon
   require 'marathon/util'
   require 'marathon/error'
   require 'marathon/connection'
+  require 'marathon/base'
   require 'marathon/constraint'
   require 'marathon/health_check'
   require 'marathon/deployment_info'
