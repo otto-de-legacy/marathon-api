@@ -142,29 +142,31 @@ class Marathon::App < Marathon::Base
 
   # Returns a string for listing the application.
   def to_pretty_s
-    "App ID:     #{id}\n" + \
-    "Instances:  #{tasks.size}/#{instances}\n" + \
-    "Command:    #{cmd}\n" + \
-    "CPUs:       #{cpus}\n" + \
-    "Memory:     #{mem} MB\n" + \
-    pretty_uris + \
-    pretty_env + \
-    pretty_constraints + \
-    "Version:    #{version}\n"
+    %Q[
+App ID:     #{id}
+Instances:  #{tasks.size}/#{instances}
+Command:    #{cmd}
+CPUs:       #{cpus}
+Memory:     #{mem} MB
+#{pretty_uris()}
+#{pretty_env()}
+#{pretty_constraints()}
+Version:    #{version}
+    ].gsub(/\n\n+/, "\n").strip
   end
 
   private
 
   def pretty_env
-    env.map { |k,v| "ENV:        #{k}=#{v}\n" }.join('')
+    env.map { |k,v| "ENV:        #{k}=#{v}" }.join("\n")
   end
 
   def pretty_uris
-    uris.map { |e| "URI:        #{e}\n" }.join('')
+    uris.map { |e| "URI:        #{e}" }.join("\n")
   end
 
   def pretty_constraints
-    constraints.map { |e| "Constraint: #{e.to_pretty_s}\n" }.join('')
+    constraints.map { |e| "Constraint: #{e.to_pretty_s}" }.join("\n")
   end
 
   class << self

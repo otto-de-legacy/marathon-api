@@ -9,7 +9,8 @@ describe Marathon::App do
       'tasks' => [],
       'env' => {'FOO' => 'BAR', 'blubb' => 'blah'},
       'constraints' => [['hostname', 'UNIQUE']],
-      'uris' => ['http://example.com/big.tar']
+      'uris' => ['http://example.com/big.tar'],
+      'version' => 'foo-version'
     }) }
 
     let(:expected_string) do
@@ -26,7 +27,7 @@ describe Marathon::App do
       "ENV:        FOO=BAR\n" + \
       "ENV:        blubb=blah\n" + \
       "Constraint: hostname:UNIQUE\n" + \
-      "Version:    \n"
+      "Version:    foo-version"
     end
 
     its(:to_s) { should == expected_string }

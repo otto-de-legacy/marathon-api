@@ -4,10 +4,11 @@ describe Marathon::Task do
 
   describe '#to_s' do
     subject { described_class.new({
-        'id'    => 'task-id-foo',
-        'appId' => '/app/foo',
-        'host'  => 'foo-host',
-        'ports' => [31000, 31001],
+        'id'      => 'task-id-foo',
+        'appId'   => '/app/foo',
+        'host'    => 'foo-host',
+        'ports'   => [31000, 31001],
+        'version' => 'foo-version'
       }) }
 
     let(:expected_string) do
@@ -21,7 +22,7 @@ describe Marathon::Task do
       "Ports:      31000,31001\n" + \
       "Staged at:  \n" + \
       "Started at: \n" + \
-      "Version:    \n"
+      "Version:    foo-version"
     end
 
     its(:to_s) { should == expected_string }
