@@ -7,6 +7,7 @@ describe Marathon::Task do
         'id'    => 'task-id-foo',
         'appId' => '/app/foo',
         'host'  => 'foo-host',
+        'ports' => [31000, 31001],
       }) }
 
     let(:expected_string) do
@@ -17,6 +18,7 @@ describe Marathon::Task do
       "Task ID:    task-id-foo\n" + \
       "App ID:     /app/foo\n" + \
       "Host:       foo-host\n" + \
+      "Ports:      31000,31001\n" + \
       "Staged at:  \n" + \
       "Started at: \n" + \
       "Version:    \n"

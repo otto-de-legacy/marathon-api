@@ -25,14 +25,13 @@ class Marathon::Task < Marathon::Base
 
   # Returns a string for listing the task.
   def to_pretty_s
-    s =  "Task ID:    #{id}\n"
-    s += "App ID:     #{appId}\n"
-    s += "Host:       #{host}\n"
-    s += "Ports:      #{ports.join(',')}\n" if ports
-    s += "Staged at:  #{stagedAt}\n"
-    s += "Started at: #{startedAt}\n"
-    s += "Version:    #{version}\n"
-    s
+    "Task ID:    #{id}\n" + \
+    "App ID:     #{appId}\n" + \
+    "Host:       #{host}\n" + \
+    "Ports:      #{(ports || []).join(',')}\n" + \
+    "Staged at:  #{stagedAt}\n" + \
+    "Started at: #{startedAt}\n" + \
+    "Version:    #{version}\n"
   end
 
   class << self

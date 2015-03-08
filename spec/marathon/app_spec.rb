@@ -7,7 +7,7 @@ describe Marathon::App do
       'id' => '/app/foo',
       'instances' => 1,
       'tasks' => [],
-      'env' => {'FOO' => 'BAR'},
+      'env' => {'FOO' => 'BAR', 'blubb' => 'blah'},
       'constraints' => [['hostname', 'UNIQUE']],
       'uris' => ['http://example.com/big.tar']
     }) }
@@ -24,6 +24,7 @@ describe Marathon::App do
       "Memory:      MB\n" + \
       "URI:        http://example.com/big.tar\n" + \
       "ENV:        FOO=BAR\n" + \
+      "ENV:        blubb=blah\n" + \
       "Constraint: hostname:UNIQUE\n" + \
       "Version:    \n"
     end
