@@ -58,5 +58,16 @@ class Marathon::Util
     def merge_keywordized_hash(h1, h2)
       keywordize_hash(h1).merge(keywordize_hash(h2))
     end
+
+    # Stringify an item or an array of items.
+    def items_to_pretty_s(item)
+      if item.nil?
+        nil
+      elsif item.is_a?(Array)
+        item.map {|e| e.to_pretty_s}.join(',')
+      else
+        item.to_pretty_s
+      end
+    end
   end
 end

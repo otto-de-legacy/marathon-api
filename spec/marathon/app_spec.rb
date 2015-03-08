@@ -50,6 +50,17 @@ describe Marathon::App do
     end
   end
 
+  describe '#container' do
+    subject { described_class.new({
+      'id' => '/ubuntu2', 'container' => {'type'=>'DOCKER', 'docker'=>{'image'=>'felixb/yocto-httpd'}}
+    })}
+
+    it 'has container' do
+      expect(subject.container).to be_instance_of(Marathon::Container)
+      expect(subject.container.type).to eq('DOCKER')
+    end
+  end
+
   describe '#constraints' do
     subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] }) }
 
