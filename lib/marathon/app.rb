@@ -147,10 +147,24 @@ class Marathon::App < Marathon::Base
     "Command:    #{cmd}\n" + \
     "CPUs:       #{cpus}\n" + \
     "Memory:     #{mem} MB\n" + \
-    uris.map { |e| "URI:        #{e}\n" }.join('') + \
-    env.map { |k,v| "ENV:        #{k}=#{v}\n" }.join('') + \
-    constraints.map { |e| "Constraint: #{e.to_pretty_s}\n" }.join('') + \
+    pretty_uris + \
+    pretty_env + \
+    pretty_constraints + \
     "Version:    #{version}\n"
+  end
+
+  private
+
+  def pretty_env
+    env.map { |k,v| "ENV:        #{k}=#{v}\n" }.join('')
+  end
+
+  def pretty_uris
+    uris.map { |e| "URI:        #{e}\n" }.join('')
+  end
+
+  def pretty_constraints
+    constraints.map { |e| "Constraint: #{e.to_pretty_s}\n" }.join('')
   end
 
   class << self
