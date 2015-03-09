@@ -6,12 +6,15 @@ class Marathon::DeploymentInfo < Marathon::Base
   # ++hash++: Hash returned by API, including 'deploymentId' and 'version'
   def initialize(hash)
     super(hash, %w[deploymentId version])
-    raise Marathon::Error::ArgumentError, 'deploymentId must not be nil' unless deploymentId
     raise Marathon::Error::ArgumentError, 'version must not be nil' unless version
   end
 
   def to_s
-    "Marathon::DeploymentInfo { :deploymentId => #{deploymentId} :version => #{version} }"
+    if deploymentId
+      "Marathon::DeploymentInfo { :version => #{version} :deploymentId => #{deploymentId} }"
+    else
+      "Marathon::DeploymentInfo { :version => #{version} }"
+    end
   end
 
 end

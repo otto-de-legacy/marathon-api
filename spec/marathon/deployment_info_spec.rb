@@ -18,7 +18,17 @@ describe Marathon::DeploymentInfo do
     subject { described_class.new(DEPLOYMENT_INFO_EXAMPLE) }
 
     let(:expected_string) do
-      'Marathon::DeploymentInfo { :deploymentId => deployment-123 :version => version-456 }'
+      'Marathon::DeploymentInfo { :version => version-456 :deploymentId => deployment-123 }'
+    end
+
+    its(:to_s) { should == expected_string }
+  end
+
+  describe '#to_s w/o deploymentId' do
+    subject { described_class.new(:version => 'foo-version') }
+
+    let(:expected_string) do
+      'Marathon::DeploymentInfo { :version => foo-version }'
     end
 
     its(:to_s) { should == expected_string }
