@@ -9,6 +9,7 @@ module Marathon
 
   attr_accessor :logger
 
+  require 'marathon/version'
   require 'marathon/util'
   require 'marathon/error'
   require 'marathon/connection'
@@ -27,7 +28,6 @@ module Marathon
   require 'marathon/leader'
   require 'marathon/queue'
   require 'marathon/task'
-  require 'marathon/version'
 
   DEFAULT_URL = 'http://localhost:8080'
 
