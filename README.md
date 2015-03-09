@@ -11,7 +11,7 @@ Installation
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'marathon-api',  :require => 'marathon'
+gem 'marathon-api', :require => 'marathon'
 ```
 
 And then run:
@@ -26,7 +26,7 @@ Alternatively, if you wish to just use the gem in a script, you can run:
 $ gem install marathon-api
 ```
 
-Finally,  just add `require 'marathon'` to the top of the file using this gem.
+Finally, just add `require 'marathon'` to the top of the file using this gem.
 
 Usage
 -----
