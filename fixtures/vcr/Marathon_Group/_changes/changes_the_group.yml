@@ -1,0 +1,61 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: http://localhost:8080/v2/groups//ubuntu2
+    body:
+      encoding: UTF-8
+      string: '{"instances":2}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.9.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-09T10:33:40.511Z","deploymentId":"4186c1d4-80a8-4cf2-a606-cc9e93680c13"}'
+    http_version: 
+  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+- request:
+    method: put
+    uri: http://localhost:8080/v2/groups//ubuntu2?force=true
+    body:
+      encoding: UTF-8
+      string: '{"instances":1}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.9.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-09T10:33:40.730Z","deploymentId":"72ad642f-90ba-4fec-8470-9abec46c47c3"}'
+    http_version: 
+  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+recorded_with: VCR 2.9.3

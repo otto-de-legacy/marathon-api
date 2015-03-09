@@ -1,0 +1,33 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/v2/groups
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.9.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"id":"/","apps":[],"groups":[{"id":"/ubuntu2","apps":[],"groups":[],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"},{"id":"/test-group","apps":[{"id":"/test-group/app","cmd":"sleep
+        30","args":null,"user":null,"env":{},"instances":1,"cpus":1.0,"mem":128.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":0.0},"labels":{},"version":"2015-03-09T10:33:39.889Z"}],"groups":[],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"}],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"}'
+    http_version: 
+  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+recorded_with: VCR 2.9.3

@@ -9,7 +9,7 @@ class Marathon::App < Marathon::Base
     :constraints => [],
     :env => {},
     :ports => [],
-    :storeUris => []
+    :uris => []
   }
 
   attr_reader :read_only
@@ -137,7 +137,7 @@ class Marathon::App < Marathon::Base
   end
 
   def to_s
-    "Marathon::App { :id => #{self.id} }"
+    "Marathon::App { :id => #{id} }"
   end
 
   # Returns a string for listing the application.

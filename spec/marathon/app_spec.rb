@@ -38,7 +38,7 @@ describe Marathon::App do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     let(:expected_string) do
-      '{"constraints":[],"env":{},"ports":[],"storeUris":[],"id":"/app/foo"}'
+      '{"constraints":[],"env":{},"ports":[],"uris":[],"id":"/app/foo"}'
     end
 
     its(:to_json) { should == expected_string }
@@ -138,7 +138,7 @@ describe Marathon::App do
 
     it 'starts the app' do
       expect(described_class).to receive(:start)
-        .with({:constraints=>[], :env=>{}, :ports=>[], :storeUris=>[], :id=>"/app/foo"}) do
+        .with({:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"}) do
           described_class.new({ 'id' => '/app/foo', 'started' => true })
       end
       subject.start!

@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/v2/groups
+    body:
+      encoding: UTF-8
+      string: '{"id":"/test-group","apps":[{"backoffFactor":1.15,"backoffSeconds":1,"maxLaunchDelaySeconds":3600,"cmd":"sleep
+        30","constraints":[],"cpus":1.0,"dependencies":[],"disk":0.0,"env":{},"executor":"","id":"app","instances":1,"mem":128.0,"ports":[10000],"requirePorts":false,"storeUrls":[],"upgradeStrategy":{"minimumHealthCapacity":1.0},"tasks":[]}],"dependencies":[],"groups":[]}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      User-Agent:
+      - ub0r/Marathon-API 0.9.0
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Location:
+      - http://localhost:8080/v2/groups/test-group
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(8.y.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: '{"version":"2015-03-09T10:33:39.889Z","deploymentId":"ad618509-e8ee-4949-8267-ef35a619426f"}'
+    http_version: 
+  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+recorded_with: VCR 2.9.3
