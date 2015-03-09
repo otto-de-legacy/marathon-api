@@ -44,7 +44,13 @@ class Marathon::Util
       if hash.is_a?(Hash)
         new_hash = {}
         hash.each do |k,v|
-          new_hash[k.to_sym] = keywordize_hash(hash[k])
+          key = k.to_sym
+          if key == :env and v.is_a?(Hash)
+            # ignore :env => {} to prevent renameing environment variables
+            new_hash[key] = hash[k]
+          else
+            new_hash[key] = keywordize_hash(hash[k])
+          end
         end
         new_hash
       elsif hash.is_a?(Array)

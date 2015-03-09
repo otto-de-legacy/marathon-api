@@ -49,11 +49,13 @@ describe Marathon::Util do
         'foo'  => 'bar',
         'f00'  => {'w00h00'  => 'yeah'},
         'bang' => [{'tricky' => 'one'}],
+        'env'  => {'foo' => 'bar'},
         'null' => nil
       })).to eq({
         :foo  => 'bar',
         :f00  => {:w00h00  => 'yeah'},
         :bang => [{:tricky => 'one'}],
+        :env  => {'foo' => 'bar'},
         :null => nil
       })
     end
