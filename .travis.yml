@@ -6,5 +6,5 @@ rvm:
   - 2.2.0
 env:
   global:
-    - CODECLIMATE_REPO_TOKEN=8e7c316d892f832fa3de24bc2e88bf0d243e09947ea95319afcafcdb10f5eb3c
+    - CODECLIMATE_REPO_TOKEN=a0f25c19629dd353c43aef0cbbd886a7a4079c2238711fa4f932e1477b818195
 script: bundle exec rake

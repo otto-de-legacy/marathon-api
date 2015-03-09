@@ -5,10 +5,10 @@ Gem::Specification.new do |gem|
   gem.name          = "marathon-api"
   gem.version       = Marathon::VERSION
   gem.authors       = ["Felix Bechstein"]
-  gem.email         = %w{f@ub0r.de}
+  gem.email         = %w{felix.bechstein@otto.de}
   gem.description   = %q{A simple REST client for the Marathon Remote API}
   gem.summary       = %q{A simple REST client for the Marathon Remote API}
-  gem.homepage      = 'https://github.com/felixb/marathon-api'
+  gem.homepage      = 'https://github.com/otto-de/marathon-api'
   gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($\)
