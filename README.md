@@ -102,6 +102,12 @@ apps.last.delete!
 
 The other Marathon endpoints are available in the same way.
 
+Contributing
+------------
+
+Please fork and send pull request.
+Make sure to have test cases for your changes.
+
 Credits
 -------
 
