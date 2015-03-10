@@ -46,12 +46,13 @@ describe Marathon::Util do
 
     it 'keywordizes the hash' do
       expect(subject.keywordize_hash({
-        'foo'  => 'bar',
-        'f00'  => {'w00h00'  => 'yeah'},
-        'bang' => [{'tricky' => 'one'}],
-        'env'  => {'foo' => 'bar'},
-        'null' => nil
-      })).to eq({
+        'foo'      => 'bar',
+        'f00'      => {'w00h00'  => 'yeah'},
+        'bang'     => [{'tricky' => 'one'}],
+        'env'      => {'foo' => 'bar'},
+        'deleteme' => 'blubb',
+        'null'     => nil
+      }, [:env], [:deleteme])).to eq({
         :foo  => 'bar',
         :f00  => {:w00h00  => 'yeah'},
         :bang => [{:tricky => 'one'}],

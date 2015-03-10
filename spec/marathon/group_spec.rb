@@ -23,11 +23,13 @@ EXAMPLE_GROUP = {
           "upgradeStrategy" => {
               "minimumHealthCapacity" => 1.0
           },
-          "tasks" => []
+          "tasks" => [],
+          "version" => 'foo-version'
       }
   ],
   "dependencies" => [],
-  "groups" => []
+  "groups" => [],
+  "version" => 'foo-version'
 }
 
 describe Marathon::Group do
@@ -46,8 +48,8 @@ describe Marathon::Group do
        "    Command:    sleep 30\n" + \
        "    CPUs:       1.0\n" + \
        "    Memory:     128.0 MB\n" + \
-       "    Version:\n" + \
-       "Version:"
+       "    Version:    foo-version\n" + \
+       "Version:    foo-version"
 
     end
 

@@ -290,7 +290,14 @@ describe Marathon::App do
     subject { described_class }
 
     it 'starts the app', :vcr do
-      app = subject.start({ :id => '/test', :cmd => 'sleep 10', :instances => 1, :cpus => 0.1, :mem => 32})
+      app = subject.start({
+        :id => '/test',
+        :cmd => 'sleep 10',
+        :instances => 1,
+        :cpus => 0.1,
+        :mem => 32,
+        :version => 'foo-version'
+      })
       expect(app).to be_instance_of(described_class)
       expect(app.id).to eq('/test')
       expect(app.instances).to eq(1)

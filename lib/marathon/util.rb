@@ -40,13 +40,16 @@ class Marathon::Util
 
     # Swap keys of the hash against their symbols.
     # ++hash++: the hash
-    def keywordize_hash(hash)
+    # ++ignore_keys++: don't keywordize (keywordized) keys in this array
+    # ++remove_keys++: remove (keywordized) keys in this array
+    def keywordize_hash(hash, ignore_keys = [:env], remove_keys = [])
       if hash.is_a?(Hash)
         new_hash = {}
         hash.each do |k,v|
           key = k.to_sym
-          if key == :env and v.is_a?(Hash)
-            # ignore :env => {} to prevent renameing environment variables
+          if remove_keys.include?(key)
+            next
+          elsif ignore_keys.include?(key)
             new_hash[key] = hash[k]
           else
             new_hash[key] = keywordize_hash(hash[k])

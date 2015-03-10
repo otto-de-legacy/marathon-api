@@ -131,7 +131,11 @@ Version:    #{version}
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/groups for full details
     def start(hash)
-      json = Marathon.connection.post('/v2/groups', nil, :body => hash)
+      json = Marathon.connection.post(
+        '/v2/groups',
+        nil,
+        :body => Marathon::Util.keywordize_hash(hash, [:env], [:version])
+      )
       Marathon::DeploymentInfo.new(json)
     end
     alias :create :start
