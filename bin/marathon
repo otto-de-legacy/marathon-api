@@ -64,7 +64,7 @@ def subcmd_start(cmd_opts)
     end
     app = Marathon::App.new(app_opts)
     puts "Starting app '#{app}'"
-    app.start!
+    app.start!(cmd_opts[:force])
     print_apps([app])
   rescue Marathon::Error::MarathonError => e
     puts "#{e.class}: #{e.message}"
@@ -182,6 +182,7 @@ def parse_subcmd_opts(cmd)
         opt :uri, 'URIs to download and unpack into the working directory.', :short => '-u', :type => :strings
         opt :env, 'Environment variables to add to the process, as NAME=VALUE.', :short => '-e', :type => :strings
         opt :constraint, 'Placement constraint for tasks, e.g. hostname:UNIQUE or rackid:CLUSTER', :type => :strings
+        opt :force, 'The current deployment can be overridden by setting the `force`.', :short => '-f'
       end
     when 'scale'
       Trollop.options do
