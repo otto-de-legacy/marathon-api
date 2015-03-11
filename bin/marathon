@@ -231,12 +231,10 @@ def run_subcmd(cmd, cmd_opts)
   end
 end
 
-if __FILE__ == $0
-  global_opts = parse_global_opts
-  set_global_opts(global_opts)
+global_opts = parse_global_opts
+set_global_opts(global_opts)
 
-  cmd = parse_subcmd
-  cmd_opts = parse_subcmd_opts(cmd)
+cmd = parse_subcmd
+cmd_opts = parse_subcmd_opts(cmd)
 
-  run_subcmd(cmd, cmd_opts)
-end
+run_subcmd(cmd, cmd_opts)
