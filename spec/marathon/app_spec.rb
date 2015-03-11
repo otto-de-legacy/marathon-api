@@ -196,13 +196,13 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(described_class).to receive(:change).with('/app/foo', {'instances' => 9000 }, false)
-      subject.change!('instances' => 9000)
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      subject.change!('instances' => 9000, 'version' => 'old-version')
     end
   end
 
   describe '#roll_back!' do
-    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({:id => '/app/foo', :instances => 10}) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -211,18 +211,18 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(subject).to receive(:change!).with({'version' => 'old_version' }, false)
+      expect(subject).to receive(:change!).with({:version => 'old_version' }, false)
       subject.roll_back!('old_version')
     end
 
     it 'changes the app with force' do
-      expect(subject).to receive(:change!).with({'version' => 'old_version' }, true)
+      expect(subject).to receive(:change!).with({:version => 'old_version' }, true)
       subject.roll_back!('old_version', true)
     end
   end
 
   describe '#scale!' do
-    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({:id => '/app/foo', :instances => 10}) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
@@ -231,18 +231,18 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(subject).to receive(:change!).with({'instances' => 9000 }, false)
+      expect(subject).to receive(:change!).with({:instances => 9000}, false)
       subject.scale!(9000)
     end
 
     it 'changes the app with force' do
-      expect(subject).to receive(:change!).with({'instances' => 9000 }, true)
+      expect(subject).to receive(:change!).with({:instances => 9000}, true)
       subject.scale!(9000, true)
     end
   end
 
   describe '#suspend!' do
-    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }) }
+    subject { described_class.new({'id' => '/app/foo', :instances => 10}) }
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)

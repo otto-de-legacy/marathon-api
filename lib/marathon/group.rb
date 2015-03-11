@@ -65,7 +65,14 @@ class Marathon::Group < Marathon::Base
   # ++force++: If the group is affected by a running deployment, then the update operation will fail.
   #            The current deployment can be overridden by setting the `force` query parameter.
   def change!(hash, force = false)
-    self.class.change(id, hash, force)
+    Marathon::Util.keywordize_hash!(hash)
+    if hash[:version] and hash.size > 1
+      # remove :version if it's not the only key
+      new_hash = Marathon::Util.remove_keys(hash, [:version])
+    else
+      new_hash = hash
+    end
+    self.class.change(id, new_hash, force)
   end
 
   # Create a new version with parameters of an old version.
@@ -131,11 +138,7 @@ Version:    #{version}
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/groups for full details
     def start(hash)
-      json = Marathon.connection.post(
-        '/v2/groups',
-        nil,
-        :body => Marathon::Util.keywordize_hash(hash, [:env], [:version])
-      )
+      json = Marathon.connection.post('/v2/groups', nil, :body => hash)
       Marathon::DeploymentInfo.new(json)
     end
     alias :create :start

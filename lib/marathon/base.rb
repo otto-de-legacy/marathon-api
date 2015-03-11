@@ -12,7 +12,7 @@ class Marathon::Base
     raise ArgumentError, 'hash must be a Hash' if attr_readers and attr_readers.size > 0 and not hash.is_a?(Hash)
     raise ArgumentError, 'hash must be Hash or Array' unless hash.is_a?(Hash) or hash.is_a?(Array)
     raise ArgumentError, 'attr_readers must be an Array' unless attr_readers.is_a?(Array)
-    @info = Marathon::Util.keywordize_hash(hash)
+    @info = Marathon::Util.keywordize_hash!(hash)
     attr_readers.each { |e| add_attr_reader(e) }
   end
 

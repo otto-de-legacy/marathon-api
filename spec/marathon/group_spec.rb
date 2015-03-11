@@ -85,8 +85,13 @@ describe Marathon::Group do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'changes the group' do
-      expect(described_class).to receive(:change).with('/app/foo', {'instances' => 9000 }, false)
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
       subject.change!('instances' => 9000)
+    end
+
+    it 'changes the group and strips :version' do
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      subject.change!('instances' => 9000, :version => 'old-version')
     end
   end
 

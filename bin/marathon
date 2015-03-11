@@ -46,9 +46,9 @@ def subcmd_start(cmd_opts)
     if cmd_opts[:json]
       path = cmd_opts[:json]
       if path == '-'
-        app_opts = Marathon::Util.keywordize_hash(JSON.parse($stdin.read))
+        app_opts = Marathon::Util.keywordize_hash!(JSON.parse($stdin.read))
       elsif File.exists?(path)
-        app_opts = Marathon::Util.keywordize_hash(JSON.parse(File.read(cmd_opts[:json])))
+        app_opts = Marathon::Util.keywordize_hash!(JSON.parse(File.read(cmd_opts[:json])))
       else
         raise Marathon::Error::ArgumentError, "File '#{path}' does not exist"
       end

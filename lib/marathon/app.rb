@@ -109,7 +109,14 @@ class Marathon::App < Marathon::Base
   #            The current deployment can be overridden by setting the `force` query parameter.
   def change!(hash, force = false)
     check_read_only
-    self.class.change(id, hash, force)
+    Marathon::Util.keywordize_hash!(hash)
+    if hash[:version] and hash.size > 1
+      # remove :version if it's not the only key
+      new_hash = Marathon::Util.remove_keys(hash, [:version])
+    else
+      new_hash = hash
+    end
+    self.class.change(id, new_hash, force)
   end
 
   # Create a new version with parameters of an old version.
@@ -118,7 +125,7 @@ class Marathon::App < Marathon::Base
   # ++force++: If the app is affected by a running deployment, then the update operation will fail.
   #            The current deployment can be overridden by setting the `force` query parameter.
   def roll_back!(version, force = false)
-    change!({'version' => version}, force)
+    change!({:version => version}, force)
   end
 
   # Change the number of desired instances.
@@ -126,7 +133,7 @@ class Marathon::App < Marathon::Base
   # ++force++: If the app is affected by a running deployment, then the update operation will fail.
   #            The current deployment can be overridden by setting the `force` query parameter.
   def scale!(instances, force = false)
-    change!({'instances' => instances}, force)
+    change!({:instances => instances}, force)
   end
 
   # Change the number of desired instances to 0.
@@ -203,11 +210,7 @@ Version:    #{version}
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
     def start(hash)
-      json = Marathon.connection.post(
-        '/v2/apps',
-        nil,
-        :body => Marathon::Util.keywordize_hash(hash, [:env], [:version])
-      )
+      json = Marathon.connection.post('/v2/apps', nil, :body => hash)
       new(json)
     end
     alias :create :start

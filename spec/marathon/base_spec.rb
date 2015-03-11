@@ -22,7 +22,7 @@ describe Marathon::Base do
       }) }
 
     let(:expected_string) do
-      '{"app":{"id":"/app/foo"},"foo":"blubb","bar":1}'
+      '{"foo":"blubb","bar":1,"app":{"id":"/app/foo"}}'
     end
 
     its(:to_json) { should == expected_string }

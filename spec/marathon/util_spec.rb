@@ -41,24 +41,46 @@ describe Marathon::Util do
     end
   end
 
-  describe '.keywordize_hash' do
+  describe '.keywordize_hash!' do
     subject { described_class }
 
     it 'keywordizes the hash' do
-      expect(subject.keywordize_hash({
+      hash = {
         'foo'      => 'bar',
         'f00'      => {'w00h00'  => 'yeah'},
         'bang'     => [{'tricky' => 'one'}],
         'env'      => {'foo' => 'bar'},
-        'deleteme' => 'blubb',
         'null'     => nil
-      }, [:env], [:deleteme])).to eq({
+      }
+
+      expect(subject.keywordize_hash!(hash)).to eq({
         :foo  => 'bar',
         :f00  => {:w00h00  => 'yeah'},
         :bang => [{:tricky => 'one'}],
         :env  => {'foo' => 'bar'},
         :null => nil
       })
+      # make sure, it changes the hash w/o creating a new one
+      expect(hash[:foo]).to eq('bar')
+    end
+  end
+
+  describe '.remove_keys' do
+    subject { described_class }
+
+    it 'removes keys from hash' do
+      hash = {
+        :foo      => 'bar',
+        :deleteme => {'w00h00'  => 'yeah'},
+        :blah     => [{:deleteme => :foo}, 1]
+      }
+
+      expect(subject.remove_keys(hash, [:deleteme])).to eq({
+        :foo  => 'bar',
+        :blah => [{}, 1]
+      })
+      # make sure, it does not changes the original hash
+      expect(hash.size).to eq(3)
     end
   end
 
