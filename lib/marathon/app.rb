@@ -57,13 +57,7 @@ class Marathon::App < Marathon::Base
   # List all running tasks for the application.
   # This is read only!
   def tasks
-    check_read_only
-    unless @info[:tasks]
-      refresh
-    end
-
-    raise UnexpectedResponseError, "Expected to find tasks element in app's info" unless @info[:tasks]
-    @info[:tasks].map { |e| Marathon::Task.new(e) }
+    (@info[:tasks] || []).map { |e| Marathon::Task.new(e) }
   end
 
   # List the versions of the application.

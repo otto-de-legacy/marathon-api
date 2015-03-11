@@ -84,26 +84,6 @@ describe Marathon::App do
   describe '#tasks' do
     subject { described_class.new({ 'id' => '/ubuntu2' }) }
 
-    it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      subject.info[:tasks] = []
-      subject.tasks
-    end
-
-    it 'has tasks', :vcr do
-      tasks = subject.tasks
-      expect(tasks).to be_instance_of(Array)
-      expect(tasks.size).to eq(1)
-      expect(tasks.first).to be_instance_of(Marathon::Task)
-      expect(tasks.first.appId).to eq(subject.id)
-    end
-
-    it 'loads tasks from API when not loaded already' do
-      subject.info[:tasks] = nil
-      expect(subject).to receive(:refresh) { subject.info[:tasks] = [] }
-      expect(subject.tasks).to eq([])
-    end
-
     it 'shows already loaded tasks w/o API call' do
       subject.info[:tasks] = []
       expect(subject).not_to receive(:refresh)
