@@ -132,17 +132,22 @@ describe Marathon::App do
 
     it 'checks for read only' do
       expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:start) { described_class.new('id' => subject.id) }
+      expect(described_class).to receive(:change).with(
+          '/app/foo',
+          {:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          false
+        )
       subject.start!
     end
 
     it 'starts the app' do
-      expect(described_class).to receive(:start)
-        .with({:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"}) do
-          described_class.new({ 'id' => '/app/foo', 'started' => true })
-      end
+      expect(described_class).to receive(:change)
+        .with(
+          '/app/foo',
+          {:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          false
+        )
       subject.start!
-      expect(subject.info[:started]).to be(true)
     end
   end
 

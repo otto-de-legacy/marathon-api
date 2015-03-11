@@ -86,10 +86,10 @@ class Marathon::App < Marathon::Base
   end
 
   # Create and start the application.
-  def start!
-    check_read_only
-    new_app = self.class.start(info)
-    @info = new_app.info
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
+  def start!(force = false)
+    change!(info, force)
   end
 
   # Initiates a rolling restart of all running tasks of the given app.
