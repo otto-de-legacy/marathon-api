@@ -7,13 +7,13 @@ class Marathon::Base
 
   # Create the object
   # ++hash++: object returned from API. May be Hash or Array.
-  # ++attr_readers++: List of attribute readers.
-  def initialize(hash, attr_readers = [])
-    raise ArgumentError, 'hash must be a Hash' if attr_readers and attr_readers.size > 0 and not hash.is_a?(Hash)
+  # ++attr_accessors++: List of attribute accessors.
+  def initialize(hash, attr_accessors = [])
+    raise ArgumentError, 'hash must be a Hash' if attr_accessors and attr_accessors.size > 0 and not hash.is_a?(Hash)
     raise ArgumentError, 'hash must be Hash or Array' unless hash.is_a?(Hash) or hash.is_a?(Array)
-    raise ArgumentError, 'attr_readers must be an Array' unless attr_readers.is_a?(Array)
+    raise ArgumentError, 'attr_accessors must be an Array' unless attr_accessors.is_a?(Array)
     @info = Marathon::Util.keywordize_hash!(hash)
-    attr_readers.each { |e| add_attr_reader(e) }
+    attr_accessors.each { |e| add_attr_accessor(e) }
   end
 
   # Return application as JSON formatted string.
@@ -23,10 +23,11 @@ class Marathon::Base
 
   private
 
-  # Create attr_reader for @info[key].
+  # Create attr_accessor for @info[key].
   # ++key++: key in @info
-  def add_attr_reader(key)
+  def add_attr_accessor(key)
     sym = key.to_sym
-    self.class.send(:define_method, sym.id2name) { |*args, &block| info[sym] }
+    self.class.send(:define_method, sym.id2name) { info[sym] }
+    self.class.send(:define_method, "#{sym.id2name}=") { |v| info[sym] = v }
   end
 end
