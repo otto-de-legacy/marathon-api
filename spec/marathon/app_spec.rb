@@ -38,7 +38,7 @@ describe Marathon::App do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     let(:expected_string) do
-      '{"constraints":[],"env":{},"ports":[],"uris":[],"id":"/app/foo"}'
+      '{"env":{},"ports":[],"uris":[],"id":"/app/foo"}'
     end
 
     its(:to_json) { should == expected_string }
@@ -114,7 +114,7 @@ describe Marathon::App do
       expect(subject).to receive(:check_read_only)
       expect(described_class).to receive(:change).with(
           '/app/foo',
-          {:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
       subject.start!
@@ -124,7 +124,7 @@ describe Marathon::App do
       expect(described_class).to receive(:change)
         .with(
           '/app/foo',
-          {:constraints=>[], :env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
       subject.start!

@@ -5,10 +5,10 @@ class Marathon::Group < Marathon::Base
   ACCESSORS = %w[ id dependencies version ]
 
   DEFAULTS = {
-    :apps => [],
-    :dependencies => [],
-    :groups => []
+    :dependencies => []
   }
+
+  attr_reader :apps, :groups
 
   # Create a new group object.
   # ++hash++: Hash including all attributes.
@@ -16,25 +16,15 @@ class Marathon::Group < Marathon::Base
   def initialize(hash)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     raise ArgumentError, 'Group must have an id' unless id
+    refresh_attributes
     raise ArgumentError, 'Group can have either groups or apps, not both' if apps.size > 0 and groups.size > 0
-  end
-
-  # Get apps.
-  # This is read only!
-  def apps
-    @info[:apps].map { |e| Marathon::App.new(e) }
-  end
-
-  # Get groups.
-  # This is read only!
-  def groups
-    @info[:groups].map { |e| Marathon::Group.new(e) }
   end
 
   # Reload attributes from marathon API.
   def refresh
     new_app = self.class.get(id)
     @info = new_app.info
+    refresh_attributes
   end
 
   # Create and start a the application group. Application groups can contain other application groups.
@@ -102,6 +92,12 @@ Version:    #{version}
 
   def pretty_array(array)
     array.map { |e| e.to_pretty_s.split("\n").map { |e| "    #{e}" }}.join("\n")
+  end
+
+  # Rebuild attribute classes
+  def refresh_attributes
+    @apps = (info[:apps] || []).map { |e| Marathon::App.new(e) }
+    @groups = (info[:groups] || []).map { |e| Marathon::Group.new(e) }
   end
 
   class << self

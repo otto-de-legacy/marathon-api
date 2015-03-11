@@ -10,27 +10,15 @@ class Marathon::Container < Marathon::Base
     :volumes => []
   }
 
+  attr_reader :docker, :volumes
+
   # Create a new container object.
   # ++hash++: Hash returned by API.
   def initialize(hash)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     Marathon::Util.validate_choice('type', type, SUPPERTED_TYPES)
-  end
-
-  # Get container's docker information.
-  # This is read only!
-  def docker
-    if @info[:docker]
-      Marathon::ContainerDocker.new(@info[:docker])
-    else
-      nil
-    end
-  end
-
-  # Get container's volumes.
-  # This is read only!
-  def volumes
-    @info[:volumes].map { |e| Marathon::ContainerVolume.new(e) }
+    @docker = Marathon::ContainerDocker.new(info[:docker]) if info[:docker]
+    @volumes = info[:volumes].map { |e| Marathon::ContainerVolume.new(e) }
   end
 
   def to_s

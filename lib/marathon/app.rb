@@ -6,13 +6,12 @@ class Marathon::App < Marathon::Base
                   storeUris tasksRunning tasksStaged uris user version ]
 
   DEFAULTS = {
-    :constraints => [],
     :env => {},
     :ports => [],
     :uris => []
   }
 
-  attr_reader :read_only
+  attr_reader :healthChecks, :constraints, :container, :read_only, :tasks
 
   # Create a new application object.
   # ++hash++: Hash including all attributes.
@@ -22,6 +21,7 @@ class Marathon::App < Marathon::Base
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     raise ArgumentError, 'App must have an id' unless id
     @read_only = read_only
+    refresh_attributes
   end
 
   # Prevent actions on read only instances.
@@ -30,34 +30,6 @@ class Marathon::App < Marathon::Base
     if read_only
       raise Marathon::Error::ArgumentError, "This app is 'read only' and does not support any actions"
     end
-  end
-
-  # Get container info.
-  # This is read only!
-  def container
-    if @info[:container]
-      Marathon::Container.new(@info[:container])
-    else
-      nil
-    end
-  end
-
-  # Get constrains.
-  # This is read only!
-  def constraints
-    @info[:constraints].map { |e| Marathon::Constraint.new(e) }
-  end
-
-  # Get health checks.
-  # This is read only!
-  def healthChecks
-    @info[:healthChecks].map { |e| Marathon::HealthCheck.new(e) }
-  end
-
-  # List all running tasks for the application.
-  # This is read only!
-  def tasks
-    (@info[:tasks] || []).map { |e| Marathon::Task.new(e) }
   end
 
   # List the versions of the application.
@@ -77,6 +49,7 @@ class Marathon::App < Marathon::Base
     check_read_only
     new_app = self.class.get(id)
     @info = new_app.info
+    refresh_attributes
   end
 
   # Create and start the application.
@@ -168,6 +141,18 @@ Version:    #{version}
 
   def pretty_constraints
     constraints.map { |e| "Constraint: #{e.to_pretty_s}" }.join("\n")
+  end
+
+  # Rebuild attribute classes
+  def refresh_attributes
+    @healthChecks = (info[:healthChecks] || []).map { |e| Marathon::HealthCheck.new(e) }
+    @constraints = (info[:constraints] || []).map { |e| Marathon::Constraint.new(e) }
+    if info[:container]
+      @container = Marathon::Container.new(info[:container])
+    else
+      @container = nil
+    end
+    @tasks = (@info[:tasks] || []).map { |e| Marathon::Task.new(e) }
   end
 
   class << self

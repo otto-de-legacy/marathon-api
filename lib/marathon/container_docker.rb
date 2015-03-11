@@ -8,18 +8,15 @@ class Marathon::ContainerDocker < Marathon::Base
     :portMappings => []
   }
 
+  attr_reader :portMappings
+
   # Create a new container docker object.
   # ++hash++: Hash returned by API.
   def initialize(hash)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     Marathon::Util.validate_choice('network', network, %w[BRIDGE HOST])
     raise Marathon::Error::ArgumentError, 'image must not be nil' unless image
-  end
-
-  # Get container's port mappings.
-  # This is read only!
-  def portMappings
-    @info[:portMappings].map { |e| Marathon::ContainerDockerPortMapping.new(e) }
+    @portMappings = (info[:portMappings] || []).map { |e| Marathon::ContainerDockerPortMapping.new(e) }
   end
 
   def to_pretty_s

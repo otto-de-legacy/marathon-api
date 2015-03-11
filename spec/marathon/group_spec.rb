@@ -62,7 +62,7 @@ describe Marathon::Group do
 
     it 'starts the group' do
       expect(described_class).to receive(:start)
-        .with({:apps=>[], :dependencies=>[], :groups=>[], :id=>'/group/foo'}) do
+        .with({:dependencies=>[], :id=>'/group/foo'}) do
           Marathon::DeploymentInfo.new({ 'version' => 'new-version' })
       end
       expect(subject.start!.version).to eq('new-version')
