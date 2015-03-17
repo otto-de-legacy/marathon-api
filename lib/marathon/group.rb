@@ -55,7 +55,8 @@ class Marathon::Group < Marathon::Base
   # ++hash++: Hash of attributes to change.
   # ++force++: If the group is affected by a running deployment, then the update operation will fail.
   #            The current deployment can be overridden by setting the `force` query parameter.
-  def change!(hash, force = false)
+  # ++dry_run++: Get a preview of the deployment steps Marathon would run for a given group update.
+  def change!(hash, force = false, dry_run = false)
     Marathon::Util.keywordize_hash!(hash)
     if hash[:version] and hash.size > 1
       # remove :version if it's not the only key
@@ -63,7 +64,7 @@ class Marathon::Group < Marathon::Base
     else
       new_hash = hash
     end
-    self.class.change(id, new_hash, force)
+    self.class.change(id, new_hash, force, dry_run)
   end
 
   # Create a new version with parameters of an old version.
@@ -160,11 +161,17 @@ Version:    #{version}
     # ++hash++: Hash of attributes to change.
     # ++force++: If the group is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
-    def change(id, hash, force = false)
+    # ++dry_run++: Get a preview of the deployment steps Marathon would run for a given group update.
+    def change(id, hash, force = false, dry_run = false)
       query = {}
       query[:force] = true if force
+      query[:dryRun] = true if dry_run
       json = Marathon.connection.put("/v2/groups/#{id}", query, :body => hash)
-      Marathon::DeploymentInfo.new(json)
+      if dry_run
+        json['steps'].map { |e| Marathon::DeploymentStep.new(e) }
+      else
+        Marathon::DeploymentInfo.new(json)
+      end
     end
   end
 end

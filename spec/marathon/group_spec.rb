@@ -32,6 +32,15 @@ EXAMPLE_GROUP = {
 
 describe Marathon::Group do
 
+  describe '#init' do
+    subject { described_class }
+
+    it 'fails with group + apps' do
+      expect{subject.new(:apps => [{:id => 'app'}], :groups => [{:id => 'group'}], :id => '/foo')}
+        .to raise_error(Marathon::Error::ArgumentError, /Group can have either/)
+    end
+  end
+
   describe '#to_s' do
     subject { described_class.new(EXAMPLE_GROUP) }
 
@@ -83,12 +92,12 @@ describe Marathon::Group do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'changes the group' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
       subject.change!('instances' => 9000)
     end
 
     it 'changes the group and strips :version' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
       subject.change!('instances' => 9000, :version => 'old-version')
     end
   end
@@ -151,6 +160,11 @@ describe Marathon::Group do
 
   describe '.changes' do
     subject { described_class }
+
+    it 'previews changes', :vcr do
+      steps = subject.change('/test-group', { 'instances' => 20 }, false, true)
+      expect(steps).to be_instance_of(Array)
+    end
 
     it 'changes the group', :vcr do
       expect(subject.change('/test-group', { 'instances' => 2 }, true))

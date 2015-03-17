@@ -21,6 +21,8 @@ module Marathon
   require 'marathon/container'
   require 'marathon/health_check'
   require 'marathon/deployment_info'
+  require 'marathon/deployment_action'
+  require 'marathon/deployment_step'
   require 'marathon/group'
   require 'marathon/app'
   require 'marathon/deployment'
