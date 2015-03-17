@@ -2,13 +2,16 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#deployments for full list of API's methods.
 class Marathon::Deployment < Marathon::Base
 
-  ACCESSORS = %w[ id affectedApps steps currentActions version currentStep totalSteps ]
+  ACCESSORS = %w[ id affectedApps version currentStep totalSteps ]
+  attr_reader :steps, :currentActions
 
   # Create a new deployment object.
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/deployments for full details.
   def initialize(hash)
     super(hash, ACCESSORS)
+    @currentActions = (info[:currentActions] || []).map { |e| Marathon::DeploymentAction.new(e) }
+    @steps = (info[:steps] || []).map { |e| Marathon::DeploymentStep.new(e) }
   end
 
   # Cancel the deployment.

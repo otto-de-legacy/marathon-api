@@ -14,6 +14,15 @@ describe Marathon::DeploymentInfo do
     its(:version) { should == 'version-456' }
   end
 
+  describe '#wait' do
+    subject { described_class.new(DEPLOYMENT_INFO_EXAMPLE) }
+
+    it 'waits for the deployment' do
+      expect(Marathon::Deployment).to receive(:list) { [] }
+      subject.wait
+    end
+  end
+
   describe '#to_s' do
     subject { described_class.new(DEPLOYMENT_INFO_EXAMPLE) }
 

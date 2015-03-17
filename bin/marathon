@@ -42,56 +42,59 @@ def subcmd_list(cmd_opts)
 end
 
 def subcmd_start(cmd_opts)
-  begin
-    if cmd_opts[:json]
-      path = cmd_opts[:json]
-      if path == '-'
-        app_opts = Marathon::Util.keywordize_hash!(JSON.parse($stdin.read))
-      elsif File.exists?(path)
-        app_opts = Marathon::Util.keywordize_hash!(JSON.parse(File.read(cmd_opts[:json])))
-      else
-        raise Marathon::Error::ArgumentError, "File '#{path}' does not exist"
-      end
+  if cmd_opts[:json]
+    path = cmd_opts[:json]
+    if path == '-'
+      app_opts = Marathon::Util.keywordize_hash!(JSON.parse($stdin.read))
+    elsif File.exists?(path)
+      app_opts = Marathon::Util.keywordize_hash!(JSON.parse(File.read(cmd_opts[:json])))
     else
-      app_opts = DEFAULT_APP_OPTS
+      raise Marathon::Error::ArgumentError, "File '#{path}' does not exist"
     end
-    app_opts.merge!(cmd_opts.select { |k,_| ATTRIBUTES.include?(k) and cmd_opts["#{k.id2name}_given".to_sym] })
-    if cmd_opts[:env]
-      app_opts[:env] = Hash[cmd_opts[:env].map { |e| e.split('=', 2) }]
-    end
-    if cmd_opts[:constraints]
-      app_opts[:constraints] = cmd_opts[:constraint].map { |c| c.split(':') }
-    end
-    app = Marathon::App.new(app_opts)
-    puts "Starting app '#{app}'"
-    app.start!(cmd_opts[:force])
-    print_apps([app])
-  rescue Marathon::Error::MarathonError => e
-    puts "#{e.class}: #{e.message}"
-    exit 1
+  else
+    app_opts = DEFAULT_APP_OPTS
   end
+  app_opts.merge!(cmd_opts.select { |k,_| ATTRIBUTES.include?(k) and cmd_opts["#{k.id2name}_given".to_sym] })
+  if cmd_opts[:env]
+    app_opts[:env] = Hash[cmd_opts[:env].map { |e| e.split('=', 2) }]
+  end
+  if cmd_opts[:constraints]
+    app_opts[:constraints] = cmd_opts[:constraint].map { |c| c.split(':') }
+  end
+  app = Marathon::App.new(app_opts)
+  puts "Starting app '#{app}'"
+  deployment = app.start!(cmd_opts[:force])
+  deployment.wait(cmd_opts[:timeout] || 60) if cmd_opts[:sync]
+  print_apps([app])
+rescue Marathon::Error::MarathonError => e
+  puts "#{e.class}: #{e.message}"
+  exit 1
+rescue TimeoutError => e
+  puts "Deployment took too long"
+  exit 1
 end
 
 def subcmd_scale(cmd_opts)
-  begin
-    app = Marathon::App.get(cmd_opts[:id])
-    puts "Scaling app '#{app.id}' from #{app.instances} to #{cmd_opts[:instances]}"
-    puts app.scale!(cmd_opts[:instances], cmd_opts[:force])
-  rescue Marathon::Error::NotFoundError => e
-    puts "#{e.class}: #{e.message}"
-    exit 1
-  end
+  app = Marathon::App.get(cmd_opts[:id])
+  puts "Scaling app '#{app.id}' from #{app.instances} to #{cmd_opts[:instances]}"
+  deployment = app.scale!(cmd_opts[:instances], cmd_opts[:force])
+  deployment.wait(cmd_opts[:timeout] || 60) if cmd_opts[:sync]
+  puts deployment
+rescue Marathon::Error::NotFoundError => e
+  puts "#{e.class}: #{e.message}"
+  exit 1
+rescue TimeoutError => e
+  puts "Deployment took too long"
+  exit 1
 end
 
 def subcmd_kill(cmd_opts)
-  begin
-    puts "Removing app '#{cmd_opts[:id]}'"
-    Marathon::App.delete(cmd_opts[:id])
-    puts 'done'
-  rescue Marathon::Error::NotFoundError => e
-    puts "#{e.class}: #{e.message}"
-    exit 1
-  end
+  puts "Removing app '#{cmd_opts[:id]}'"
+  Marathon::App.delete(cmd_opts[:id])
+  puts 'done'
+rescue Marathon::Error::NotFoundError => e
+  puts "#{e.class}: #{e.message}"
+  exit 1
 end
 
 def subcmd_list_tasks(cmd_opts)
@@ -183,12 +186,16 @@ def parse_subcmd_opts(cmd)
         opt :env, 'Environment variables to add to the process, as NAME=VALUE.', :short => '-e', :type => :strings
         opt :constraint, 'Placement constraint for tasks, e.g. hostname:UNIQUE or rackid:CLUSTER', :type => :strings
         opt :force, 'The current deployment can be overridden by setting the `force`.', :short => '-f'
+        opt :sync, 'Wait for the deployment to finish', :short => '-s'
+        opt :timeout, 'Timout for sync call in seconds (default 60).', :type => Integer, :short => '-t'
       end
     when 'scale'
       Trollop.options do
         opt :id, 'A unique identifier for the app.', :short => '-i', :type => String, :required => true
         opt :instances, 'The number of instances to run.', :short => '-n', :type => Integer, :required => true
         opt :force, 'The current deployment can be overridden by setting the `force`.', :short => '-f'
+        opt :sync, 'Wait for the deployment to finish', :short => '-s'
+        opt :timeout, 'Timout for sync call in seconds (default 60).', :type => Integer, :short => '-t'
       end
     when 'kill'
       Trollop.options do

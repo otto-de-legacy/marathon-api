@@ -7,7 +7,11 @@ class Marathon::DeploymentStep < Marathon::Base
   # ++hash++: Hash returned by API, including 'actions'
   def initialize(hash)
     super(hash)
-    @actions = (info[:actions] || []).map { |e| Marathon::DeploymentAction.new(e) }
+    if hash.is_a?(Array)
+      @actions = info.map { |e| Marathon::DeploymentAction.new(e) }
+    else
+      @actions = (info[:actions] || []).map { |e| Marathon::DeploymentAction.new(e) }
+    end
   end
 
   def to_s
