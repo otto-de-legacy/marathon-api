@@ -266,7 +266,6 @@ describe Marathon::App do
       apps = subject.list
       expect(apps.size).not_to eq(0)
       expect(apps.first).to be_instance_of(described_class)
-      expect(apps.first.cpus).to eq(0.1)
     end
 
   end
@@ -276,15 +275,14 @@ describe Marathon::App do
 
     it 'starts the app', :vcr do
       app = subject.start({
-        :id => '/test',
+        :id => '/test-app',
         :cmd => 'sleep 10',
         :instances => 1,
         :cpus => 0.1,
-        :mem => 32,
-        :version => 'foo-version'
+        :mem => 32
       })
       expect(app).to be_instance_of(described_class)
-      expect(app.id).to eq('/test')
+      expect(app.id).to eq('/test-app')
       expect(app.instances).to eq(1)
       expect(app.cpus).to eq(0.1)
       expect(app.mem).to eq(32)
@@ -320,7 +318,7 @@ describe Marathon::App do
     subject { described_class }
 
     it 'deletes the app', :vcr do
-      subject.delete('/ubuntu')
+      subject.delete('/test-app')
     end
 
     it 'fails deleting not existing app', :vcr do
@@ -348,7 +346,7 @@ describe Marathon::App do
     subject { described_class }
 
     it 'changes the app', :vcr do
-      expect(subject.change('/ubuntu2', { 'instances' => 2 }))
+      expect(subject.change('/ubuntu2', { 'instances' => 2 }, true))
         .to be_instance_of(Marathon::DeploymentInfo)
       expect(subject.change('/ubuntu2', { 'instances' => 1 }, true))
         .to be_instance_of(Marathon::DeploymentInfo)

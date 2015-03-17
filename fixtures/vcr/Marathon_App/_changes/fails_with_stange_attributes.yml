@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.8.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 400
       message: Bad Request
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -28,5 +34,5 @@ http_interactions:
       encoding: UTF-8
       string: '{"message":"Invalid JSON: JsResultException(errors:List((/instances,List(ValidationError(error.expected.jsnumber,WrappedArray())))))"}'
     http_version: 
-  recorded_at: Wed, 04 Mar 2015 16:38:10 GMT
+  recorded_at: Tue, 17 Mar 2015 13:05:49 GMT
 recorded_with: VCR 2.9.3

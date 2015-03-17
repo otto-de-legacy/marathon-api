@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.9.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -26,8 +32,10 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"id":"/","apps":[],"groups":[{"id":"/ubuntu2","apps":[],"groups":[],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"},{"id":"/test-group","apps":[{"id":"/test-group/app","cmd":"sleep
-        30","args":null,"user":null,"env":{},"instances":1,"cpus":1.0,"mem":128.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":0.0},"labels":{},"version":"2015-03-09T10:33:39.889Z"}],"groups":[],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"}],"dependencies":[],"version":"2015-03-09T10:33:39.889Z"}'
+      string: '{"id":"/","apps":[{"id":"/ubuntu","cmd":"while sleep 10; do date -u
+        +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-17T11:56:26.532Z"},{"id":"/ubuntu2","cmd":"while
+        sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":2,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[["hostname","GROUP_BY"]],"uris":[],"storeUrls":[],"ports":[],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-17T13:05:44.561Z"}],"groups":[{"id":"/test","apps":[],"groups":[],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"},{"id":"/develop-ci","apps":[],"groups":[{"id":"/develop-ci/ops","apps":[],"groups":[],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"}],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"},{"id":"/spark","apps":[],"groups":[],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"},{"id":"/test-group","apps":[{"id":"/test-group/app","cmd":"sleep
+        30","args":null,"user":null,"env":{},"instances":1,"cpus":1.0,"mem":128.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":0.0},"labels":{},"version":"2015-03-17T13:06:07.888Z"}],"groups":[],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"}],"dependencies":[],"version":"2015-03-17T13:06:07.888Z"}'
     http_version: 
-  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:08 GMT
 recorded_with: VCR 2.9.3

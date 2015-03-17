@@ -49,13 +49,8 @@ describe Marathon::Task do
     }) }
 
     it 'deletes the task' do
-      expect(described_class).to receive(:delete).with('/app/foo', 'task_123', false) do
-        described_class.new({
-          'id' => 'task_123', 'appId' => '/app/foo', 'deleted' => true
-        })
-      end
+      expect(described_class).to receive(:delete).with('task_123', false)
       task.delete!
-      expect(task.info[:deleted]).to be(true)
     end
   end
 
@@ -86,7 +81,7 @@ describe Marathon::Task do
 
     it 'gets tasks of an app', :vcr do
       tasks = subject.get('/ubuntu2')
-      expect(tasks.size).to eq(1)
+      expect(tasks.size).not_to eq(0)
       expect(tasks.first).to be_instance_of(described_class)
       expect(tasks.first.appId).to eq('/ubuntu2')
     end
@@ -97,8 +92,7 @@ describe Marathon::Task do
 
     it 'kills a tasks of an app', :vcr do
       tasks = subject.get('/ubuntu2')
-      task = subject.delete('/ubuntu2', tasks.first.id)
-      task.id == tasks.first.id
+      subject.delete(tasks.first.id)
     end
   end
 

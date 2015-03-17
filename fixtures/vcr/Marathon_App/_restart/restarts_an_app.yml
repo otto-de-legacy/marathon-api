@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.9.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -26,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-07T14:15:30.159Z","deploymentId":"d38f8d55-b8b0-4893-ab16-ae474e282263"}'
+      string: '{"version":"2015-03-17T13:05:39.490Z","deploymentId":"f31c4fdf-ba97-4e45-a69b-48cc79f19706"}'
     http_version: 
-  recorded_at: Sat, 07 Mar 2015 14:15:30 GMT
+  recorded_at: Tue, 17 Mar 2015 13:05:39 GMT
 recorded_with: VCR 2.9.3

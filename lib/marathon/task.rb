@@ -14,8 +14,7 @@ class Marathon::Task < Marathon::Base
   # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
   #            after killing the specified tasks.
   def delete!(scale = false)
-    new_task = self.class.delete(appId, id, scale)
-    @info = new_task.info
+    new_task = self.class.delete(id, scale)
   end
   alias :kill! :delete!
 
@@ -55,16 +54,15 @@ Version:    #{version}
       json.map { |j| new(j) }
     end
 
-    # Kill the task that belongs to the application appId.
-    # ++appId++: Application's id
-    # ++id++: Id of target task.
+    # Kill the given list of tasks and scale apps if requested.
+    # ++ids++: Id or list of ids with target tasks.
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
-    def delete(appId, id, scale = false)
+    def delete(ids, scale = false)
       query = {}
       query[:scale] = true if scale
-      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks/#{id}", query)
-      new(json)
+      ids = [ids] if ids.is_a?(String)
+      Marathon.connection.post("/v2/tasks/delete", query, :body => {:ids => ids})
     end
     alias :remove :delete
     alias :kill :delete

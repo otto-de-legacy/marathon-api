@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: put
-    uri: http://localhost:8080/v2/groups//ubuntu2
+    uri: http://localhost:8080/v2/groups//test-group?force=true
     body:
       encoding: UTF-8
       string: '{"instances":2}'
@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.9.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -26,12 +32,12 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-09T10:33:40.511Z","deploymentId":"4186c1d4-80a8-4cf2-a606-cc9e93680c13"}'
+      string: '{"version":"2015-03-17T13:06:08.503Z","deploymentId":"7eb64062-acb9-43c5-8f0f-0c8e2837c868"}'
     http_version: 
-  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:08 GMT
 - request:
     method: put
-    uri: http://localhost:8080/v2/groups//ubuntu2?force=true
+    uri: http://localhost:8080/v2/groups//test-group?force=true
     body:
       encoding: UTF-8
       string: '{"instances":1}'
@@ -41,12 +47,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.9.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -55,7 +67,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-09T10:33:40.730Z","deploymentId":"72ad642f-90ba-4fec-8470-9abec46c47c3"}'
+      string: '{"version":"2015-03-17T13:06:08.649Z","deploymentId":"e6232eee-4370-4d50-9215-a5c57ac14304"}'
     http_version: 
-  recorded_at: Mon, 09 Mar 2015 10:33:40 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:08 GMT
 recorded_with: VCR 2.9.3

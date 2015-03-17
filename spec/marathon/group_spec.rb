@@ -23,13 +23,11 @@ EXAMPLE_GROUP = {
           "upgradeStrategy" => {
               "minimumHealthCapacity" => 1.0
           },
-          "tasks" => [],
-          "version" => 'foo-version'
+          "tasks" => []
       }
   ],
   "dependencies" => [],
-  "groups" => [],
-  "version" => 'foo-version'
+  "groups" => []
 }
 
 describe Marathon::Group do
@@ -48,8 +46,8 @@ describe Marathon::Group do
        "    Command:    sleep 30\n" + \
        "    CPUs:       1.0\n" + \
        "    Memory:     128.0 MB\n" + \
-       "    Version:    foo-version\n" + \
-       "Version:    foo-version"
+       "    Version:\n" + \
+       "Version:"
 
     end
 
@@ -151,6 +149,17 @@ describe Marathon::Group do
     end
   end
 
+  describe '.changes' do
+    subject { described_class }
+
+    it 'changes the group', :vcr do
+      expect(subject.change('/test-group', { 'instances' => 2 }, true))
+        .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/test-group', { 'instances' => 1 }, true))
+        .to be_instance_of(Marathon::DeploymentInfo)
+    end
+  end
+
   describe '.delete' do
     subject { described_class }
 
@@ -162,17 +171,6 @@ describe Marathon::Group do
       expect {
         subject.delete('fooo group')
       }.to raise_error(Marathon::Error::NotFoundError)
-    end
-  end
-
-  describe '.changes' do
-    subject { described_class }
-
-    it 'changes the group', :vcr do
-      expect(subject.change('/ubuntu2', { 'instances' => 2 }))
-        .to be_instance_of(Marathon::DeploymentInfo)
-      expect(subject.change('/ubuntu2', { 'instances' => 1 }, true))
-        .to be_instance_of(Marathon::DeploymentInfo)
     end
   end
 

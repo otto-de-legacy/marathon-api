@@ -17,7 +17,8 @@ class Marathon::Group < Marathon::Base
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     raise ArgumentError, 'Group must have an id' unless id
     refresh_attributes
-    raise ArgumentError, 'Group can have either groups or apps, not both' if apps.size > 0 and groups.size > 0
+    raise ArgumentError, 'Group can have either groups or apps, not both' \
+      if apps.size > 0 and groups.size > 0 and id != '/'
   end
 
   # Reload attributes from marathon API.

@@ -70,9 +70,9 @@ describe Marathon::Deployment do
 
     it 'lists deployments', :vcr do
       # start a deployment
-      Marathon::App.change('/test', {:instances => 0})
+      Marathon::App.change('/test-app', {:instances => 0, :cmd => 'sleep 60'}, true)
       sleep 1
-      Marathon::App.change('/test', {:instances => 2})
+      Marathon::App.change('/test-app', {:instances => 2}, true)
       sleep 1
 
       deployments = subject.list
@@ -86,8 +86,12 @@ describe Marathon::Deployment do
 
     it 'deletes deployments', :vcr do
       # start a deployment
-      info = Marathon::App.change('/test', {:instances => 1})
+      info = Marathon::App.change('/test-app', {:instances => 1}, true)
       expect(subject.delete(info.deploymentId)).to be_instance_of(Marathon::DeploymentInfo)
+    end
+
+    it 'cleans app from marathon', :vcr do
+      Marathon::App.delete('/test-app')
     end
   end
 

@@ -11,11 +11,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -24,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"app":{"id":"/ubuntu","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10000],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-03T18:08:28.345Z","tasksStaged":0,"tasksRunning":0,"deployments":[{"id":"2ec67f95-152d-4528-942e-435b2a1fec6a"}],"tasks":[],"lastTaskFailure":null}}'
+      string: '{"app":{"id":"/ubuntu","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-17T11:56:26.532Z","tasksStaged":0,"tasksRunning":1,"tasksHealthy":0,"tasksUnhealthy":0,"deployments":[],"tasks":[{"id":"ubuntu.a6c4d769-cc9c-11e4-9cfc-080027d9edbf","host":"mesos-dev-f999999.lhotse.ov.otto.de","ports":[],"startedAt":"2015-03-17T11:56:36.225Z","stagedAt":"2015-03-17T11:56:31.284Z","version":"2015-03-17T11:56:26.532Z","appId":"/ubuntu"}],"lastTaskFailure":null}}'
     http_version: 
-  recorded_at: Tue, 03 Mar 2015 18:08:29 GMT
+  recorded_at: Tue, 17 Mar 2015 13:05:39 GMT
 recorded_with: VCR 2.9.3

@@ -11,11 +11,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -24,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"tasks":[{"appId":"/test","id":"test.482155d0-c1d0-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31026],"startedAt":"2015-03-03T18:08:24.116Z","stagedAt":"2015-03-03T18:08:23.546Z","version":"2015-03-02T11:30:30.096Z","servicePorts":[10002]},{"appId":"/ubuntu2","id":"ubuntu2.37fbe1bc-c1d0-11e4-82d4-46b02d3b7f9e","host":"mesos","ports":[31290],"startedAt":"2015-03-03T18:07:57.097Z","stagedAt":"2015-03-03T18:07:56.457Z","version":"2015-03-03T18:07:47.581Z","servicePorts":[10001]}]}'
+      string: '{"tasks":[{"appId":"/ubuntu","id":"ubuntu.a6c4d769-cc9c-11e4-9cfc-080027d9edbf","host":"mesos-dev-f999999.lhotse.ov.otto.de","ports":[],"startedAt":"2015-03-17T11:56:36.225Z","stagedAt":"2015-03-17T11:56:31.284Z","version":"2015-03-17T11:56:26.532Z"},{"appId":"/ubuntu2","id":"ubuntu2.52c55930-cca6-11e4-9cfc-080027d9edbf","host":"mesos-dev-f999999.lhotse.ov.otto.de","ports":[],"startedAt":"2015-03-17T13:05:46.755Z","stagedAt":"2015-03-17T13:05:45.326Z","version":"2015-03-17T13:05:39.490Z"},{"appId":"/ubuntu2","id":"ubuntu2.57c93911-cca6-11e4-9cfc-080027d9edbf","host":"mesos-dev-f999999.lhotse.ov.otto.de","ports":[],"startedAt":"2015-03-17T13:05:55.629Z","stagedAt":"2015-03-17T13:05:53.741Z","version":"2015-03-17T13:05:39.559Z"}]}'
     http_version: 
-  recorded_at: Tue, 03 Mar 2015 18:08:30 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:09 GMT
 recorded_with: VCR 2.9.3

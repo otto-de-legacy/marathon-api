@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.8.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -26,12 +32,12 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"versions":["2015-03-04T16:34:15.691Z"]}'
+      string: '{"versions":["2015-03-17T13:05:39.559Z","2015-03-17T13:05:39.490Z","2015-03-17T13:04:37.200Z","2015-03-17T13:04:37.060Z","2015-03-17T13:04:36.997Z","2015-03-17T12:06:04.971Z","2015-03-17T12:06:00.843Z","2015-03-17T12:06:00.788Z","2015-03-17T12:04:49.309Z","2015-03-17T12:04:47.711Z","2015-03-17T12:04:47.484Z","2015-03-17T12:04:33.718Z","2015-03-17T12:04:32.686Z","2015-03-17T12:04:32.630Z","2015-03-17T12:04:30.244Z","2015-03-17T12:03:31.426Z","2015-03-17T12:03:26.347Z","2015-03-17T12:03:26.281Z","2015-03-17T12:02:23.385Z","2015-03-17T12:02:15.239Z","2015-03-17T12:02:15.195Z","2015-03-17T12:00:37.036Z","2015-03-17T12:00:28.288Z","2015-03-17T12:00:27.750Z","2015-03-17T12:00:09.006Z","2015-03-17T12:00:08.822Z","2015-03-17T12:00:08.757Z","2015-03-17T11:59:06.274Z","2015-03-17T11:59:06.059Z","2015-03-17T11:59:05.997Z","2015-03-17T11:57:04.811Z","2015-03-17T11:57:02.136Z","2015-03-17T11:57:01.341Z","2015-03-17T11:56:31.250Z","2015-03-17T11:56:28.537Z","2015-03-17T11:56:28.397Z","2015-03-17T11:52:04.570Z","2015-03-17T11:52:04.421Z","2015-03-17T11:52:04.355Z","2015-03-17T11:50:01.156Z","2015-03-17T11:49:57.243Z","2015-03-17T11:49:57.183Z","2015-03-17T11:42:41.281Z","2015-03-17T10:34:05.973Z","2015-03-17T10:33:19.189Z","2015-03-17T10:32:51.153Z","2015-03-17T10:32:34.010Z","2015-03-17T10:31:44.527Z","2015-03-17T10:19:02.815Z","2015-03-17T10:12:14.793Z"]}'
     http_version: 
-  recorded_at: Thu, 05 Mar 2015 16:53:32 GMT
+  recorded_at: Tue, 17 Mar 2015 13:05:49 GMT
 - request:
     method: get
-    uri: http://localhost:8080/v2/apps//ubuntu2/versions/2015-03-04T16:34:15.691Z
+    uri: http://localhost:8080/v2/apps//ubuntu2/versions/2015-03-17T13:05:39.559Z
     body:
       encoding: US-ASCII
       string: ''
@@ -41,12 +47,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.8.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -55,7 +67,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"id":"/ubuntu2","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10001],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-04T16:34:15.691Z"}'
+      string: '{"id":"/ubuntu2","cmd":"while sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":2,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[["hostname","GROUP_BY"]],"uris":[],"storeUrls":[],"ports":[],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-17T13:05:39.559Z"}'
     http_version: 
-  recorded_at: Thu, 05 Mar 2015 16:53:32 GMT
+  recorded_at: Tue, 17 Mar 2015 13:05:49 GMT
 recorded_with: VCR 2.9.3

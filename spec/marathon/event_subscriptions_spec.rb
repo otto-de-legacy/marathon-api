@@ -19,7 +19,7 @@ describe Marathon::EventSubscriptions do
     it 'lists callbacks', :vcr do
       json = subject.list
       expect(json).to be_instance_of(Array)
-      expect(json).to eq(['http://localhost/events/foo'])
+      expect(json).to include('http://localhost/events/foo')
     end
   end
 

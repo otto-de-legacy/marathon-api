@@ -55,7 +55,6 @@ describe Marathon::Queue do
     it 'lists queue', :vcr do
       queue = described_class.list
       expect(queue).to be_instance_of(Array)
-      expect(queue.first).to be_instance_of(Marathon::Queue)
     end
   end
 

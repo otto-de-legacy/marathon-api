@@ -11,11 +11,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -24,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"name":"marathon","http_config":{"assets_path":null,"http_port":8080,"https_port":8443},"frameworkId":"20150228-110436-16842879-5050-2169-0001","leader":null,"event_subscriber":null,"marathon_config":{"local_port_max":20000,"local_port_min":10000,"hostname":"mesos","master":"zk://localhost:2181/mesos","reconciliation_interval":300000,"mesos_role":null,"task_launch_timeout":300000,"reconciliation_initial_delay":15000,"ha":true,"failover_timeout":604800,"checkpoint":true,"executor":"//cmd","marathon_store_timeout":2000,"mesos_user":"root"},"version":"0.8.0","zookeeper_config":{"zk_path":"/marathon","zk":null,"zk_timeout":10,"zk_hosts":"localhost:2181","zk_future_timeout":{"duration":10}},"elected":false}'
+      string: '{"name":"marathon","http_config":{"assets_path":null,"http_port":8080,"https_port":8443},"frameworkId":"20150210-083349-1160423616-5050-9698-0000","leader":null,"event_subscriber":{"type":"http_callback","http_endpoints":["http://127.0.0.1:8083/marathon/event"]},"marathon_config":{"local_port_max":20000,"local_port_min":10000,"hostname":"mesos-dev-f999998.lhotse.ov.otto.de","master":"zk://192.168.42.69:2181/develop/mesos","reconciliation_interval":75000,"mesos_role":null,"task_launch_timeout":300000,"reconciliation_initial_delay":15000,"ha":true,"failover_timeout":75,"checkpoint":true,"webui_url":null,"executor":"//cmd","marathon_store_timeout":2000,"mesos_user":"root"},"version":"0.8.1","zookeeper_config":{"zk_path":"/develop/marathon","zk":"zk://192.168.42.69:2181/develop/marathon","zk_timeout":10,"zk_hosts":"192.168.42.69:2181","zk_future_timeout":{"duration":10}},"elected":false}'
     http_version: 
-  recorded_at: Mon, 02 Mar 2015 10:49:28 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:09 GMT
 recorded_with: VCR 2.9.3

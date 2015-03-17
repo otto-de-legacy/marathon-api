@@ -1,8 +1,8 @@
 ---
 http_interactions:
 - request:
-    method: get
-    uri: http://localhost:8080/v2/leader
+    method: delete
+    uri: http://localhost:8080/v2/apps//test-app
     body:
       encoding: US-ASCII
       string: ''
@@ -32,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"leader":"mesos-dev-f999998.lhotse.ov.otto.de:8080"}'
+      string: '{"version":"2015-03-17T13:06:03.873Z","deploymentId":"8f5983da-4a3f-4d29-a7e9-dd90cd399815"}'
     http_version: 
-  recorded_at: Tue, 17 Mar 2015 13:06:09 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:07 GMT
 recorded_with: VCR 2.9.3

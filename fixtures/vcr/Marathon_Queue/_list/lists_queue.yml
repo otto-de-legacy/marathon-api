@@ -12,12 +12,18 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - ub0r/Marathon-API 0.8.0
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -26,8 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"queue":[{"app":{"id":"/test","cmd":"sleep 10","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":32.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10002],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":null,"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-04T16:34:16.561Z"},"count":0},{"app":{"id":"/ubuntu2","cmd":"while
-        sleep 10; do date -u +%T; done","args":null,"user":null,"env":{},"instances":1,"cpus":0.1,"mem":64.0,"disk":0.0,"executor":"","constraints":[],"uris":[],"storeUrls":[],"ports":[10001],"requirePorts":false,"backoffSeconds":1,"backoffFactor":1.15,"maxLaunchDelaySeconds":3600,"container":{"type":"DOCKER","volumes":[],"docker":{"image":"libmesos/ubuntu","network":null,"portMappings":null,"privileged":false,"parameters":[]}},"healthChecks":[],"dependencies":[],"upgradeStrategy":{"minimumHealthCapacity":1.0,"maximumOverCapacity":1.0},"labels":{},"version":"2015-03-04T16:34:15.691Z"},"count":0}]}'
+      string: '{"queue":[]}'
     http_version: 
-  recorded_at: Wed, 04 Mar 2015 18:38:40 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:09 GMT
 recorded_with: VCR 2.9.3

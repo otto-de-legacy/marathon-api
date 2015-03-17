@@ -11,11 +11,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -24,7 +32,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"clientIp":"10.0.2.2","callbackUrl":"http://localhost/events/foo","eventType":"subscribe_event","timestamp":"2015-03-03T18:31:14.688Z"}'
+      string: '{"clientIp":"10.0.2.2","callbackUrl":"http://localhost/events/foo","eventType":"subscribe_event","timestamp":"2015-03-17T13:06:07.067Z"}'
     http_version: 
-  recorded_at: Tue, 03 Mar 2015 18:31:14 GMT
+  recorded_at: Tue, 17 Mar 2015 13:06:07 GMT
 recorded_with: VCR 2.9.3

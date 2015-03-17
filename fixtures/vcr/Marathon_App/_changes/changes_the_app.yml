@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: put
-    uri: http://localhost:8080/v2/apps//ubuntu2
+    uri: http://localhost:8080/v2/apps//ubuntu2?force=true
     body:
       encoding: UTF-8
       string: '{"instances":2}'
@@ -11,11 +11,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -24,9 +32,9 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-03T18:08:29.872Z","deploymentId":"577a4136-d861-4f41-b400-1f73314c9ffd"}'
+      string: '{"version":"2015-03-17T13:07:11.009Z","deploymentId":"442a4787-a964-4a16-889e-4fed7944ad7f"}'
     http_version: 
-  recorded_at: Tue, 03 Mar 2015 18:08:29 GMT
+  recorded_at: Tue, 17 Mar 2015 13:07:11 GMT
 - request:
     method: put
     uri: http://localhost:8080/v2/apps//ubuntu2?force=true
@@ -38,11 +46,19 @@ http_interactions:
       - application/json
       Accept:
       - application/json
+      User-Agent:
+      - ub0r/Marathon-API 1.1.0
   response:
     status:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -51,7 +67,7 @@ http_interactions:
       - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
-      string: '{"version":"2015-03-03T18:08:30.012Z","deploymentId":"b1457aac-c4af-426f-bc2b-c2d67afed429"}'
+      string: '{"version":"2015-03-17T13:07:11.094Z","deploymentId":"25c06868-441f-4af4-95aa-96e1862e8553"}'
     http_version: 
-  recorded_at: Tue, 03 Mar 2015 18:08:30 GMT
+  recorded_at: Tue, 17 Mar 2015 13:07:11 GMT
 recorded_with: VCR 2.9.3
