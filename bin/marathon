@@ -56,10 +56,10 @@ def subcmd_start(cmd_opts)
   end
   app_opts.merge!(cmd_opts.select { |k,_| ATTRIBUTES.include?(k) and cmd_opts["#{k.id2name}_given".to_sym] })
   if cmd_opts[:env]
-    app_opts[:env] = Hash[cmd_opts[:env].map { |e| e.split('=', 2) }]
+    app_opts[:env] = app_opts.fetch(:env, {}).merge(Hash[cmd_opts[:env].map { |e| e.split('=', 2) }])
   end
   if cmd_opts[:constraints]
-    app_opts[:constraints] = cmd_opts[:constraint].map { |c| c.split(':') }
+    app_opts[:constraints] = app_opts.fetch(:constraints, {}).merge(cmd_opts[:constraint].map { |c| c.split(':') })
   end
   app = Marathon::App.new(app_opts)
   puts "Starting app '#{app}'"
