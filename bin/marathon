@@ -140,7 +140,7 @@ Available commands:
 Global options:
 EOS
 
-    opt :url, 'Marathon host (default http://localhost:8080, or MARATHON_HOST)',
+    opt :url, 'Marathon host (default http://localhost:8080, or MARATHON_URL)',
       :short => '-M', :type => String
     opt :username, 'User name to authenticate against Marathon (optional, default unset, or MARATHON_USER).',
       :short => '-U', :type => String
