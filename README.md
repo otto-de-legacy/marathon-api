@@ -78,7 +78,7 @@ require 'marathon'
 Marathon.info
 # => {"name"=>"marathon", "http_config"=>{"assets_path"=>null, "http_port"=>8080, "https_port"=>8443}, "frameworkId"=>"20150228-110436-16842879-5050-2169-0001", "leader"=>null, "event_subscriber"=>null, "marathon_config"=>{"local_port_max"=>20000, "local_port_min"=>10000, "hostname"=>"mesos", "master"=>"zk://localhost:2181/mesos", "reconciliation_interval"=>300000, "mesos_role"=>null, "task_launch_timeout"=>300000, "reconciliation_initial_delay"=>15000, "ha"=>true, "failover_timeout"=>604800, "checkpoint"=>true, "executor"=>"//cmd", "marathon_store_timeout"=>2000, "mesos_user"=>"root"}, "version"=>"0.8.0", "zookeeper_config"=>{"zk_path"=>"/marathon", "zk"=>null, "zk_timeout"=>10, "zk_hosts"=>"localhost:2181", "zk_future_timeout"=>{"duration"=>10}}, "elected"=>false}
 
-Docker.ping
+Marathon.ping
 # => 'pong'
 
 ```
