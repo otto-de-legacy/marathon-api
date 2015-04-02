@@ -18,6 +18,7 @@ def print_apps(apps)
     puts "No apps currently running"
   else
     apps.each do |app|
+      app.refresh
       puts app.to_pretty_s
       puts
     end
