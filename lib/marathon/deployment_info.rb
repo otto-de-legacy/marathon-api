@@ -19,7 +19,7 @@ class Marathon::DeploymentInfo < Marathon::Base
     Timeout::timeout(timeout) do
       deployments = nil
       while deployments.nil? or deployments.select{|e| e.id == deploymentId}.size > 0 do
-        sleep(RECHECK_INTERVAL) unless deployments.nil?
+        sleep(RECHECK_INTERVAL)
         deployments = Marathon::Deployment.list
       end
     end
