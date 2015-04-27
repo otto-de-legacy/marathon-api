@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'maratho
 require 'trollop'
 require 'json'
 
-SUB_COMMANDS = %w[kill kill_tasks start scale list list_tasks search]
+SUB_COMMANDS = %w[kill kill_tasks start scale list list_tasks]
 ATTRIBUTES = [:id, :cmd, :executor, :instances, :cpus, :mem, :uris]
 DEFAULT_APP_OPTS = {
         :instances => 1,
@@ -135,7 +135,6 @@ Available commands:
   list        Show a list of running apps and their options.
   list_tasks  Show a list of an app's running tasks.
   scale       Scale the number of app instances.
-  search      Search the current list of apps.
   start       Start a new app.
 
 Global options:
