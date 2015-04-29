@@ -64,7 +64,7 @@ private
       :method        => http_method,
       :url           => "#{@url}#{path}",
       :query         => query
-    }.merge(opts).reject { |_, v| v.nil? }
+    }.merge(@options).merge(opts).reject { |_, v| v.nil? }
   end
 
   # Create full URL with query parameters.
