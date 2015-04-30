@@ -72,6 +72,16 @@ describe Marathon::App do
     end
   end
 
+  describe '#labels' do
+    subject { described_class.new({ 'id' => '/ubuntu2', 'labels' => { 'env'=>'abc','xyz'=>'123'}}) }
+
+    it 'has labels' do
+      expect(subject.labels).to be_instance_of(Hash)
+      puts subject.labels
+      expect(subject.labels).to have_key(:env)
+    end
+  end
+
   describe '#constraints' do
     subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] }) }
 
