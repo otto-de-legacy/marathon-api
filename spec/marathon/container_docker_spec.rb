@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 CONTAINER_DOCKER_EXAMPLE = {
-    :network => 'HOST',
-    :image => 'felixb/yocto-httpd'
+    :network    => 'HOST',
+    :image      => 'felixb/yocto-httpd',
+    :privileged =>  false
   }
 
 describe Marathon::ContainerDocker do
@@ -26,6 +27,17 @@ describe Marathon::ContainerDocker do
 
     its(:network) { should == 'HOST' }
     its(:image) { should == 'felixb/yocto-httpd' }
+    its(:portMappings){ should == [] }
+    its(:privileged){ should == false}
+  end
+  describe '#privileged' do
+    subject { described_class.new({
+        :network    => 'HOST',
+        :image      => 'felixb/yocto-httpd',
+        :privileged =>  true
+      })
+    }
+    its(:privileged){ should == true}
   end
 
   describe '#to_s' do
