@@ -2,7 +2,7 @@
 # See https://mesosphere.github.io/marathon/docs/native-docker.html for full details.
 class Marathon::ContainerDocker < Marathon::Base
 
-  ACCESSORS = %w[ image network ]
+  ACCESSORS = %w[ image network privileged parameters ]
   DEFAULTS = {
     :network => 'BRIDGE',
     :portMappings => []
@@ -15,6 +15,7 @@ class Marathon::ContainerDocker < Marathon::Base
   def initialize(hash)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     Marathon::Util.validate_choice('network', network, %w[BRIDGE HOST])
+    Marathon::Util.validate_choice('privileged', privileged, ['true' 'false',true,false])
     raise Marathon::Error::ArgumentError, 'image must not be nil' unless image
     @portMappings = (info[:portMappings] || []).map { |e| Marathon::ContainerDockerPortMapping.new(e) }
   end
