@@ -123,14 +123,21 @@ Instances:  #{tasks.size}/#{instances}
 Command:    #{cmd}
 CPUs:       #{cpus}
 Memory:     #{mem} MB
-#{pretty_uris()}
-#{pretty_env()}
-#{pretty_constraints()}
+#{pretty_container}
+#{pretty_uris}
+#{pretty_env}
+#{pretty_constraints}
 Version:    #{version}
     ].gsub(/\n\n+/, "\n").strip
   end
 
   private
+
+  def pretty_container
+    if container and container.docker
+      "Docker:     #{container.docker.to_pretty_s}"
+    end
+  end
 
   def pretty_env
     env.map { |k,v| "ENV:        #{k}=#{v}" }.join("\n")
