@@ -222,7 +222,7 @@ Version:    #{version}
     def change(id, hash, force = false)
       query = {}
       query[:force] = true if force
-      json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash)
+      json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
       Marathon::DeploymentInfo.new(json)
     end
 
