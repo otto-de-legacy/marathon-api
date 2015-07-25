@@ -1,5 +1,3 @@
-require 'timeout'
-
 # This class represents a Marathon Deployment information.
 # It is returned by asynchronious deployment calls.
 class Marathon::DeploymentInfo < Marathon::Base
