@@ -6,9 +6,9 @@ class Marathon::Queue < Marathon::Base
 
   # Create a new queue element object.
   # ++hash++: Hash returned by API, including 'app' and 'delay'
-  def initialize(hash)
-    super(hash, %w[delay])
-    @app = Marathon::App.new(info[:app], true)
+  def initialize(hash, conn = Marathon.connection)
+    super(hash, conn, %w[delay])
+    @app = Marathon::App.new(info[:app], true, conn)
   end
 
   def to_s
@@ -19,9 +19,9 @@ class Marathon::Queue < Marathon::Base
 
     # Show content of the task queue.
     # Returns Array of Queue objects.
-    def list
-      json = Marathon.connection.get('/v2/queue')['queue']
-      json.map { |j| new(j) }
+    def list(conn = Marathon.connection)
+      json = conn.get('/v2/queue')['queue']
+      json.map { |j| new(j, conn) }
     end
   end
 end

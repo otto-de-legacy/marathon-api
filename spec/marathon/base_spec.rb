@@ -6,11 +6,12 @@ describe Marathon::Base do
     subject { described_class }
 
     it 'fails with strange input' do
-      expect { subject.new('foo') }.to raise_error(Marathon::Error::ArgumentError)
-      expect { subject.new({}, 'foo') }.to raise_error(Marathon::Error::ArgumentError)
-      expect { subject.new(nil) }.to raise_error(Marathon::Error::ArgumentError)
-      expect { subject.new({}, nil) }.to raise_error(Marathon::Error::ArgumentError)
-      expect { subject.new([], ['foo']) }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new('foo', 'not-a-connection') }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new('foo', Marathon.connection) }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new({}, Marathon.connection, 'foo') }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new(nil, Marathon.connection) }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new({}, Marathon.connection, nil) }.to raise_error(Marathon::Error::ArgumentError)
+      expect { subject.new([], Marathon.connection, ['foo']) }.to raise_error(Marathon::Error::ArgumentError)
     end
   end
 
@@ -19,7 +20,8 @@ describe Marathon::Base do
         'app' => { 'id' => '/app/foo' },
         :foo  => 'blubb',
         :bar  => 1
-      }) }
+      },
+      Marathon.connection) }
 
     let(:expected_string) do
       '{"foo":"blubb","bar":1,"app":{"id":"/app/foo"}}'
@@ -32,7 +34,7 @@ describe Marathon::Base do
     subject { described_class.new({
         'foo' => 'blubb',
         :bar  => 1
-      }, [:foo, 'bar']) }
+      }, Marathon.connection, [:foo, 'bar']) }
 
     its(:info) { should == {:foo => 'blubb', :bar => 1} }
     its(:foo) { should == 'blubb' }
@@ -43,7 +45,7 @@ describe Marathon::Base do
     subject { described_class.new({
         'foo' => 'blubb',
         :bar  => 1
-      }, %w[foo bar]) }
+      }, Marathon.connection, %w[foo bar]) }
 
     its(:info) { should == {:foo => 'blubb', :bar => 1} }
     its(:foo) { should == 'blubb' }

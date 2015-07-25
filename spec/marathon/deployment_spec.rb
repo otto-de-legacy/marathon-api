@@ -55,12 +55,12 @@ describe Marathon::Deployment do
     subject { described_class.new(DEPLOYMENT_EXAMPLE) }
 
     it 'deletes the deployment' do
-      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], false)
+      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], false, Marathon.connection)
       subject.delete
     end
 
     it 'force deletes the deployment' do
-      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], true)
+      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], true, Marathon.connection)
       subject.delete(true)
     end
   end

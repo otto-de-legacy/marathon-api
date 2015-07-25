@@ -6,15 +6,15 @@ class Marathon::Task < Marathon::Base
 
   # Create a new task object.
   # ++hash++: Hash including all attributes
-  def initialize(hash)
-    super(hash, ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(hash, conn, ACCESSORS)
   end
 
   # Kill the task that belongs to an application.
   # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
   #            after killing the specified tasks.
   def delete!(scale = false)
-    new_task = self.class.delete(id, scale)
+    new_task = self.class.delete(id, scale, connection)
   end
   alias :kill! :delete!
 
@@ -40,29 +40,29 @@ Version:    #{version}
     # List tasks of all applications.
     # ++status++: Return only those tasks whose status matches this parameter.
     #             If not specified, all tasks are returned. Possible values: running, staging.
-    def list(status = nil)
+    def list(status = nil, conn = Marathon.connection)
       query = {}
       Marathon::Util.add_choice(query, :status, status, %w[running staging])
-      json = Marathon.connection.get('/v2/tasks', query)['tasks']
-      json.map { |j| new(j) }
+      json = conn.get('/v2/tasks', query)['tasks']
+      json.map { |j| new(j, conn) }
     end
 
     # List all running tasks for application appId.
     # ++appId++: Application's id
-    def get(appId)
-      json = Marathon.connection.get("/v2/apps/#{appId}/tasks")['tasks']
-      json.map { |j| new(j) }
+    def get(appId, conn = Marathon.connection)
+      json = conn.get("/v2/apps/#{appId}/tasks")['tasks']
+      json.map { |j| new(j, conn) }
     end
 
     # Kill the given list of tasks and scale apps if requested.
     # ++ids++: Id or list of ids with target tasks.
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
-    def delete(ids, scale = false)
+    def delete(ids, scale = false, conn = Marathon.connection)
       query = {}
       query[:scale] = true if scale
       ids = [ids] if ids.is_a?(String)
-      Marathon.connection.post("/v2/tasks/delete", query, :body => {:ids => ids})
+      conn.post("/v2/tasks/delete", query, :body => {:ids => ids})
     end
     alias :remove :delete
     alias :kill :delete
@@ -72,12 +72,12 @@ Version:    #{version}
     # ++host++: Kill only those tasks running on host host.
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
-    def delete_all(appId, host = nil, scale = false)
+    def delete_all(appId, host = nil, scale = false, conn = Marathon.connection)
       query = {}
       query[:host] = host if host
       query[:scale] = true if scale
-      json = Marathon.connection.delete("/v2/apps/#{appId}/tasks", query)['tasks']
-      json.map { |j| new(j) }
+      json = conn.delete("/v2/apps/#{appId}/tasks", query)['tasks']
+      json.map { |j| new(j, conn) }
     end
     alias :remove_all :delete_all
     alias :kill_all :delete_all

@@ -5,12 +5,12 @@ class Marathon::DeploymentStep < Marathon::Base
 
   # Create a new deployment step object.
   # ++hash++: Hash returned by API, including 'actions'
-  def initialize(hash)
-    super(hash)
+  def initialize(hash, conn = Marathon.connection)
+    super(hash, conn)
     if hash.is_a?(Array)
-      @actions = info.map { |e| Marathon::DeploymentAction.new(e) }
+      @actions = info.map { |e| Marathon::DeploymentAction.new(e, connection) }
     else
-      @actions = (info[:actions] || []).map { |e| Marathon::DeploymentAction.new(e) }
+      @actions = (info[:actions] || []).map { |e| Marathon::DeploymentAction.new(e, connection) }
     end
   end
 

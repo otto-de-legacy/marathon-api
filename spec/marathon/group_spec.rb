@@ -69,8 +69,8 @@ describe Marathon::Group do
 
     it 'starts the group' do
       expect(described_class).to receive(:start)
-        .with({:dependencies=>[], :id=>'/group/foo'}) do
-          Marathon::DeploymentInfo.new({ 'version' => 'new-version' })
+        .with({:dependencies=>[], :id=>'/group/foo'}, Marathon.connection) do
+          Marathon::DeploymentInfo.new({ 'version' => 'new-version' }, Marathon.connection)
       end
       expect(subject.start!.version).to eq('new-version')
     end
@@ -80,7 +80,7 @@ describe Marathon::Group do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'refreshs the group' do
-      expect(described_class).to receive(:get).with('/app/foo') do
+      expect(described_class).to receive(:get).with('/app/foo', Marathon.connection) do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
       end
       subject.refresh
@@ -92,12 +92,14 @@ describe Marathon::Group do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     it 'changes the group' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
+      expect(described_class).to receive(:change)
+        .with('/app/foo', {:instances => 9000 }, false, false, Marathon.connection)
       subject.change!('instances' => 9000)
     end
 
     it 'changes the group and strips :version' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
+      expect(described_class).to receive(:change)
+        .with('/app/foo', {:instances => 9000 }, false, false, Marathon.connection)
       subject.change!('instances' => 9000, :version => 'old-version')
     end
   end

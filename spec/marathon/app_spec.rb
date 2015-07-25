@@ -109,12 +109,12 @@ describe Marathon::App do
     subject { described_class.new({ 'id' => '/ubuntu2' }) }
 
     it 'loads versions from API' do
-      expect(described_class).to receive(:versions).with('/ubuntu2') { ['foo-version'] }
+      expect(described_class).to receive(:versions).with('/ubuntu2', Marathon.connection) { ['foo-version'] }
       expect(subject.versions).to eq(['foo-version'])
     end
 
     it 'loads version from API' do
-      expect(described_class).to receive(:version).with('/ubuntu2', 'foo-version') {
+      expect(described_class).to receive(:version).with('/ubuntu2', 'foo-version', Marathon.connection) {
         Marathon::App.new({'id' => '/ubuntu2', 'version' => 'foo-version'}, true)
       }
       expect(subject.versions('foo-version').version).to eq('foo-version')
@@ -129,7 +129,8 @@ describe Marathon::App do
       expect(described_class).to receive(:change).with(
           '/app/foo',
           {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
-          false
+          false,
+          Marathon.connection
         )
       subject.start!
     end
@@ -139,7 +140,8 @@ describe Marathon::App do
         .with(
           '/app/foo',
           {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
-          false
+          false,
+          Marathon.connection
         )
       subject.start!
     end
@@ -155,7 +157,7 @@ describe Marathon::App do
     end
 
     it 'refreshs the app' do
-      expect(described_class).to receive(:get).with('/app/foo') do
+      expect(described_class).to receive(:get).with('/app/foo', Marathon.connection) do
         described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
       end
       subject.refresh
@@ -174,13 +176,13 @@ describe Marathon::App do
 
     it 'restarts the app' do
       expect(described_class).to receive(:restart)
-        .with('/app/foo', false)
+        .with('/app/foo', false, Marathon.connection)
       subject.restart!
     end
 
     it 'restarts the app, force' do
       expect(described_class).to receive(:restart)
-        .with('/app/foo', true)
+        .with('/app/foo', true, Marathon.connection)
       subject.restart!(true)
     end
   end
@@ -195,7 +197,7 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false, Marathon.connection)
       subject.change!('instances' => 9000, 'version' => 'old-version')
     end
   end

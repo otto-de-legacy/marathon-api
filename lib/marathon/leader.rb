@@ -4,15 +4,15 @@ class Marathon::Leader
 
   class << self
     # Returns the current leader. If no leader exists, raises NotFoundError.
-    def get
-      json = Marathon.connection.get('/v2/leader')
+    def get(conn = Marathon.connection)
+      json = conn.get('/v2/leader')
       json['leader']
     end
 
     # Causes the current leader to abdicate, triggering a new election.
     # If no leader exists, raises NotFoundError.
-    def delete
-      json = Marathon.connection.delete('/v2/leader')
+    def delete(conn = Marathon.connection)
+      json = conn.delete('/v2/leader')
       json['message']
     end
   end

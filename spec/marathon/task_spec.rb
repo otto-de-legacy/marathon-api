@@ -49,7 +49,7 @@ describe Marathon::Task do
     }) }
 
     it 'deletes the task' do
-      expect(described_class).to receive(:delete).with('task_123', false)
+      expect(described_class).to receive(:delete).with('task_123', false, Marathon.connection)
       task.delete!
     end
   end

@@ -14,11 +14,11 @@ class Marathon::Container < Marathon::Base
 
   # Create a new container object.
   # ++hash++: Hash returned by API.
-  def initialize(hash)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     Marathon::Util.validate_choice('type', type, SUPPERTED_TYPES)
-    @docker = Marathon::ContainerDocker.new(info[:docker]) if info[:docker]
-    @volumes = info[:volumes].map { |e| Marathon::ContainerVolume.new(e) }
+    @docker = Marathon::ContainerDocker.new(info[:docker], conn) if info[:docker]
+    @volumes = info[:volumes].map { |e| Marathon::ContainerVolume.new(e, conn) }
   end
 
   def to_s

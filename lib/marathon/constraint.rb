@@ -4,7 +4,7 @@ class Marathon::Constraint < Marathon::Base
 
   # Create a new constraint object.
   # ++array++: Array returned by API, holds attribute, operator and parameter.
-  def initialize(array)
+  def initialize(array, conn = Marathon.connection)
     raise Marathon::Error::ArgumentError, 'array must be an Array' unless array.is_a?(Array)
     raise Marathon::Error::ArgumentError,
       'array must be [attribute, operator, parameter] where only parameter is optional' \

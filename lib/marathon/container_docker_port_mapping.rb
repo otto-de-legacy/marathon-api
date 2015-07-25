@@ -10,8 +10,8 @@ class Marathon::ContainerDockerPortMapping < Marathon::Base
 
   # Create a new container docker port mappint object.
   # ++hash++: Hash returned by API.
-  def initialize(hash)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     Marathon::Util.validate_choice('protocol', protocol, %w[tcp udp])
     raise Marathon::Error::ArgumentError, 'containerPort must not be nil' unless containerPort
     raise Marathon::Error::ArgumentError, 'containerPort must be a positive number' \

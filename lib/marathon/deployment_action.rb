@@ -3,8 +3,8 @@ class Marathon::DeploymentAction < Marathon::Base
 
   # Create a new deployment action object.
   # ++hash++: Hash returned by API, including 'app' and 'type'
-  def initialize(hash)
-    super(hash, %w[app])
+  def initialize(hash, conn = Marathon.connection)
+    super(hash, conn, %w[app])
   end
 
   def type

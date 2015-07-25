@@ -13,8 +13,8 @@ class Marathon::Group < Marathon::Base
   # Create a new group object.
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/groups for full details.
-  def initialize(hash)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     raise ArgumentError, 'Group must have an id' unless id
     refresh_attributes
     raise ArgumentError, 'Group can have either groups or apps, not both' \
@@ -23,7 +23,7 @@ class Marathon::Group < Marathon::Base
 
   # Reload attributes from marathon API.
   def refresh
-    new_app = self.class.get(id)
+    new_app = self.class.get(id, connection)
     @info = new_app.info
     refresh_attributes
   end
@@ -34,7 +34,7 @@ class Marathon::Group < Marathon::Base
   # this endpoint returns immediatly with a version. The failure or success of the action is signalled via event.
   # There is a group_change_success and group_change_failed event with the given version.
   def start!
-    self.class.start(info)
+    self.class.start(info, connection)
   end
 
   # Change parameters of a deployed application group.
@@ -64,7 +64,7 @@ class Marathon::Group < Marathon::Base
     else
       new_hash = hash
     end
-    self.class.change(id, new_hash, force, dry_run)
+    self.class.change(id, new_hash, force, dry_run, connection)
   end
 
   # Create a new version with parameters of an old version.
@@ -98,33 +98,33 @@ Version:    #{version}
 
   # Rebuild attribute classes
   def refresh_attributes
-    @apps = (info[:apps] || []).map { |e| Marathon::App.new(e) }
-    @groups = (info[:groups] || []).map { |e| Marathon::Group.new(e) }
+    @apps = (info[:apps] || []).map { |e| Marathon::App.new(e, connection) }
+    @groups = (info[:groups] || []).map { |e| Marathon::Group.new(e, connection) }
   end
 
   class << self
 
     # List the group with the specified ID.
     # ++id++: Group's id.
-    def get(id)
-      json = Marathon.connection.get("/v2/groups/#{id}")
-      new(json)
+    def get(id, conn = Marathon.connection)
+      json = conn.get("/v2/groups/#{id}")
+      new(json, conn)
     end
 
     # List all groups.
-    def list
-      json = Marathon.connection.get('/v2/groups')
-      new(json)
+    def list(conn = Marathon.connection)
+      json = conn.get('/v2/groups')
+      new(json, conn)
     end
 
     # Delete the application group with id.
     # ++id++: Group's id.
     # ++force++: If the group is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
-    def delete(id, force = false)
+    def delete(id, force = false, conn = Marathon.connection)
       query = {}
       query[:force] = true if force
-      Marathon.connection.delete("/v2/groups/#{id}", query)
+      conn.delete("/v2/groups/#{id}", query)
     end
     alias :remove :delete
 
@@ -135,9 +135,9 @@ Version:    #{version}
     # There is a group_change_success and group_change_failed event with the given version.
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/groups for full details
-    def start(hash)
-      json = Marathon.connection.post('/v2/groups', nil, :body => hash)
-      Marathon::DeploymentInfo.new(json)
+    def start(hash, conn = Marathon.connection)
+      json = conn.post('/v2/groups', nil, :body => hash)
+      Marathon::DeploymentInfo.new(json, conn)
     end
     alias :create :start
 
@@ -162,15 +162,15 @@ Version:    #{version}
     # ++force++: If the group is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     # ++dry_run++: Get a preview of the deployment steps Marathon would run for a given group update.
-    def change(id, hash, force = false, dry_run = false)
+    def change(id, hash, force = false, dry_run = false, conn = Marathon.connection)
       query = {}
       query[:force] = true if force
       query[:dryRun] = true if dry_run
-      json = Marathon.connection.put("/v2/groups/#{id}", query, :body => hash)
+      json = conn.put("/v2/groups/#{id}", query, :body => hash)
       if dry_run
-        json['steps'].map { |e| Marathon::DeploymentStep.new(e) }
+        json['steps'].map { |e| Marathon::DeploymentStep.new(e, conn) }
       else
-        Marathon::DeploymentInfo.new(json)
+        Marathon::DeploymentInfo.new(json, conn)
       end
     end
   end

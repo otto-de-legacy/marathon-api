@@ -12,12 +12,12 @@ class Marathon::ContainerDocker < Marathon::Base
 
   # Create a new container docker object.
   # ++hash++: Hash returned by API.
-  def initialize(hash)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     Marathon::Util.validate_choice('network', network, %w[BRIDGE HOST])
     Marathon::Util.validate_choice('privileged', privileged, ['true', 'false', true, false])
     raise Marathon::Error::ArgumentError, 'image must not be nil' unless image
-    @portMappings = (info[:portMappings] || []).map { |e| Marathon::ContainerDockerPortMapping.new(e) }
+    @portMappings = (info[:portMappings] || []).map { |e| Marathon::ContainerDockerPortMapping.new(e, connection) }
   end
 
   def to_pretty_s

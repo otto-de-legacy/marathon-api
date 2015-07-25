@@ -9,8 +9,8 @@ class Marathon::ContainerVolume < Marathon::Base
 
   # Create a new container volume object.
   # ++hash++: Hash returned by API.
-  def initialize(hash)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     Marathon::Util.validate_choice('mode', mode, %w[RW RO])
     raise Marathon::Error::ArgumentError, 'containerPath must not be nil' unless containerPath
     raise Marathon::Error::ArgumentError, 'containerPath must be an absolute path' \

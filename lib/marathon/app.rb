@@ -18,8 +18,8 @@ class Marathon::App < Marathon::Base
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
   # ++read_only++: prevent actions on this application
-  def initialize(hash, read_only = false)
-    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
+  def initialize(hash, read_only = false, conn = Marathon.connection)
+    super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), conn, ACCESSORS)
     raise ArgumentError, 'App must have an id' unless id
     @read_only = read_only
     refresh_attributes
@@ -39,16 +39,16 @@ class Marathon::App < Marathon::Base
   # else returns Hash with version information.
   def versions(version = nil)
     if version
-      self.class.version(id, version)
+      self.class.version(id, version, connection)
     else
-      self.class.versions(id)
+      self.class.versions(id, connection)
     end
   end
 
   # Reload attributes from marathon API.
   def refresh
     check_read_only
-    new_app = self.class.get(id)
+    new_app = self.class.get(id, connection)
     @info = new_app.info
     refresh_attributes
   end
@@ -66,7 +66,7 @@ class Marathon::App < Marathon::Base
   #            The current deployment can be overridden by setting the `force` query parameter.
   def restart!(force = false)
     check_read_only
-    self.class.restart(id, force)
+    self.class.restart(id, force, connection)
   end
 
   # Change parameters of a running application.
@@ -84,7 +84,7 @@ class Marathon::App < Marathon::Base
     else
       new_hash = hash
     end
-    self.class.change(id, new_hash, force)
+    self.class.change(id, new_hash, force, connection)
   end
 
   # Create a new version with parameters of an old version.
@@ -153,23 +153,23 @@ Version:    #{version}
 
   # Rebuild attribute classes
   def refresh_attributes
-    @healthChecks = (info[:healthChecks] || []).map { |e| Marathon::HealthCheck.new(e) }
-    @constraints = (info[:constraints] || []).map { |e| Marathon::Constraint.new(e) }
+    @healthChecks = (info[:healthChecks] || []).map { |e| Marathon::HealthCheck.new(e, connection) }
+    @constraints = (info[:constraints] || []).map { |e| Marathon::Constraint.new(e, connection) }
     if info[:container]
-      @container = Marathon::Container.new(info[:container])
+      @container = Marathon::Container.new(info[:container], connection)
     else
       @container = nil
     end
-    @tasks = (@info[:tasks] || []).map { |e| Marathon::Task.new(e) }
+    @tasks = (@info[:tasks] || []).map { |e| Marathon::Task.new(e, connection) }
   end
 
   class << self
 
     # List the application with id.
     # ++id++: Application's id.
-    def get(id)
-      json = Marathon.connection.get("/v2/apps/#{id}")['app']
-      new(json)
+    def get(id, conn = Marathon.connection)
+      json = conn.get("/v2/apps/#{id}")['app']
+      new(json, conn)
     end
 
     # List all applications.
@@ -178,27 +178,27 @@ Version:    #{version}
     #             Possible values:
     #               "apps.tasks". Apps' tasks are not embedded in the response by default.
     #               "apps.failures". Apps' last failures are not embedded in the response by default.
-    def list(cmd = nil, embed = nil)
+    def list(cmd = nil, embed = nil, conn = Marathon.connection)
       query = {}
       query[:cmd] = cmd if cmd
       Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.failures])
-      json = Marathon.connection.get('/v2/apps', query)['apps']
-      json.map { |j| new(j) }
+      json = conn.get('/v2/apps', query)['apps']
+      json.map { |j| new(j, conn) }
     end
 
     # Delete the application with id.
     # ++id++: Application's id.
-    def delete(id)
-      Marathon.connection.delete("/v2/apps/#{id}")
+    def delete(id, conn = Marathon.connection)
+      conn.delete("/v2/apps/#{id}")
     end
     alias :remove :delete
 
     # Create and start an application.
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
-    def start(hash)
-      json = Marathon.connection.post('/v2/apps', nil, :body => hash)
-      new(json)
+    def start(hash, conn = Marathon.connection)
+      json = conn.post('/v2/apps', nil, :body => hash)
+      new(json, conn)
     end
     alias :create :start
 
@@ -206,11 +206,11 @@ Version:    #{version}
     # ++id++: Application's id.
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
-    def restart(id, force = false)
+    def restart(id, force = false, conn = Marathon.connection)
       query = {}
       query[:force] = true if force
-      json = Marathon.connection.post("/v2/apps/#{id}/restart", query)
-      Marathon::DeploymentInfo.new(json)
+      json = conn.post("/v2/apps/#{id}/restart", query)
+      Marathon::DeploymentInfo.new(json, conn)
     end
 
     # Change parameters of a running application. The new application parameters apply only to subsequently
@@ -219,26 +219,26 @@ Version:    #{version}
     # ++hash++: A subset of app's attributes.
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
-    def change(id, hash, force = false)
+    def change(id, hash, force = false, conn = Marathon.connection)
       query = {}
       query[:force] = true if force
-      json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
-      Marathon::DeploymentInfo.new(json)
+      json = conn.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
+      Marathon::DeploymentInfo.new(json, conn)
     end
 
     # List the versions of the application with id.
     # ++id++: Application id
-    def versions(id)
-      json = Marathon.connection.get("/v2/apps/#{id}/versions")
+    def versions(id, conn = Marathon.connection)
+      json = conn.get("/v2/apps/#{id}/versions")
       json['versions']
     end
 
     # List the configuration of the application with id at version.
     # ++id++: Application id
     # ++version++: Version name
-    def version(id, version)
-      json = Marathon.connection.get("/v2/apps/#{id}/versions/#{version}")
-      new(json, true)
+    def version(id, version, conn = Marathon.connection)
+      json = conn.get("/v2/apps/#{id}/versions/#{version}")
+      new(json, true, conn)
     end
   end
 end
