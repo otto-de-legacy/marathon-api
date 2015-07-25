@@ -2,6 +2,7 @@ require 'rubygems/package'
 require 'httparty'
 require 'json'
 require 'uri'
+require 'timeout'
 
 # The top-level module for this gem. It's purpose is to hold global
 # configuration variables that are used as defaults in other classes.
