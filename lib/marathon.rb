@@ -31,7 +31,55 @@ module Marathon
   require 'marathon/queue'
   require 'marathon/task'
 
+  # Represents an instance of Marathon
+  class MarathonInstance
+    attr_reader :connection
+
+    def initialize(url, options)
+      @connection = Connection.new(url,options)
+    end
+
+    def ping
+      connection.get('/ping')
+    end
+
+    # Get information about the marathon server
+    def info
+      connection.get('/v2/info')
+    end
+
+    def apps
+      Marathon::Apps.new(connection)
+    end
+
+    def deployments
+      Marathon::Deployments.new(connection)
+    end
+
+    def tasks
+      Marathon::Tasks.new(connection)
+    end
+
+    def queues
+      Marathon::Queues.new(connection)
+    end
+
+    def leaders
+      Marathon::Leader.new(connection)
+    end
+
+    def event_subscriptions
+      Marathon::EventSubscriptions.new(connection)
+    end
+
+  end
+
+
   DEFAULT_URL = 'http://localhost:8080'
+
+  attr_reader :singleton
+
+  @singleton = MarathonInstance::new(DEFAULT_URL,{})
 
   # Get the marathon url from environment
   def env_url
@@ -60,36 +108,41 @@ module Marathon
   # Set a new url
   def url=(new_url)
     @url = new_url
-    reset_connection!
+    reset_singleton!
   end
 
   # Set new options
   def options=(new_options)
     @options = env_options.merge(new_options || {})
-    reset_connection!
+    reset_singleton!
   end
 
   # Set a new connection
   def connection
-    @connection ||= Connection.new(url, options)
+    singleton.connection
   end
 
-  # Reset the connection
+
+  def reset_singleton!
+    @singleton = MarathonInstance.new(url,options)
+  end
+
   def reset_connection!
-    @connection = nil
+    reset_singleton!
   end
 
   # Get information about the marathon server
   def info
-    connection.get('/v2/info')
+    singleton.info
   end
 
   # Ping marathon
   def ping
-    connection.get('/ping')
+    singleton.ping
   end
 
   module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping,
-                  :options, :options=, :url, :url= ,:reset_connection!
+                  :options, :options=, :url, :url= ,:reset_connection!,:reset_singleton!,:singleton
+
 
 end

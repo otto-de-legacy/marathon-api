@@ -20,8 +20,22 @@ class Marathon::Queue < Marathon::Base
     # Show content of the task queue.
     # Returns Array of Queue objects.
     def list
-      json = Marathon.connection.get('/v2/queue')['queue']
-      json.map { |j| new(j) }
+      Marathon.singleton.queues.list
     end
   end
+end
+
+# This class represents the Queue with all its elements
+class Marathon::Queues
+  def initialize(connection)
+    @connection = connection
+  end
+
+  # Show content of the task queue.
+  # Returns Array of Queue objects.
+  def list
+    json = @connection.get('/v2/queue')['queue']
+    json.map { |j| Marathon::Queue.new(j) }
+  end
+
 end

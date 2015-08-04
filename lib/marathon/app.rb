@@ -168,8 +168,7 @@ Version:    #{version}
     # List the application with id.
     # ++id++: Application's id.
     def get(id)
-      json = Marathon.connection.get("/v2/apps/#{id}")['app']
-      new(json)
+      Marathon.singleton.apps.get(id)
     end
 
     # List all applications.
@@ -179,17 +178,13 @@ Version:    #{version}
     #               "apps.tasks". Apps' tasks are not embedded in the response by default.
     #               "apps.failures". Apps' last failures are not embedded in the response by default.
     def list(cmd = nil, embed = nil)
-      query = {}
-      query[:cmd] = cmd if cmd
-      Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.failures])
-      json = Marathon.connection.get('/v2/apps', query)['apps']
-      json.map { |j| new(j) }
+      Marathon.singleton.apps.list(cmd,embed)
     end
 
     # Delete the application with id.
     # ++id++: Application's id.
     def delete(id)
-      Marathon.connection.delete("/v2/apps/#{id}")
+      Marathon.singleton.apps.delete(id)
     end
     alias :remove :delete
 
@@ -197,8 +192,7 @@ Version:    #{version}
     # ++hash++: Hash including all attributes
     #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
     def start(hash)
-      json = Marathon.connection.post('/v2/apps', nil, :body => hash)
-      new(json)
+      Marathon.singleton.apps.start(hash)
     end
     alias :create :start
 
@@ -207,10 +201,7 @@ Version:    #{version}
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def restart(id, force = false)
-      query = {}
-      query[:force] = true if force
-      json = Marathon.connection.post("/v2/apps/#{id}/restart", query)
-      Marathon::DeploymentInfo.new(json)
+      Marathon.singleton.apps.restart(id,force)
     end
 
     # Change parameters of a running application. The new application parameters apply only to subsequently
@@ -220,25 +211,102 @@ Version:    #{version}
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def change(id, hash, force = false)
-      query = {}
-      query[:force] = true if force
-      json = Marathon.connection.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
-      Marathon::DeploymentInfo.new(json)
+      Marathon.singleton.apps.change(id,hash,force)
     end
 
     # List the versions of the application with id.
     # ++id++: Application id
     def versions(id)
-      json = Marathon.connection.get("/v2/apps/#{id}/versions")
-      json['versions']
+      Marathon.singleton.apps.versions(id)
     end
 
     # List the configuration of the application with id at version.
     # ++id++: Application id
     # ++version++: Version name
     def version(id, version)
-      json = Marathon.connection.get("/v2/apps/#{id}/versions/#{version}")
-      new(json, true)
+      Marathon.singleton.apps.version(id,version)
     end
   end
+end
+
+# This class represents a set of Apps
+class Marathon::Apps
+  def initialize(connection)
+    @connection = connection
+  end
+
+  # List the application with id.
+  # ++id++: Application's id.
+  def get(id)
+    json = @connection.get("/v2/apps/#{id}")['app']
+    Marathon::App.new(json)
+  end
+
+  # Delete the application with id.
+  # ++id++: Application's id.
+  def delete(id)
+    @connection.delete("/v2/apps/#{id}")
+  end
+
+  # Create and start an application.
+  # ++hash++: Hash including all attributes
+  #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
+  def start(hash)
+    json = @connection.post('/v2/apps', nil, :body => hash)
+    Marathon::App.new(json)
+  end
+
+  # Restart the application with id.
+  # ++id++: Application's id.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
+  def restart(id, force = false)
+    query = {}
+    query[:force] = true if force
+    json = @connection.post("/v2/apps/#{id}/restart", query)
+    Marathon::DeploymentInfo.new(json)
+  end
+
+  # Change parameters of a running application. The new application parameters apply only to subsequently
+  # created tasks. Currently running tasks are restarted, while maintaining the minimumHealthCapacity.
+  # ++id++: Application's id.
+  # ++hash++: A subset of app's attributes.
+  # ++force++: If the app is affected by a running deployment, then the update operation will fail.
+  #            The current deployment can be overridden by setting the `force` query parameter.
+  def change(id, hash, force = false)
+    query = {}
+    query[:force] = true if force
+    json = @connection.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
+    Marathon::DeploymentInfo.new(json)
+  end
+
+  # List the versions of the application with id.
+  # ++id++: Application id
+  def versions(id)
+    json = @connection.get("/v2/apps/#{id}/versions")
+    json['versions']
+  end
+
+  # List the configuration of the application with id at version.
+  # ++id++: Application id
+  # ++version++: Version name
+  def version(id, version)
+    json = @connection.get("/v2/apps/#{id}/versions/#{version}")
+    Marathon::App.new(json, true)
+  end
+
+  # List all applications.
+  # ++:cmd++: Filter apps to only those whose commands contain cmd.
+  # ++:embed++: Embeds nested resources that match the supplied path.
+  #             Possible values:
+  #               "apps.tasks". Apps' tasks are not embedded in the response by default.
+  #               "apps.failures". Apps' last failures are not embedded in the response by default.
+  def list(cmd = nil, embed = nil)
+    query = {}
+    query[:cmd] = cmd if cmd
+    Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.failures])
+    json = @connection.get('/v2/apps', query)['apps']
+    json.map { |j| Marathon::App.new(j) }
+  end
+
 end
