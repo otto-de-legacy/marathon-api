@@ -146,6 +146,8 @@ EOS
       :short => '-U', :type => String
     opt :password, 'Password to authenticate against Marathon (optional, default unset, or MARATHON_PASSWORD).',
       :short => '-P', :type => String
+    opt :insecure, 'Ignore certificate verification failure (optional, default false, or MARATHON_INSECURE).',
+      :short => '-I'
     stop_on SUB_COMMANDS
   end
   return global_opts
