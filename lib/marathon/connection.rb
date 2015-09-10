@@ -29,6 +29,13 @@ class Marathon::Connection
       @options.delete(:username)
       @options.delete(:password)
     end
+
+    # The insecure option allows ignoring bad (or self-signed) SSL
+    # certificates.
+    if @options[:insecure]
+      @options[:verify] = false
+      @options.delete(:insecure)
+    end
   end
 
   # Delegate all HTTP methods to the #request.

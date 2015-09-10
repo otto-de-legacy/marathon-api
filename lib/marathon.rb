@@ -92,6 +92,7 @@ module Marathon
     opts = {}
     opts[:username] = ENV['MARATHON_USER'] if ENV['MARATHON_USER']
     opts[:password] = ENV['MARATHON_PASSWORD'] if ENV['MARATHON_PASSWORD']
+    opts[:insecure] = ENV['MARATHON_INSECURE'] == 'true' if ENV['MARATHON_INSECURE']
     opts
   end
 
