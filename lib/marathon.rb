@@ -88,11 +88,10 @@ module Marathon
   end
 
   # Get marathon options from environment
-  def env_options
-    opts = {}
-    opts[:username] = ENV['MARATHON_USER'] if ENV['MARATHON_USER']
-    opts[:password] = ENV['MARATHON_PASSWORD'] if ENV['MARATHON_PASSWORD']
-    opts[:insecure] = ENV['MARATHON_INSECURE'] == 'true' if ENV['MARATHON_INSECURE']
+  def add_env_options(opts)
+    opts[:username] ||= ENV['MARATHON_USER'] if ENV['MARATHON_USER']
+    opts[:password] ||= ENV['MARATHON_PASSWORD'] if ENV['MARATHON_PASSWORD']
+    opts[:insecure] ||= ENV['MARATHON_INSECURE'] == 'true' if ENV['MARATHON_INSECURE']
     opts
   end
 
@@ -104,7 +103,7 @@ module Marathon
 
   # Get options for connecting to marathon API
   def options
-    @options ||= env_options
+    @options ||= {}
   end
 
   # Set a new url
@@ -115,7 +114,7 @@ module Marathon
 
   # Set new options
   def options=(new_options)
-    @options = env_options.merge(new_options || {})
+    @options = add_env_options(new_options)
     reset_singleton!
   end
 
@@ -143,7 +142,7 @@ module Marathon
     singleton.ping
   end
 
-  module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping,
+  module_function :connection, :add_env_options, :env_url, :info, :logger, :logger=, :ping,
                   :options, :options=, :url, :url= ,:reset_connection!,:reset_singleton!,:singleton
 
 
