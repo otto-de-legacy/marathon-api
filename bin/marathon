@@ -141,13 +141,13 @@ Global options:
 EOS
 
     opt :url, 'Marathon host (default http://localhost:8080, or MARATHON_URL)',
-      :short => '-M', :type => String
+      :short => '-M', :type => String, :default => Marathon.url
     opt :username, 'User name to authenticate against Marathon (optional, default unset, or MARATHON_USER).',
-      :short => '-U', :type => String
+      :short => '-U', :type => String, :default => Marathon.options[:username]
     opt :password, 'Password to authenticate against Marathon (optional, default unset, or MARATHON_PASSWORD).',
-      :short => '-P', :type => String
+      :short => '-P', :type => String, :default => Marathon.options[:password]
     opt :insecure, 'Ignore certificate verification failure (optional, default false, or MARATHON_INSECURE).',
-      :short => '-I'
+      :short => '-I', :default => Marathon.options[:insecure]
     stop_on SUB_COMMANDS
   end
   return global_opts
