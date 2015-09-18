@@ -145,7 +145,7 @@ EOS
     opt :username, 'User name to authenticate against Marathon (optional, default unset, or MARATHON_USER).',
       :short => '-U', :type => String, :default => Marathon.options[:username]
     opt :password, 'Password to authenticate against Marathon (optional, default unset, or MARATHON_PASSWORD).',
-      :short => '-P', :type => String, :default => Marathon.options[:password]
+      :short => '-P', :type => String
     opt :insecure, 'Ignore certificate verification failure (optional, default false, or MARATHON_INSECURE).',
       :short => '-I', :default => Marathon.options[:insecure]
     stop_on SUB_COMMANDS
@@ -158,6 +158,8 @@ def set_global_opts(global_opts)
   # Set client's URL
   Marathon.url = global_opts[:url] if global_opts[:url]
   global_opts.delete(:url)
+  # Hack to hide password from help message.
+  global_opts.delete(:password) unless global_opts[:password]
   # Set client's options
   Marathon.options = global_opts if global_opts.size > 0
 end
