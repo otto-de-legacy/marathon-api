@@ -14,8 +14,8 @@ class Marathon::ContainerDockerPortMapping < Marathon::Base
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     Marathon::Util.validate_choice('protocol', protocol, %w[tcp udp])
     raise Marathon::Error::ArgumentError, 'containerPort must not be nil' unless containerPort
-    raise Marathon::Error::ArgumentError, 'containerPort must be a positive number' \
-      unless containerPort.is_a?(Integer) and containerPort > 0
+    raise Marathon::Error::ArgumentError, 'containerPort must be a non negative number' \
+      unless containerPort.is_a?(Integer) and containerPort >= 0
     raise Marathon::Error::ArgumentError, 'hostPort must be a non negative number' \
       unless hostPort.is_a?(Integer) and hostPort >= 0
   end
