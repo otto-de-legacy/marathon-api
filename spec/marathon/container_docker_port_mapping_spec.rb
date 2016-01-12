@@ -20,7 +20,7 @@ describe Marathon::ContainerDockerPortMapping do
       expect { subject.new(:containerPort => 'foo') }
         .to raise_error(Marathon::Error::ArgumentError, /containerPort must be/)
       expect { subject.new(:containerPort => 0) }
-        .not_to raise_error(Marathon::Error::ArgumentError, /containerPort must be/)
+        .not_to raise_error
       expect { subject.new(:containerPort => -1) }
         .to raise_error(Marathon::Error::ArgumentError, /containerPort must be/)
     end
