@@ -51,6 +51,7 @@ class Marathon::App < Marathon::Base
     new_app = self.class.get(id)
     @info = new_app.info
     refresh_attributes
+    self
   end
 
   # Create and start the application.

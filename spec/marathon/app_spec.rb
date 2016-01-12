@@ -161,6 +161,13 @@ describe Marathon::App do
       subject.refresh
       expect(subject.info[:refreshed]).to be(true)
     end
+
+    it 'returns the app' do
+      expect(described_class).to receive(:get).with('/app/foo') do
+        described_class.new({ 'id' => '/app/foo' })
+      end
+      expect(subject.refresh).to be subject
+    end
   end
 
   describe '#restart!' do
