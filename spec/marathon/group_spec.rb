@@ -178,7 +178,8 @@ describe Marathon::Group do
     subject { described_class }
 
     it 'deletes the group', :vcr do
-      subject.delete('/test-group', true)
+      expect(subject.delete('/test-group', true))
+        .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails deleting not existing app', :vcr do
