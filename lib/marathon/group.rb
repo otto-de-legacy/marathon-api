@@ -124,7 +124,8 @@ Version:    #{version}
     def delete(id, force = false)
       query = {}
       query[:force] = true if force
-      Marathon.connection.delete("/v2/groups/#{id}", query)
+      json = Marathon.connection.delete("/v2/groups/#{id}", query)
+      Marathon::DeploymentInfo.new(json)
     end
     alias :remove :delete
 
