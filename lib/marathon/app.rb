@@ -246,7 +246,8 @@ class Marathon::Apps
   # Delete the application with id.
   # ++id++: Application's id.
   def delete(id)
-    @connection.delete("/v2/apps/#{id}")
+    json = @connection.delete("/v2/apps/#{id}")
+    Marathon::DeploymentInfo.new(json)
   end
 
   # Create and start an application.

@@ -339,7 +339,8 @@ describe Marathon::App do
     subject { described_class }
 
     it 'deletes the app', :vcr do
-      subject.delete('/test-app')
+      expect(subject.delete('/test-app'))
+        .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails deleting not existing app', :vcr do
