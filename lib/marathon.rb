@@ -49,6 +49,10 @@ module Marathon
       connection.get('/v2/info')
     end
 
+    def metrics
+      connection.get('/metrics')
+    end
+
     def apps
       Marathon::Apps.new(connection)
     end
@@ -143,7 +147,11 @@ module Marathon
     singleton.ping
   end
 
-  module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping,
+  def metrics
+    singleton.metrics
+  end
+
+  module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping, :metrics,
                   :options, :options=, :url, :url= ,:reset_connection!,:reset_singleton!,:singleton
 
 
