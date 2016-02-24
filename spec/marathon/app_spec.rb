@@ -13,6 +13,7 @@ describe Marathon::App do
       'env' => {'FOO' => 'BAR', 'blubb' => 'blah'},
       'constraints' => [['hostname', 'UNIQUE']],
       'uris' => ['http://example.com/big.tar'],
+      'labels' => {'abc'=>'123'},
       'version' => 'foo-version'
     }) }
 
@@ -275,6 +276,20 @@ describe Marathon::App do
         .with('/v2/apps', {:cmd => 'foo', :embed => 'apps.tasks'})
         .and_return({ 'apps' => [] })
       subject.list('foo', 'apps.tasks')
+    end
+
+    it 'passing id argument to api call' do
+      expect(Marathon.connection).to receive(:get)
+        .with('/v2/apps', {:id => '/app/foo'})
+        .and_return({ 'apps' => [] })
+      subject.list(nil, nil, '/app/foo')
+    end
+
+    it 'passing label argument to api call' do
+      expect(Marathon.connection).to receive(:get)
+        .with('/v2/apps', {:label => 'abc'})
+        .and_return({ 'apps' => [] })
+      subject.list(nil, nil ,nil, 'abc')
     end
 
     it 'raises error when run with strange embed' do
