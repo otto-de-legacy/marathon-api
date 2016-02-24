@@ -70,9 +70,26 @@ describe Marathon do
     end
   end
 
-  describe '.ping', :vcr do
+  describe '.metrics' do
     subject { described_class }
 
-    its(:ping) { should == "pong\n" }
+    let(:metrics) { subject.metrics }
+    let(:keys) do
+      %w[ version gauges counters histograms meters timers ]
+    end
+
+    it 'returns the metrics hash', :vcr do
+      expect(metrics).to be_a Hash
+      expect(metrics.keys.sort).to eq keys.sort
+    end
+  end
+
+  describe '.ping', :vcr do
+    subject { described_class }
+    let(:ping) { subject.ping }
+
+    it 'returns pong' do
+      ping.should == "pong\n"
+    end
   end
 end
