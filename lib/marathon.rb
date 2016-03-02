@@ -53,6 +53,10 @@ module Marathon
       Marathon::Apps.new(connection)
     end
 
+    def groups
+      Marathon::Groups.new(connection)
+    end
+
     def deployments
       Marathon::Deployments.new(connection)
     end
