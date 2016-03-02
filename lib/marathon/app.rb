@@ -178,8 +178,8 @@ Version:    #{version}
     #             Possible values:
     #               "apps.tasks". Apps' tasks are not embedded in the response by default.
     #               "apps.failures". Apps' last failures are not embedded in the response by default.
-    def list(cmd = nil, embed = nil)
-      Marathon.singleton.apps.list(cmd,embed)
+    def list(cmd = nil, embed = nil, id=nil, label=nil)
+      Marathon.singleton.apps.list(cmd,embed, id, label)
     end
 
     # Delete the application with id.
@@ -302,11 +302,20 @@ class Marathon::Apps
   # ++:embed++: Embeds nested resources that match the supplied path.
   #             Possible values:
   #               "apps.tasks". Apps' tasks are not embedded in the response by default.
+  #               "apps.counts". Apps' task counts (tasksStaged, tasksRunning, tasksHealthy, tasksUnhealthy).
+  #               "apps.deployments". Apps' embed all deployment identifier.
+  #               "apps.lastTaskFailure". Apps' embeds the lastTaskFailure
   #               "apps.failures". Apps' last failures are not embedded in the response by default.
-  def list(cmd = nil, embed = nil)
+  #               "apps.taskStats". Apps' exposes task statatistics.
+  # ++:id++: Filter apps to only return those whose id is or contains id.
+  # ++:label++: A label selector query contains one or more label selectors
+  def list(cmd = nil, embed = nil, id=nil, label=nil)
     query = {}
     query[:cmd] = cmd if cmd
-    Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.failures])
+    query[:id] = id if id
+    query[:label] = label if label
+    Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.counts
+      apps.deployments apps.lastTaskFailure apps.failures apps.taskStats ])
     json = @connection.get('/v2/apps', query)['apps']
     json.map { |j| Marathon::App.new(j) }
   end
