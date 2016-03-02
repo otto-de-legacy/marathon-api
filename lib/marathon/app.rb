@@ -297,6 +297,8 @@ class Marathon::Apps
     Marathon::App.new(json, true)
   end
 
+
+
   # List all applications.
   # ++:cmd++: Filter apps to only those whose commands contain cmd.
   # ++:embed++: Embeds nested resources that match the supplied path.
