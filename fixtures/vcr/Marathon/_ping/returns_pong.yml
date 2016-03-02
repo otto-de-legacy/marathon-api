@@ -18,24 +18,27 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Pragma:
-      - no-cache
-      Expires:
-      - '0'
+      Date:
+      - Wed, 02 Mar 2016 11:32:08 GMT
+      - Wed, 02 Mar 2016 11:32:08 GMT
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
       Cache-Control:
       - must-revalidate,no-cache,no-store
       Access-Control-Allow-Credentials:
       - 'true'
+      Expires:
+      - '0'
+      Pragma:
+      - no-cache
       Content-Type:
-      - text/plain;charset=ISO-8859-1
+      - text/plain;charset=iso-8859-1
       Content-Length:
       - '5'
-      Server:
-      - Jetty(8.y.z-SNAPSHOT)
     body:
       encoding: UTF-8
       string: |
         pong
-    http_version: 
-  recorded_at: Wed, 06 Jan 2016 07:55:12 GMT
-recorded_with: VCR 3.0.1
+    http_version:
+  recorded_at: Wed, 02 Mar 2016 11:32:28 GMT
+recorded_with: VCR 2.9.3
