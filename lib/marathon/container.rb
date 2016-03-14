@@ -3,7 +3,7 @@
 # See https://mesosphere.github.io/marathon/docs/native-docker.html for full details.
 class Marathon::Container < Marathon::Base
 
-  SUPPERTED_TYPES = %w[ DOCKER ]
+  SUPPERTED_TYPES = %w[ DOCKER MESOS]
   ACCESSORS = %w[ type ]
   DEFAULTS = {
     :type => 'DOCKER',
