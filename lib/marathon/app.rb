@@ -4,7 +4,7 @@ class Marathon::App < Marathon::Base
 
   ACCESSORS = %w[ id args cmd cpus disk env executor instances mem ports requirePorts
                   storeUris tasksHealthy tasksUnhealthy tasksRunning tasksStaged upgradeStrategy
-                  uris user version labels ]
+                  deployments uris user version labels ]
 
   DEFAULTS = {
     :env => {},
