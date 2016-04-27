@@ -43,7 +43,7 @@ describe Marathon::App do
     subject { described_class.new({ 'id' => '/app/foo' }) }
 
     let(:expected_string) do
-      '{"env":{},"ports":[],"uris":[],"id":"/app/foo"}'
+      '{"env":{},"labels":{},"ports":[],"uris":[],"id":"/app/foo"}'
     end
 
     its(:to_json) { should == expected_string }
@@ -78,12 +78,21 @@ describe Marathon::App do
   end
 
   describe '#labels' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'labels' => { 'env'=>'abc','xyz'=>'123'}}) }
+    describe 'w/ lables' do
+      subject { described_class.new({'id' => '/ubuntu2', 'labels' => {'env' => 'abc', 'xyz' => '123'}}) }
+      it 'has keywordized labels' do
+        expect(subject.labels).to be_instance_of(Hash)
+        expect(subject.labels).to have_key(:env)
+      end
 
-    it 'has labels' do
-      expect(subject.labels).to be_instance_of(Hash)
-      puts subject.labels
-      expect(subject.labels).to have_key(:env)
+
+    end
+
+    describe 'w/o labels' do
+      subject { described_class.new({'id' => '/ubuntu2'}) }
+      it 'has empty labels' do
+        expect(subject.labels).to eq({})
+      end
     end
   end
 
@@ -129,7 +138,7 @@ describe Marathon::App do
       expect(subject).to receive(:check_read_only)
       expect(described_class).to receive(:change).with(
           '/app/foo',
-          {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
       subject.start!
@@ -139,7 +148,7 @@ describe Marathon::App do
       expect(described_class).to receive(:change)
         .with(
           '/app/foo',
-          {:env=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
       subject.start!

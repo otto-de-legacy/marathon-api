@@ -8,8 +8,9 @@ class Marathon::App < Marathon::Base
 
   DEFAULTS = {
     :env => {},
+    :labels => {},
     :ports => [],
-    :uris => []
+    :uris => [],
   }
 
   attr_reader :healthChecks, :constraints, :container, :read_only, :tasks
