@@ -8,6 +8,10 @@ require 'webmock'
 require 'marathon'
 require 'codeclimate-test-reporter'
 
+%w[MARATHON_URL MARATHON_USER MARATHON_PASSWORD].each do |key|
+  ENV.delete(key)
+end
+
 CodeClimate::TestReporter.start
 
 VCR.configure do |c|
