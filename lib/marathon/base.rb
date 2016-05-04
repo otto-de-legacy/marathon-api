@@ -17,8 +17,8 @@ class Marathon::Base
   end
 
   # Return application as JSON formatted string.
-  def to_json
-    info.to_json
+  def to_json(opts = {})
+    info.to_json(opts)
   end
 
   private
