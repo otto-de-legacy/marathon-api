@@ -16,8 +16,6 @@ class Marathon::ContainerVolume < Marathon::Base
     raise Marathon::Error::ArgumentError, 'containerPath must be an absolute path' \
       unless Pathname.new(containerPath).absolute?
     raise Marathon::Error::ArgumentError, 'hostPath must not be nil' unless hostPath
-    raise Marathon::Error::ArgumentError, 'hostPath must be an absolute path' \
-      unless Pathname.new(hostPath).absolute?
   end
 
   def to_pretty_s
