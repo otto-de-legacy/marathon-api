@@ -19,12 +19,8 @@ describe Marathon::ContainerVolume do
     it 'should fail with invalid path' do
       expect { subject.new(:hostPath => '/') }
         .to raise_error(Marathon::Error::ArgumentError, /containerPath .* not be nil/)
-      expect { subject.new(:containerPath => 'foo', :hostPath => '/') }
-        .to raise_error(Marathon::Error::ArgumentError, /containerPath .* absolute path/)
       expect { subject.new(:containerPath => '/') }
         .to raise_error(Marathon::Error::ArgumentError, /hostPath .* not be nil/)
-      expect { subject.new(:containerPath => '/', :hostPath => 'foo') }
-        .to raise_error(Marathon::Error::ArgumentError, /hostPath .* absolute path/)
     end
   end
 
