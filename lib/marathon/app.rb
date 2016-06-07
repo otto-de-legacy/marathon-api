@@ -2,7 +2,7 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#apps for full list of API's methods.
 class Marathon::App < Marathon::Base
 
-  ACCESSORS = %w[ id args cmd cpus disk env executor instances mem ports requirePorts
+  ACCESSORS = %w[ id args cmd cpus disk env executor fetch instances mem ports requirePorts
                   storeUris tasksHealthy tasksUnhealthy tasksRunning tasksStaged upgradeStrategy
                   deployments uris user version labels ]
 
@@ -10,7 +10,6 @@ class Marathon::App < Marathon::Base
       :env => {},
       :labels => {},
       :ports => [],
-      :uris => [],
   }
 
   attr_reader :healthChecks, :constraints, :container, :read_only, :tasks
@@ -151,7 +150,7 @@ class Marathon::App < Marathon::Base
   end
 
   def pretty_uris
-    uris.map { |e| "URI:        #{e}" }.join("\n")
+    [ (fetch || []).map { |e| e[:uri] } , uris ].compact.reduce([], :|).map { |e| "URI:        #{e}" }.join("\n")
   end
 
   def pretty_constraints
