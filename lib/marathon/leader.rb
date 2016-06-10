@@ -2,8 +2,8 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/leader for full list of API's methods.
 class Marathon::Leader
 
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @connection = marathon_instance.connection
   end
 
   # Returns the current leader. If no leader exists, raises NotFoundError.

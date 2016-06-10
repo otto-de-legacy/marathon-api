@@ -25,7 +25,7 @@ DEPLOYMENT_EXAMPLE = {
 describe Marathon::Deployment do
 
   describe '#to_s' do
-    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       'Marathon::Deployment { ' \
@@ -36,13 +36,13 @@ describe Marathon::Deployment do
   end
 
   describe '#to_json' do
-    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE, double(Marathon::MarathonInstance)) }
 
     its(:to_json) { should == DEPLOYMENT_EXAMPLE.to_json }
   end
 
   describe 'attributes' do
-    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
+    subject { described_class.new(DEPLOYMENT_EXAMPLE, double(Marathon::MarathonInstance)) }
 
     its(:id) { should == DEPLOYMENT_EXAMPLE[:id] }
     its(:affectedApps) { should == DEPLOYMENT_EXAMPLE[:affectedApps] }
@@ -52,16 +52,20 @@ describe Marathon::Deployment do
   end
 
   describe '#delete' do
-    subject { described_class.new(DEPLOYMENT_EXAMPLE) }
+    before(:each) do
+      @deployments = double(Marathon::Deployments)
+      @subject = described_class.new(DEPLOYMENT_EXAMPLE,
+                                     double(Marathon::MarathonInstance, :deployments => @deployments))
+    end
 
     it 'deletes the deployment' do
-      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], false)
-      subject.delete
+      expect(@deployments).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], false)
+      @subject.delete
     end
 
     it 'force deletes the deployment' do
-      expect(described_class).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], true)
-      subject.delete(true)
+      expect(@deployments).to receive(:delete).with(DEPLOYMENT_EXAMPLE[:id], true)
+      @subject.delete(true)
     end
   end
 

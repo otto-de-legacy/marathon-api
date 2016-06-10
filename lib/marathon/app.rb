@@ -19,10 +19,11 @@ class Marathon::App < Marathon::Base
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
   # ++read_only++: prevent actions on this application
-  def initialize(hash, read_only = false)
+  def initialize(hash, marathon_instance, read_only = false)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     raise ArgumentError, 'App must have an id' unless id
     @read_only = read_only
+    @marathon_instance = marathon_instance
     refresh_attributes
   end
 
@@ -40,16 +41,16 @@ class Marathon::App < Marathon::Base
   # else returns Hash with version information.
   def versions(version = nil)
     if version
-      self.class.version(id, version)
+      @marathon_instance.apps.version(id, version)
     else
-      self.class.versions(id)
+      @marathon_instance.apps.versions(id)
     end
   end
 
   # Reload attributes from marathon API.
   def refresh
     check_read_only
-    new_app = self.class.get(id)
+    new_app = @marathon_instance.apps.get(id)
     @info = new_app.info
     refresh_attributes
     self
@@ -68,7 +69,7 @@ class Marathon::App < Marathon::Base
   #            The current deployment can be overridden by setting the `force` query parameter.
   def restart!(force = false)
     check_read_only
-    self.class.restart(id, force)
+    @marathon_instance.apps.restart(id, force)
   end
 
   # Change parameters of a running application.
@@ -86,7 +87,7 @@ class Marathon::App < Marathon::Base
     else
       new_hash = hash
     end
-    self.class.change(id, new_hash, force)
+    @marathon_instance.apps.change(id, new_hash, force)
   end
 
   # Create a new version with parameters of an old version.
@@ -162,7 +163,7 @@ Version:    #{version}
     else
       @container = nil
     end
-    @tasks = (@info[:tasks] || []).map { |e| Marathon::Task.new(e) }
+    @tasks = (@info[:tasks] || []).map { |e| Marathon::Task.new(e, @marathon_instance) }
   end
 
   class << self
@@ -233,22 +234,23 @@ end
 
 # This class represents a set of Apps
 class Marathon::Apps
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @marathon_instance = marathon_instance
+    @connection = marathon_instance.connection
   end
 
   # List the application with id.
   # ++id++: Application's id.
   def get(id)
     json = @connection.get("/v2/apps/#{id}")['app']
-    Marathon::App.new(json)
+    Marathon::App.new(json, @marathon_instance)
   end
 
   # Delete the application with id.
   # ++id++: Application's id.
   def delete(id)
     json = @connection.delete("/v2/apps/#{id}")
-    Marathon::DeploymentInfo.new(json)
+    Marathon::DeploymentInfo.new(json, @marathon_instance)
   end
 
   # Create and start an application.
@@ -256,7 +258,7 @@ class Marathon::Apps
   #           see https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details
   def start(hash)
     json = @connection.post('/v2/apps', nil, :body => hash)
-    Marathon::App.new(json)
+    Marathon::App.new(json, @marathon_instance)
   end
 
   # Restart the application with id.
@@ -267,7 +269,7 @@ class Marathon::Apps
     query = {}
     query[:force] = true if force
     json = @connection.post("/v2/apps/#{id}/restart", query)
-    Marathon::DeploymentInfo.new(json)
+    Marathon::DeploymentInfo.new(json, @marathon_instance)
   end
 
   # Change parameters of a running application. The new application parameters apply only to subsequently
@@ -280,7 +282,7 @@ class Marathon::Apps
     query = {}
     query[:force] = true if force
     json = @connection.put("/v2/apps/#{id}", query, :body => hash.merge(:id => id))
-    Marathon::DeploymentInfo.new(json)
+    Marathon::DeploymentInfo.new(json, @marathon_instance)
   end
 
   # List the versions of the application with id.
@@ -295,7 +297,7 @@ class Marathon::Apps
   # ++version++: Version name
   def version(id, version)
     json = @connection.get("/v2/apps/#{id}/versions/#{version}")
-    Marathon::App.new(json, true)
+    Marathon::App.new(json, @marathon_instance, true)
   end
 
   # List all applications.
@@ -318,7 +320,7 @@ class Marathon::Apps
     Marathon::Util.add_choice(query, :embed, embed, %w[apps.tasks apps.counts
       apps.deployments apps.lastTaskFailure apps.failures apps.taskStats ])
     json = @connection.get('/v2/apps', query)['apps']
-    json.map { |j| Marathon::App.new(j) }
+    json.map { |j| Marathon::App.new(j, @marathon_instance) }
   end
 
 end

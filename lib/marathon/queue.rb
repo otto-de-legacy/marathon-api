@@ -6,9 +6,10 @@ class Marathon::Queue < Marathon::Base
 
   # Create a new queue element object.
   # ++hash++: Hash returned by API, including 'app' and 'delay'
-  def initialize(hash)
+  def initialize(hash, marathon_instance)
     super(hash, %w[delay])
-    @app = Marathon::App.new(info[:app], true)
+    @app = Marathon::App.new(info[:app], marathon_instance, true)
+    @marathon_instance = marathon_instance
   end
 
   def to_s
@@ -27,8 +28,8 @@ end
 
 # This class represents the Queue with all its elements
 class Marathon::Queues
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @connection = marathon_instance.connection
   end
 
   # Show content of the task queue.

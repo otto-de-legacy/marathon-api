@@ -2,8 +2,8 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#event-subscriptions for full list of API's methods.
 class Marathon::EventSubscriptions
 
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @connection = marathon_instance.connection
   end
 
   # List all event subscriber callback URLs.

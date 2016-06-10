@@ -54,31 +54,31 @@ module Marathon
     end
 
     def apps
-      Marathon::Apps.new(connection)
+      Marathon::Apps.new(self)
     end
 
     def groups
-      Marathon::Groups.new(connection)
+      Marathon::Groups.new(self)
     end
 
     def deployments
-      Marathon::Deployments.new(connection)
+      Marathon::Deployments.new(self)
     end
 
     def tasks
-      Marathon::Tasks.new(connection)
+      Marathon::Tasks.new(self)
     end
 
     def queues
-      Marathon::Queues.new(connection)
+      Marathon::Queues.new(self)
     end
 
     def leaders
-      Marathon::Leader.new(connection)
+      Marathon::Leader.new(self)
     end
 
     def event_subscriptions
-      Marathon::EventSubscriptions.new(connection)
+      Marathon::EventSubscriptions.new(self)
     end
 
   end

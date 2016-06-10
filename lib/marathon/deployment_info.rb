@@ -6,9 +6,10 @@ class Marathon::DeploymentInfo < Marathon::Base
 
   # Create a new deployment info object.
   # ++hash++: Hash returned by API, including 'deploymentId' and 'version'
-  def initialize(hash)
+  def initialize(hash, marathon_instance)
     super(hash, %w[deploymentId version])
     raise Marathon::Error::ArgumentError, 'version must not be nil' unless version
+    @marathon_instance = marathon_instance
   end
 
   # Wait for a deployment to finish.
@@ -18,7 +19,7 @@ class Marathon::DeploymentInfo < Marathon::Base
       deployments = nil
       while deployments.nil? or deployments.select{|e| e.id == deploymentId}.size > 0 do
         sleep(RECHECK_INTERVAL)
-        deployments = Marathon::Deployment.list
+        deployments = @marathon_instance.deployments.list
       end
     end
   end

@@ -15,7 +15,7 @@ describe Marathon::App do
       'uris' => ['http://example.com/big.tar'],
       'labels' => {'abc'=>'123'},
       'version' => 'foo-version'
-    }) }
+    }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       "Marathon::App { :id => /app/foo }"
@@ -40,7 +40,7 @@ describe Marathon::App do
   end
 
   describe '#to_json' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    subject { described_class.new({ 'id' => '/app/foo' }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       '{"env":{},"labels":{},"ports":[],"uris":[],"id":"/app/foo"}'
@@ -50,7 +50,7 @@ describe Marathon::App do
   end
 
   describe '#check_read_only' do
-    subject { described_class.new({ 'id' => '/ubuntu2' }, true) }
+    subject { described_class.new({ 'id' => '/ubuntu2' }, double(Marathon::MarathonInstance), true) }
 
     it 'does not allow changing the app' do
       expect { subject.change!({}) }.to raise_error(Marathon::Error::ArgumentError)
@@ -60,7 +60,7 @@ describe Marathon::App do
   describe '#container' do
     subject { described_class.new({
       'id' => '/ubuntu2', 'container' => {'type'=>'DOCKER', 'docker'=>{'image'=>'felixb/yocto-httpd'}}
-    })}
+    }, double(Marathon::MarathonInstance))}
 
     it 'has container' do
       expect(subject.container).to be_instance_of(Marathon::Container)
@@ -69,7 +69,8 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] }) }
+    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] },
+                                  double(Marathon::MarathonInstance)) }
 
     it 'has constraints' do
       expect(subject.constraints).to be_instance_of(Array)
@@ -79,7 +80,8 @@ describe Marathon::App do
 
   describe '#labels' do
     describe 'w/ lables' do
-      subject { described_class.new({'id' => '/ubuntu2', 'labels' => {'env' => 'abc', 'xyz' => '123'}}) }
+      subject { described_class.new({'id' => '/ubuntu2', 'labels' => {'env' => 'abc', 'xyz' => '123'}},
+                                    double(Marathon::MarathonInstance)) }
       it 'has keywordized labels' do
         expect(subject.labels).to be_instance_of(Hash)
         expect(subject.labels).to have_key(:env)
@@ -89,7 +91,7 @@ describe Marathon::App do
     end
 
     describe 'w/o labels' do
-      subject { described_class.new({'id' => '/ubuntu2'}) }
+      subject { described_class.new({'id' => '/ubuntu2'}, double(Marathon::MarathonInstance)) }
       it 'has empty labels' do
         expect(subject.labels).to eq({})
       end
@@ -97,7 +99,8 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] }) }
+    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] },
+                                  double(Marathon::MarathonInstance)) }
 
     it 'has healthChecks' do
       expect(subject.healthChecks).to be_instance_of(Array)
@@ -106,7 +109,7 @@ describe Marathon::App do
   end
 
   describe '#tasks' do
-    subject { described_class.new({ 'id' => '/ubuntu2' }) }
+    subject { described_class.new({ 'id' => '/ubuntu2' }, double(Marathon::MarathonInstance)) }
 
     it 'shows already loaded tasks w/o API call' do
       subject.info[:tasks] = []
@@ -116,164 +119,199 @@ describe Marathon::App do
   end
 
   describe '#versions' do
-    subject { described_class.new({ 'id' => '/ubuntu2' }) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({'id' => '/ubuntu2'}, @marathon_instance)
+    end
 
     it 'loads versions from API' do
-      expect(described_class).to receive(:versions).with('/ubuntu2') { ['foo-version'] }
-      expect(subject.versions).to eq(['foo-version'])
+      expect(@apps).to receive(:versions).with('/ubuntu2') { ['foo-version'] }
+      expect(@subject.versions).to eq(['foo-version'])
     end
 
     it 'loads version from API' do
-      expect(described_class).to receive(:version).with('/ubuntu2', 'foo-version') {
+      expect(@apps).to receive(:version).with('/ubuntu2', 'foo-version') {
         Marathon::App.new({'id' => '/ubuntu2', 'version' => 'foo-version'}, true)
       }
-      expect(subject.versions('foo-version').version).to eq('foo-version')
+      expect(@subject.versions('foo-version').version).to eq('foo-version')
     end
   end
 
   describe '#start!' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({ 'id' => '/app/foo' }, @marathon_instance)
+    end
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:change).with(
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:change).with(
           '/app/foo',
           {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
-      subject.start!
+      @subject.start!
     end
 
     it 'starts the app' do
-      expect(described_class).to receive(:change)
+      expect(@apps).to receive(:change)
         .with(
           '/app/foo',
           {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
           false
         )
-      subject.start!
+      @subject.start!
     end
   end
 
   describe '#refresh' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({ 'id' => '/app/foo' }, @marathon_instance)
+    end
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:get) { described_class.new('id' => subject.id) }
-      subject.refresh
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:get) { described_class.new({'id' => @subject.id}, double(Marathon::MarathonInstance)) }
+      @subject.refresh
     end
 
     it 'refreshs the app' do
-      expect(described_class).to receive(:get).with('/app/foo') do
-        described_class.new({ 'id' => '/app/foo', 'refreshed' => true })
+      expect(@apps).to receive(:get).with('/app/foo') do
+        described_class.new({ 'id' => '/app/foo', 'refreshed' => true }, double(Marathon::MarathonInstance))
       end
-      subject.refresh
-      expect(subject.info[:refreshed]).to be(true)
+      @subject.refresh
+      expect(@subject.info[:refreshed]).to be(true)
     end
 
     it 'returns the app' do
-      expect(described_class).to receive(:get).with('/app/foo') do
-        described_class.new({ 'id' => '/app/foo' })
+      expect(@apps).to receive(:get).with('/app/foo') do
+        described_class.new({ 'id' => '/app/foo' }, double(Marathon::MarathonInstance))
       end
-      expect(subject.refresh).to be subject
+      expect(@subject.refresh).to be @subject
     end
   end
 
   describe '#restart!' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({'id' => '/app/foo'}, @marathon_instance)
+    end
+
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:restart)
-      subject.restart!
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:restart)
+      @subject.restart!
     end
 
     it 'restarts the app' do
-      expect(described_class).to receive(:restart)
+      expect(@apps).to receive(:restart)
         .with('/app/foo', false)
-      subject.restart!
+      @subject.restart!
     end
 
     it 'restarts the app, force' do
-      expect(described_class).to receive(:restart)
+      expect(@apps).to receive(:restart)
         .with('/app/foo', true)
-      subject.restart!(true)
+      @subject.restart!(true)
     end
   end
 
   describe '#change!' do
-    subject { described_class.new({ 'id' => '/app/foo' }) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({'id' => '/app/foo'}, @marathon_instance)
+    end
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:change)
-      subject.change!({})
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:change)
+      @subject.change!({})
     end
 
     it 'changes the app' do
-      expect(described_class).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
-      subject.change!('instances' => 9000, 'version' => 'old-version')
+      expect(@apps).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      @subject.change!('instances' => 9000, 'version' => 'old-version')
     end
   end
 
   describe '#roll_back!' do
-    subject { described_class.new({:id => '/app/foo', :instances => 10}) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({:id => '/app/foo', :instances => 10}, @marathon_instance)
+    end
+
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:change)
-      subject.roll_back!('old_version')
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:change)
+      @subject.roll_back!('old_version')
     end
 
     it 'changes the app' do
-      expect(subject).to receive(:change!).with({:version => 'old_version' }, false)
-      subject.roll_back!('old_version')
+      expect(@subject).to receive(:change!).with({:version => 'old_version' }, false)
+      @subject.roll_back!('old_version')
     end
 
     it 'changes the app with force' do
-      expect(subject).to receive(:change!).with({:version => 'old_version' }, true)
-      subject.roll_back!('old_version', true)
+      expect(@subject).to receive(:change!).with({:version => 'old_version' }, true)
+      @subject.roll_back!('old_version', true)
     end
   end
 
   describe '#scale!' do
-    subject { described_class.new({:id => '/app/foo', :instances => 10}) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({:id => '/app/foo', :instances => 10}, @marathon_instance)
+    end
+
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:change)
-      subject.scale!(5)
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:change)
+      @subject.scale!(5)
     end
 
     it 'changes the app' do
-      expect(subject).to receive(:change!).with({:instances => 9000}, false)
-      subject.scale!(9000)
+      expect(@subject).to receive(:change!).with({:instances => 9000}, false)
+      @subject.scale!(9000)
     end
 
     it 'changes the app with force' do
-      expect(subject).to receive(:change!).with({:instances => 9000}, true)
-      subject.scale!(9000, true)
+      expect(@subject).to receive(:change!).with({:instances => 9000}, true)
+      @subject.scale!(9000, true)
     end
   end
 
   describe '#suspend!' do
-    subject { described_class.new({'id' => '/app/foo', :instances => 10}) }
+    before(:each) do
+      @apps = double(Marathon::Apps)
+      @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
+      @subject = described_class.new({:id => '/app/foo', :instances => 10}, @marathon_instance)
+    end
 
     it 'checks for read only' do
-      expect(subject).to receive(:check_read_only)
-      expect(described_class).to receive(:change)
-      subject.suspend!
+      expect(@subject).to receive(:check_read_only)
+      expect(@apps).to receive(:change)
+      @subject.suspend!
     end
 
     it 'scales the app to 0' do
-      expect(subject).to receive(:scale!).with(0, false)
-      subject.suspend!
+      expect(@subject).to receive(:scale!).with(0, false)
+      @subject.suspend!
     end
 
     it 'scales the app to 0 with force' do
-      expect(subject).to receive(:scale!).with(0, true)
-      subject.suspend!(true)
+      expect(@subject).to receive(:scale!).with(0, true)
+      @subject.suspend!(true)
     end
   end
 
