@@ -165,6 +165,7 @@ Version:    #{version}
   end
 end
 
+# This class represents a set of Groups
 class Marathon::Groups < Marathon::Base
 
   def initialize(marathon_instance)

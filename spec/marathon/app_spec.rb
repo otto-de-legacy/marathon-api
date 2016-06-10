@@ -69,7 +69,8 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] }, double(Marathon::MarathonInstance)) }
+    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] },
+                                  double(Marathon::MarathonInstance)) }
 
     it 'has constraints' do
       expect(subject.constraints).to be_instance_of(Array)
@@ -79,7 +80,8 @@ describe Marathon::App do
 
   describe '#labels' do
     describe 'w/ lables' do
-      subject { described_class.new({'id' => '/ubuntu2', 'labels' => {'env' => 'abc', 'xyz' => '123'}}, double(Marathon::MarathonInstance)) }
+      subject { described_class.new({'id' => '/ubuntu2', 'labels' => {'env' => 'abc', 'xyz' => '123'}},
+                                    double(Marathon::MarathonInstance)) }
       it 'has keywordized labels' do
         expect(subject.labels).to be_instance_of(Hash)
         expect(subject.labels).to have_key(:env)
@@ -97,7 +99,8 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] }, double(Marathon::MarathonInstance)) }
+    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] },
+                                  double(Marathon::MarathonInstance)) }
 
     it 'has healthChecks' do
       expect(subject.healthChecks).to be_instance_of(Array)

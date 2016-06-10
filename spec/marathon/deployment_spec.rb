@@ -54,7 +54,8 @@ describe Marathon::Deployment do
   describe '#delete' do
     before(:each) do
       @deployments = double(Marathon::Deployments)
-      @subject = described_class.new(DEPLOYMENT_EXAMPLE, double(Marathon::MarathonInstance, :deployments => @deployments))
+      @subject = described_class.new(DEPLOYMENT_EXAMPLE,
+                                     double(Marathon::MarathonInstance, :deployments => @deployments))
     end
 
     it 'deletes the deployment' do

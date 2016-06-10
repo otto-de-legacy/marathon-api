@@ -17,7 +17,8 @@ describe Marathon::DeploymentInfo do
   describe '#wait' do
     before(:each) do
       @deployments = double(Marathon::Deployments)
-      @subject = described_class.new(DEPLOYMENT_INFO_EXAMPLE, double(Marathon::MarathonInstance, :deployments => @deployments))
+      @subject = described_class.new(DEPLOYMENT_INFO_EXAMPLE,
+                                     double(Marathon::MarathonInstance, :deployments => @deployments))
     end
 
     it 'waits for the deployment' do
