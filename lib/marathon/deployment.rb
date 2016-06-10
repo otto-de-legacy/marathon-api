@@ -8,8 +8,9 @@ class Marathon::Deployment < Marathon::Base
   # Create a new deployment object.
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/deployments for full details.
-  def initialize(hash)
+  def initialize(hash, marathon_instance)
     super(hash, ACCESSORS)
+    @marathon_instance = marathon_instance
     @currentActions = (info[:currentActions] || []).map { |e| Marathon::DeploymentAction.new(e) }
     @steps = (info[:steps] || []).map { |e| Marathon::DeploymentStep.new(e) }
   end
@@ -19,7 +20,7 @@ class Marathon::Deployment < Marathon::Base
   #            is created to restore the previous configuration. If set to true, then the deployment
   #            is still canceled but no rollback deployment is created.
   def delete(force = false)
-    self.class.delete(id, force)
+    @marathon_instance.deployments.delete(id, force)
   end
   alias :cancel :delete
 
@@ -50,13 +51,14 @@ end
 
 # This class represents a set of Deployments
 class Marathon::Deployments
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @marathon_instance = marathon_instance
+    @connection = @marathon_instance.connection
   end
   # List running deployments.
   def list
     json = @connection.get('/v2/deployments')
-    json.map { |j| Marathon::Deployment.new(j) }
+    json.map { |j| Marathon::Deployment.new(j, @marathon_instance) }
   end
 
   # Cancel the deployment with id.
@@ -68,7 +70,7 @@ class Marathon::Deployments
     query = {}
     query[:force] = true if force
     json = @connection.delete("/v2/deployments/#{id}")
-    Marathon::DeploymentInfo.new(json)
+    Marathon::DeploymentInfo.new(json, @marathon_instance)
   end
 
 end

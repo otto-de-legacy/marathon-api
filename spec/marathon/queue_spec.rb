@@ -6,7 +6,7 @@ describe Marathon::Queue do
     subject { described_class.new({
         'app'   => { 'id' => '/app/foo' },
         'delay' => { 'overdue' => true }
-      }) }
+    }, double(Marathon::MarathonInstance)) }
 
     it 'has app' do
       expect(subject.app).to be_instance_of(Marathon::App)
@@ -27,7 +27,7 @@ describe Marathon::Queue do
     subject { described_class.new({
         'app'   => { 'id' => '/app/foo' },
         'delay' => { 'overdue' => true }
-      }) }
+      }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       'Marathon::Queue { :appId => /app/foo :delay => {:overdue=>true} }'
@@ -40,7 +40,7 @@ describe Marathon::Queue do
     subject { described_class.new({
         'app'   => { 'id' => '/app/foo' },
         'delay' => { 'overdue' => true }
-      }) }
+      }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       '{"app":{"id":"/app/foo"},"delay":{"overdue":true}}'

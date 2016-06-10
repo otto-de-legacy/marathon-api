@@ -6,8 +6,9 @@ class Marathon::Task < Marathon::Base
 
   # Create a new task object.
   # ++hash++: Hash including all attributes
-  def initialize(hash)
+  def initialize(hash, marathon_instance)
     super(hash, ACCESSORS)
+    @marathon_instance = marathon_instance
   end
 
   # Kill the task that belongs to an application.
@@ -75,8 +76,9 @@ end
 
 # This class represents a set of Tasks
 class Marathon::Tasks
-  def initialize(connection)
-    @connection = connection
+  def initialize(marathon_instance)
+    @marathon_instance = marathon_instance
+    @connection = marathon_instance.connection
   end
 
   # List tasks of all applications.
@@ -86,14 +88,14 @@ class Marathon::Tasks
     query = {}
     Marathon::Util.add_choice(query, :status, status, %w[running staging])
     json = @connection.get('/v2/tasks', query)['tasks']
-    json.map { |j| Marathon::Task.new(j) }
+    json.map { |j| Marathon::Task.new(j, @marathon_instance) }
   end
 
   # List all running tasks for application appId.
   # ++appId++: Application's id
   def get(appId)
     json = @connection.get("/v2/apps/#{appId}/tasks")['tasks']
-    json.map { |j| Marathon::Task.new(j) }
+    json.map { |j| Marathon::Task.new(j, @marathon_instance) }
   end
 
   # Kill the given list of tasks and scale apps if requested.
@@ -117,7 +119,7 @@ class Marathon::Tasks
     query[:host] = host if host
     query[:scale] = true if scale
     json = @connection.delete("/v2/apps/#{appId}/tasks", query)['tasks']
-    json.map { |j| Marathon::Task.new(j) }
+    json.map { |j| Marathon::Task.new(j, @marathon_instance) }
   end
 
 end
