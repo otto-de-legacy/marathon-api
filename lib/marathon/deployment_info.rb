@@ -6,7 +6,8 @@ class Marathon::DeploymentInfo < Marathon::Base
 
   # Create a new deployment info object.
   # ++hash++: Hash returned by API, including 'deploymentId' and 'version'
-  def initialize(hash, marathon_instance)
+  # ++marathon_instance++: MarathonInstance holding a connection to marathon
+  def initialize(hash, marathon_instance = Marathon.singleton)
     super(hash, %w[deploymentId version])
     raise Marathon::Error::ArgumentError, 'version must not be nil' unless version
     @marathon_instance = marathon_instance

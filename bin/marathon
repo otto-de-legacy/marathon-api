@@ -110,7 +110,7 @@ end
 def subcmd_kill_tasks(cmd_opts)
   if cmd_opts[:task_id]
     puts "Killing task of '#{cmd_opts[:id]}' with id '#{cmd_opts[:task_id]}'"
-    tasks = [Marathon::Task.delete(cmd_opts[:id], cmd_opts[:task_id], cmd_opts[:scale])]
+    tasks = [Marathon::Task.delete(cmd_opts[:task_id], cmd_opts[:scale])]
   elsif cmd_opts[:host]
     puts "Killing tasks of '#{cmd_opts[:id]}' on host '#{cmd_opts[:host]}'"
     tasks = Marathon::Task.delete_all(cmd_opts[:id], cmd_opts[:host], cmd_opts[:scale])

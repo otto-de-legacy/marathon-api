@@ -6,7 +6,8 @@ class Marathon::Task < Marathon::Base
 
   # Create a new task object.
   # ++hash++: Hash including all attributes
-  def initialize(hash, marathon_instance)
+  # ++marathon_instance++: MarathonInstance holding a connection to marathon
+  def initialize(hash, marathon_instance = Marathon.singleton)
     super(hash, ACCESSORS)
     @marathon_instance = marathon_instance
   end
@@ -17,6 +18,7 @@ class Marathon::Task < Marathon::Base
   def delete!(scale = false)
     new_task = self.class.delete(id, scale)
   end
+
   alias :kill! :delete!
 
   def to_s
@@ -56,8 +58,9 @@ Version:    #{version}
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
     def delete(ids, scale = false)
-      Marathon.singleton.tasks.delete(ids,scale)
+      Marathon.singleton.tasks.delete(ids, scale)
     end
+
     alias :remove :delete
     alias :kill :delete
 
@@ -67,8 +70,9 @@ Version:    #{version}
     # ++scale++: Scale the app down (i.e. decrement its instances setting by the number of tasks killed)
     #            after killing the specified tasks.
     def delete_all(appId, host = nil, scale = false)
-      Marathon.singleton.tasks.delete_all(appId,host,scale)
+      Marathon.singleton.tasks.delete_all(appId, host, scale)
     end
+
     alias :remove_all :delete_all
     alias :kill_all :delete_all
   end

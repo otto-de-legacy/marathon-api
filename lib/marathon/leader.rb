@@ -2,7 +2,7 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#get-/v2/leader for full list of API's methods.
 class Marathon::Leader
 
-  def initialize(marathon_instance)
+  def initialize(marathon_instance = Marathon.singleton)
     @connection = marathon_instance.connection
   end
 

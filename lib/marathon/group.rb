@@ -13,7 +13,8 @@ class Marathon::Group < Marathon::Base
   # Create a new group object.
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/groups for full details.
-  def initialize(hash, marathon_instance)
+  # ++marathon_instance++: MarathonInstance holding a connection to marathon
+  def initialize(hash, marathon_instance = Marathon.singleton)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     @marathon_instance = marathon_instance
     raise ArgumentError, 'Group must have an id' unless id

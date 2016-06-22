@@ -6,7 +6,8 @@ class Marathon::Queue < Marathon::Base
 
   # Create a new queue element object.
   # ++hash++: Hash returned by API, including 'app' and 'delay'
-  def initialize(hash, marathon_instance)
+  # ++marathon_instance++: MarathonInstance holding a connection to marathon
+  def initialize(hash, marathon_instance = Marathon.singleton)
     super(hash, %w[delay])
     @app = Marathon::App.new(info[:app], marathon_instance, true)
     @marathon_instance = marathon_instance

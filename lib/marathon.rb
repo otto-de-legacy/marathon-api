@@ -37,7 +37,7 @@ module Marathon
     attr_reader :connection
 
     def initialize(url, options)
-      @connection = Connection.new(url,options)
+      @connection = Connection.new(url, options)
     end
 
     def ping
@@ -88,7 +88,7 @@ module Marathon
 
   attr_reader :singleton
 
-  @singleton = MarathonInstance::new(DEFAULT_URL,{})
+  @singleton = MarathonInstance::new(DEFAULT_URL, {})
 
   # Get the marathon url from environment
   def env_url
@@ -134,7 +134,7 @@ module Marathon
 
 
   def reset_singleton!
-    @singleton = MarathonInstance.new(url,options)
+    @singleton = MarathonInstance.new(url, options)
   end
 
   def reset_connection!
@@ -156,7 +156,5 @@ module Marathon
   end
 
   module_function :connection, :env_options, :env_url, :info, :logger, :logger=, :ping, :metrics,
-                  :options, :options=, :url, :url= ,:reset_connection!,:reset_singleton!,:singleton
-
-
+                  :options, :options=, :url, :url=, :reset_connection!, :reset_singleton!, :singleton
 end

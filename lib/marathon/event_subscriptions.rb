@@ -2,7 +2,7 @@
 # See https://mesosphere.github.io/marathon/docs/rest-api.html#event-subscriptions for full list of API's methods.
 class Marathon::EventSubscriptions
 
-  def initialize(marathon_instance)
+  def initialize(marathon_instance = Marathon.singleton)
     @connection = marathon_instance.connection
   end
 

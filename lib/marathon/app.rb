@@ -19,7 +19,8 @@ class Marathon::App < Marathon::Base
   # ++hash++: Hash including all attributes.
   #           See https://mesosphere.github.io/marathon/docs/rest-api.html#post-/v2/apps for full details.
   # ++read_only++: prevent actions on this application
-  def initialize(hash, marathon_instance, read_only = false)
+  # ++marathon_instance++: MarathonInstance holding a connection to marathon
+  def initialize(hash, marathon_instance = Marathon.singleton, read_only = false)
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     raise ArgumentError, 'App must have an id' unless id
     @read_only = read_only
