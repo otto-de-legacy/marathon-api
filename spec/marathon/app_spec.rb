@@ -59,7 +59,11 @@ describe Marathon::App do
 
   describe '#container' do
     subject { described_class.new({
-                                      'id' => '/ubuntu2', 'container' => {'type' => 'DOCKER', 'docker' => {'image' => 'felixb/yocto-httpd'}}
+                                      'id' => '/ubuntu2',
+                                      'container' => {
+                                          'type' => 'DOCKER',
+                                          'docker' => {'image' => 'felixb/yocto-httpd'}
+                                      }
                                   }, double(Marathon::MarathonInstance)) }
 
     it 'has container' do
