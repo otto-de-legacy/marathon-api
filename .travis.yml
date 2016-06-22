@@ -4,6 +4,7 @@ rvm:
   - 2.0.0
   - 2.1.5
   - 2.2.0
+  - 2.3.0
 env:
   global:
     - CODECLIMATE_REPO_TOKEN=a0f25c19629dd353c43aef0cbbd886a7a4079c2238711fa4f932e1477b818195
