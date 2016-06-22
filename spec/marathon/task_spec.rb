@@ -4,12 +4,12 @@ describe Marathon::Task do
 
   describe '#to_s' do
     subject { described_class.new({
-        'id'      => 'task-id-foo',
-        'appId'   => '/app/foo',
-        'host'    => 'foo-host',
-        'ports'   => [31000, 31001],
-        'version' => 'foo-version'
-      }, double(Marathon::MarathonInstance)) }
+                                      'id' => 'task-id-foo',
+                                      'appId' => '/app/foo',
+                                      'host' => 'foo-host',
+                                      'ports' => [31000, 31001],
+                                      'version' => 'foo-version'
+                                  }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       "Marathon::Task { :id => task-id-foo :appId => /app/foo :host => foo-host }"
@@ -31,10 +31,10 @@ describe Marathon::Task do
 
   describe '#to_json' do
     subject { described_class.new({
-        'id'    => 'task-id-foo',
-        'appId' => '/app/foo',
-        'host'  => 'foo-host',
-      }, double(Marathon::MarathonInstance)) }
+                                      'id' => 'task-id-foo',
+                                      'appId' => '/app/foo',
+                                      'host' => 'foo-host',
+                                  }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       '{"id":"task-id-foo","appId":"/app/foo","host":"foo-host"}'
@@ -45,8 +45,8 @@ describe Marathon::Task do
 
   describe '#delete!' do
     let(:task) { described_class.new({
-      'id' => 'task_123', 'appId' => '/app/foo'
-    }, double(Marathon::MarathonInstance)) }
+                                         'id' => 'task_123', 'appId' => '/app/foo'
+                                     }, double(Marathon::MarathonInstance)) }
 
     it 'deletes the task' do
       expect(described_class).to receive(:delete).with('task_123', false)

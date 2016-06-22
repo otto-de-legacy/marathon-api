@@ -4,7 +4,7 @@ class Marathon::ContainerVolume < Marathon::Base
 
   ACCESSORS = %w[ containerPath hostPath mode ]
   DEFAULTS = {
-    :mode => 'RW'
+      :mode => 'RW'
   }
 
   # Create a new container volume object.

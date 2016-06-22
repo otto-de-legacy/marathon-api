@@ -4,18 +4,18 @@ describe Marathon::App do
 
   describe '#to_s' do
     subject { described_class.new({
-      'id' => '/app/foo',
-      'instances' => 1,
-      'tasks' => [],
-      'container' => {
-        :type => 'DOCKER', 'docker' => { 'image' => 'foo/bar:latest' },
-      },
-      'env' => {'FOO' => 'BAR', 'blubb' => 'blah'},
-      'constraints' => [['hostname', 'UNIQUE']],
-      'uris' => ['http://example.com/big.tar'],
-      'labels' => {'abc'=>'123'},
-      'version' => 'foo-version'
-    }, double(Marathon::MarathonInstance)) }
+                                      'id' => '/app/foo',
+                                      'instances' => 1,
+                                      'tasks' => [],
+                                      'container' => {
+                                          :type => 'DOCKER', 'docker' => {'image' => 'foo/bar:latest'},
+                                      },
+                                      'env' => {'FOO' => 'BAR', 'blubb' => 'blah'},
+                                      'constraints' => [['hostname', 'UNIQUE']],
+                                      'uris' => ['http://example.com/big.tar'],
+                                      'labels' => {'abc' => '123'},
+                                      'version' => 'foo-version'
+                                  }, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       "Marathon::App { :id => /app/foo }"
@@ -40,7 +40,7 @@ describe Marathon::App do
   end
 
   describe '#to_json' do
-    subject { described_class.new({ 'id' => '/app/foo' }, double(Marathon::MarathonInstance)) }
+    subject { described_class.new({'id' => '/app/foo'}, double(Marathon::MarathonInstance)) }
 
     let(:expected_string) do
       '{"env":{},"labels":{},"ports":[],"uris":[],"id":"/app/foo"}'
@@ -50,7 +50,7 @@ describe Marathon::App do
   end
 
   describe '#check_read_only' do
-    subject { described_class.new({ 'id' => '/ubuntu2' }, double(Marathon::MarathonInstance), true) }
+    subject { described_class.new({'id' => '/ubuntu2'}, double(Marathon::MarathonInstance), true) }
 
     it 'does not allow changing the app' do
       expect { subject.change!({}) }.to raise_error(Marathon::Error::ArgumentError)
@@ -59,8 +59,8 @@ describe Marathon::App do
 
   describe '#container' do
     subject { described_class.new({
-      'id' => '/ubuntu2', 'container' => {'type'=>'DOCKER', 'docker'=>{'image'=>'felixb/yocto-httpd'}}
-    }, double(Marathon::MarathonInstance))}
+                                      'id' => '/ubuntu2', 'container' => {'type' => 'DOCKER', 'docker' => {'image' => 'felixb/yocto-httpd'}}
+                                  }, double(Marathon::MarathonInstance)) }
 
     it 'has container' do
       expect(subject.container).to be_instance_of(Marathon::Container)
@@ -69,7 +69,7 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']] },
+    subject { described_class.new({'id' => '/ubuntu2', 'constraints' => [['hostname', 'UNIQUE']]},
                                   double(Marathon::MarathonInstance)) }
 
     it 'has constraints' do
@@ -99,7 +99,7 @@ describe Marathon::App do
   end
 
   describe '#constraints' do
-    subject { described_class.new({ 'id' => '/ubuntu2', 'healthChecks' => [{ 'path' => '/ping' }] },
+    subject { described_class.new({'id' => '/ubuntu2', 'healthChecks' => [{'path' => '/ping'}]},
                                   double(Marathon::MarathonInstance)) }
 
     it 'has healthChecks' do
@@ -109,7 +109,7 @@ describe Marathon::App do
   end
 
   describe '#tasks' do
-    subject { described_class.new({ 'id' => '/ubuntu2' }, double(Marathon::MarathonInstance)) }
+    subject { described_class.new({'id' => '/ubuntu2'}, double(Marathon::MarathonInstance)) }
 
     it 'shows already loaded tasks w/o API call' do
       subject.info[:tasks] = []
@@ -142,26 +142,26 @@ describe Marathon::App do
     before(:each) do
       @apps = double(Marathon::Apps)
       @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
-      @subject = described_class.new({ 'id' => '/app/foo' }, @marathon_instance)
+      @subject = described_class.new({'id' => '/app/foo'}, @marathon_instance)
     end
 
     it 'checks for read only' do
       expect(@subject).to receive(:check_read_only)
       expect(@apps).to receive(:change).with(
           '/app/foo',
-          {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
+          {:env => {}, :labels => {}, :ports => [], :uris => [], :id => "/app/foo"},
           false
-        )
+      )
       @subject.start!
     end
 
     it 'starts the app' do
       expect(@apps).to receive(:change)
-        .with(
-          '/app/foo',
-          {:env=>{}, :labels=>{}, :ports=>[], :uris=>[], :id=>"/app/foo"},
-          false
-        )
+                           .with(
+                               '/app/foo',
+                               {:env => {}, :labels => {}, :ports => [], :uris => [], :id => "/app/foo"},
+                               false
+                           )
       @subject.start!
     end
   end
@@ -170,7 +170,7 @@ describe Marathon::App do
     before(:each) do
       @apps = double(Marathon::Apps)
       @marathon_instance = double(Marathon::MarathonInstance, :apps => @apps)
-      @subject = described_class.new({ 'id' => '/app/foo' }, @marathon_instance)
+      @subject = described_class.new({'id' => '/app/foo'}, @marathon_instance)
     end
 
     it 'checks for read only' do
@@ -181,7 +181,7 @@ describe Marathon::App do
 
     it 'refreshs the app' do
       expect(@apps).to receive(:get).with('/app/foo') do
-        described_class.new({ 'id' => '/app/foo', 'refreshed' => true }, double(Marathon::MarathonInstance))
+        described_class.new({'id' => '/app/foo', 'refreshed' => true}, double(Marathon::MarathonInstance))
       end
       @subject.refresh
       expect(@subject.info[:refreshed]).to be(true)
@@ -189,7 +189,7 @@ describe Marathon::App do
 
     it 'returns the app' do
       expect(@apps).to receive(:get).with('/app/foo') do
-        described_class.new({ 'id' => '/app/foo' }, double(Marathon::MarathonInstance))
+        described_class.new({'id' => '/app/foo'}, double(Marathon::MarathonInstance))
       end
       expect(@subject.refresh).to be @subject
     end
@@ -211,13 +211,13 @@ describe Marathon::App do
 
     it 'restarts the app' do
       expect(@apps).to receive(:restart)
-        .with('/app/foo', false)
+                           .with('/app/foo', false)
       @subject.restart!
     end
 
     it 'restarts the app, force' do
       expect(@apps).to receive(:restart)
-        .with('/app/foo', true)
+                           .with('/app/foo', true)
       @subject.restart!(true)
     end
   end
@@ -236,7 +236,7 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(@apps).to receive(:change).with('/app/foo', {:instances => 9000 }, false)
+      expect(@apps).to receive(:change).with('/app/foo', {:instances => 9000}, false)
       @subject.change!('instances' => 9000, 'version' => 'old-version')
     end
   end
@@ -256,12 +256,12 @@ describe Marathon::App do
     end
 
     it 'changes the app' do
-      expect(@subject).to receive(:change!).with({:version => 'old_version' }, false)
+      expect(@subject).to receive(:change!).with({:version => 'old_version'}, false)
       @subject.roll_back!('old_version')
     end
 
     it 'changes the app with force' do
-      expect(@subject).to receive(:change!).with({:version => 'old_version' }, true)
+      expect(@subject).to receive(:change!).with({:version => 'old_version'}, true)
       @subject.roll_back!('old_version', true)
     end
   end
@@ -320,23 +320,23 @@ describe Marathon::App do
 
     it 'passes arguments to api call' do
       expect(Marathon.connection).to receive(:get)
-        .with('/v2/apps', {:cmd => 'foo', :embed => 'apps.tasks'})
-        .and_return({ 'apps' => [] })
+                                         .with('/v2/apps', {:cmd => 'foo', :embed => 'apps.tasks'})
+                                         .and_return({'apps' => []})
       subject.list('foo', 'apps.tasks')
     end
 
     it 'passing id argument to api call' do
       expect(Marathon.connection).to receive(:get)
-        .with('/v2/apps', {:id => '/app/foo'})
-        .and_return({ 'apps' => [] })
+                                         .with('/v2/apps', {:id => '/app/foo'})
+                                         .and_return({'apps' => []})
       subject.list(nil, nil, '/app/foo')
     end
 
     it 'passing label argument to api call' do
       expect(Marathon.connection).to receive(:get)
-        .with('/v2/apps', {:label => 'abc'})
-        .and_return({ 'apps' => [] })
-      subject.list(nil, nil ,nil, 'abc')
+                                         .with('/v2/apps', {:label => 'abc'})
+                                         .and_return({'apps' => []})
+      subject.list(nil, nil, nil, 'abc')
     end
 
     it 'raises error when run with strange embed' do
@@ -358,12 +358,12 @@ describe Marathon::App do
 
     it 'starts the app', :vcr do
       app = subject.start({
-        :id => '/test-app',
-        :cmd => 'sleep 10',
-        :instances => 1,
-        :cpus => 0.1,
-        :mem => 32
-      })
+                              :id => '/test-app',
+                              :cmd => 'sleep 10',
+                              :instances => 1,
+                              :cpus => 0.1,
+                              :mem => 32
+                          })
       expect(app).to be_instance_of(described_class)
       expect(app.id).to eq('/test-app')
       expect(app.instances).to eq(1)
@@ -402,7 +402,7 @@ describe Marathon::App do
 
     it 'deletes the app', :vcr do
       expect(subject.delete('/test-app'))
-        .to be_instance_of(Marathon::DeploymentInfo)
+          .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails deleting not existing app', :vcr do
@@ -430,15 +430,15 @@ describe Marathon::App do
     subject { described_class }
 
     it 'changes the app', :vcr do
-      expect(subject.change('/ubuntu2', { 'instances' => 2 }, true))
-        .to be_instance_of(Marathon::DeploymentInfo)
-      expect(subject.change('/ubuntu2', { 'instances' => 1 }, true))
-        .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/ubuntu2', {'instances' => 2}, true))
+          .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/ubuntu2', {'instances' => 1}, true))
+          .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails with stange attributes', :vcr do
       expect {
-        subject.change('/ubuntu2', { 'instances' => 'foo' })
+        subject.change('/ubuntu2', {'instances' => 'foo'})
       }.to raise_error(Marathon::Error::ClientError)
     end
   end

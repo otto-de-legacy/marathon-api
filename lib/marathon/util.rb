@@ -18,10 +18,10 @@ class Marathon::Util
         unless allowed.include?(value)
           if nil_allowed
             raise Marathon::Error::ArgumentError,
-              "#{name} must be one of #{allowed.join(', ')} or nil, but is '#{value}'"
+                  "#{name} must be one of #{allowed.join(', ')} or nil, but is '#{value}'"
           else
             raise Marathon::Error::ArgumentError,
-              "#{name} must be one of #{allowed.join(', ')} or nil, but is '#{value}'"
+                  "#{name} must be one of #{allowed.join(', ')} or nil, but is '#{value}'"
           end
         end
       end
@@ -43,12 +43,12 @@ class Marathon::Util
     # ++ignore_keys++: don't keywordize hashes under theses keys
     def keywordize_hash!(hash, ignore_keys = [:env])
       if hash.is_a?(Hash)
-        hmap!(hash) do |k,v|
+        hmap!(hash) do |k, v|
           key = k.to_sym
           if ignore_keys.include?(key) and v.is_a?(Hash)
-            { key => v }
+            {key => v}
           else
-            { key => keywordize_hash!(v) }
+            {key => keywordize_hash!(v)}
           end
         end
       elsif hash.is_a?(Array)
@@ -63,7 +63,7 @@ class Marathon::Util
     def remove_keys(hash, keys)
       if hash.is_a?(Hash)
         new_hash = {}
-        hash.each { |k,v| new_hash[k] = remove_keys(v, keys) unless keys.include?(k) }
+        hash.each { |k, v| new_hash[k] = remove_keys(v, keys) unless keys.include?(k) }
         new_hash
       elsif hash.is_a?(Array)
         hash.map { |e| remove_keys(e, keys) }
@@ -82,7 +82,7 @@ class Marathon::Util
       if item.nil?
         nil
       elsif item.is_a?(Array)
-        item.map {|e| e.to_pretty_s}.join(',')
+        item.map { |e| e.to_pretty_s }.join(',')
       else
         item.to_pretty_s
       end

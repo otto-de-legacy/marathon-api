@@ -15,7 +15,7 @@ class Marathon::DeploymentStep < Marathon::Base
   end
 
   def to_s
-    "Marathon::DeploymentStep { :actions => #{actions.map{|e| e.to_pretty_s}.join(',')} }"
+    "Marathon::DeploymentStep { :actions => #{actions.map { |e| e.to_pretty_s }.join(',')} }"
   end
 
 end

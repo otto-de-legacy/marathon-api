@@ -1,25 +1,25 @@
 require 'spec_helper'
 
 DEPLOYMENT_EXAMPLE = {
-  :affectedApps => ["/test"],
-  :id => "867ed450-f6a8-4d33-9b0e-e11c5513990b",
-  :steps => [
-      [
-          {
-              :action => "ScaleApplication",
-              :app => "/test"
-          }
-      ]
-  ],
-  :currentActions => [
-    {
-      :action => "ScaleApplication",
-      :app => "/test"
-    }
-  ],
-  :version => "2014-08-26T08:18:03.595Z",
-  :currentStep => 1,
-  :totalSteps => 1
+    :affectedApps => ["/test"],
+    :id => "867ed450-f6a8-4d33-9b0e-e11c5513990b",
+    :steps => [
+        [
+            {
+                :action => "ScaleApplication",
+                :app => "/test"
+            }
+        ]
+    ],
+    :currentActions => [
+        {
+            :action => "ScaleApplication",
+            :app => "/test"
+        }
+    ],
+    :version => "2014-08-26T08:18:03.595Z",
+    :currentStep => 1,
+    :totalSteps => 1
 }
 
 describe Marathon::Deployment do

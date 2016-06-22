@@ -3,13 +3,13 @@
 class Marathon::HealthCheck < Marathon::Base
 
   DEFAULTS = {
-    :gracePeriodSeconds => 300,
-    :intervalSeconds => 60,
-    :maxConsecutiveFailures => 3,
-    :path => '/',
-    :portIndex => 0,
-    :protocol => 'HTTP',
-    :timeoutSeconds => 20
+      :gracePeriodSeconds => 300,
+      :intervalSeconds => 60,
+      :maxConsecutiveFailures => 3,
+      :path => '/',
+      :portIndex => 0,
+      :protocol => 'HTTP',
+      :timeoutSeconds => 20
   }
 
   ACCESSORS = %w[ command gracePeriodSeconds intervalSeconds maxConsecutiveFailures

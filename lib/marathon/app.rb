@@ -7,10 +7,10 @@ class Marathon::App < Marathon::Base
                   deployments uris user version labels ]
 
   DEFAULTS = {
-    :env => {},
-    :labels => {},
-    :ports => [],
-    :uris => [],
+      :env => {},
+      :labels => {},
+      :ports => [],
+      :uris => [],
   }
 
   attr_reader :healthChecks, :constraints, :container, :read_only, :tasks
@@ -128,9 +128,9 @@ Command:    #{cmd}
 CPUs:       #{cpus}
 Memory:     #{mem} MB
 #{pretty_container}
-#{pretty_uris}
-#{pretty_env}
-#{pretty_constraints}
+    #{pretty_uris}
+    #{pretty_env}
+    #{pretty_constraints}
 Version:    #{version}
     ].gsub(/\n\n+/, "\n").strip
   end
@@ -144,7 +144,7 @@ Version:    #{version}
   end
 
   def pretty_env
-    env.map { |k,v| "ENV:        #{k}=#{v}" }.join("\n")
+    env.map { |k, v| "ENV:        #{k}=#{v}" }.join("\n")
   end
 
   def pretty_uris
@@ -182,7 +182,7 @@ Version:    #{version}
     #               "apps.tasks". Apps' tasks are not embedded in the response by default.
     #               "apps.failures". Apps' last failures are not embedded in the response by default.
     def list(cmd = nil, embed = nil, id=nil, label=nil)
-      Marathon.singleton.apps.list(cmd,embed, id, label)
+      Marathon.singleton.apps.list(cmd, embed, id, label)
     end
 
     # Delete the application with id.
@@ -190,6 +190,7 @@ Version:    #{version}
     def delete(id)
       Marathon.singleton.apps.delete(id)
     end
+
     alias :remove :delete
 
     # Create and start an application.
@@ -198,6 +199,7 @@ Version:    #{version}
     def start(hash)
       Marathon.singleton.apps.start(hash)
     end
+
     alias :create :start
 
     # Restart the application with id.
@@ -205,7 +207,7 @@ Version:    #{version}
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def restart(id, force = false)
-      Marathon.singleton.apps.restart(id,force)
+      Marathon.singleton.apps.restart(id, force)
     end
 
     # Change parameters of a running application. The new application parameters apply only to subsequently
@@ -215,7 +217,7 @@ Version:    #{version}
     # ++force++: If the app is affected by a running deployment, then the update operation will fail.
     #            The current deployment can be overridden by setting the `force` query parameter.
     def change(id, hash, force = false)
-      Marathon.singleton.apps.change(id,hash,force)
+      Marathon.singleton.apps.change(id, hash, force)
     end
 
     # List the versions of the application with id.
@@ -228,7 +230,7 @@ Version:    #{version}
     # ++id++: Application id
     # ++version++: Version name
     def version(id, version)
-      Marathon.singleton.apps.version(id,version)
+      Marathon.singleton.apps.version(id, version)
     end
   end
 end

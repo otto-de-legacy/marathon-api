@@ -4,8 +4,8 @@ class Marathon::ContainerDocker < Marathon::Base
 
   ACCESSORS = %w[ image network privileged parameters ]
   DEFAULTS = {
-    :network => 'BRIDGE',
-    :portMappings => []
+      :network => 'BRIDGE',
+      :portMappings => []
   }
 
   attr_reader :portMappings

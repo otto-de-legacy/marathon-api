@@ -1,42 +1,42 @@
 require 'spec_helper'
 
 EXAMPLE_GROUP = {
-  "id" => "/test-group",
-  "apps" => [
-      {
-          "backoffFactor" => 1.15,
-          "backoffSeconds" => 1,
-          "maxLaunchDelaySeconds" => 3600,
-          "cmd" => "sleep 30",
-          "constraints" => [],
-          "cpus" => 1.0,
-          "dependencies" => [],
-          "disk" => 0.0,
-          "env" => {},
-          "executor" => "",
-          "id" => "app",
-          "instances" => 1,
-          "mem" => 128.0,
-          "ports" => [10000],
-          "requirePorts" => false,
-          "storeUrls" => [],
-          "upgradeStrategy" => {
-              "minimumHealthCapacity" => 1.0
-          },
-          "tasks" => []
-      }
-  ],
-  "dependencies" => [],
-  "groups" => []
+    "id" => "/test-group",
+    "apps" => [
+        {
+            "backoffFactor" => 1.15,
+            "backoffSeconds" => 1,
+            "maxLaunchDelaySeconds" => 3600,
+            "cmd" => "sleep 30",
+            "constraints" => [],
+            "cpus" => 1.0,
+            "dependencies" => [],
+            "disk" => 0.0,
+            "env" => {},
+            "executor" => "",
+            "id" => "app",
+            "instances" => 1,
+            "mem" => 128.0,
+            "ports" => [10000],
+            "requirePorts" => false,
+            "storeUrls" => [],
+            "upgradeStrategy" => {
+                "minimumHealthCapacity" => 1.0
+            },
+            "tasks" => []
+        }
+    ],
+    "dependencies" => [],
+    "groups" => []
 }
 
 describe Marathon::Group do
 
   describe '#init' do
     it 'fails with group + apps' do
-      expect{described_class.new({:apps => [{:id => 'app'}], :groups => [{:id => 'group'}], :id => '/foo'},
-                                 double(Marathon::MarathonInstance))}
-        .to raise_error(Marathon::Error::ArgumentError, /Group can have either/)
+      expect { described_class.new({:apps => [{:id => 'app'}], :groups => [{:id => 'group'}], :id => '/foo'},
+                                   double(Marathon::MarathonInstance)) }
+          .to raise_error(Marathon::Error::ArgumentError, /Group can have either/)
     end
   end
 
@@ -48,7 +48,7 @@ describe Marathon::Group do
     end
 
     let(:expected_pretty_string) do
-       "Group ID:   /test-group\n" + \
+      "Group ID:   /test-group\n" + \
        "    App ID:     app\n" + \
        "    Instances:  0/1\n" + \
        "    Command:    sleep 30\n" + \
@@ -72,8 +72,8 @@ describe Marathon::Group do
 
     it 'starts the group' do
       expect(@groups).to receive(:start)
-        .with({:dependencies=>[], :id=>'/group/foo'}) do
-          Marathon::DeploymentInfo.new({ 'version' => 'new-version' }, @marathon_instance)
+                             .with({:dependencies => [], :id => '/group/foo'}) do
+        Marathon::DeploymentInfo.new({'version' => 'new-version'}, @marathon_instance)
       end
       expect(@subject.start!.version).to eq('new-version')
     end
@@ -84,12 +84,12 @@ describe Marathon::Group do
 
       @groups = double(Marathon::Groups)
       @marathon_instance = double(Marathon::MarathonInstance, :groups => @groups)
-      @subject  = described_class.new({ 'id' => '/app/foo' }, @marathon_instance)
+      @subject = described_class.new({'id' => '/app/foo'}, @marathon_instance)
     end
 
     it 'refreshes the group' do
       expect(@groups).to receive(:get).with('/app/foo') do
-        described_class.new({ 'id' => '/app/foo', 'refreshed' => true }, @marathon_instance)
+        described_class.new({'id' => '/app/foo', 'refreshed' => true}, @marathon_instance)
       end
       @subject.refresh
       expect(@subject.info[:refreshed]).to be(true)
@@ -104,26 +104,26 @@ describe Marathon::Group do
     end
 
     it 'changes the group' do
-      expect(@groups).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
+      expect(@groups).to receive(:change).with('/app/foo', {:instances => 9000}, false, false)
       @subject.change!('instances' => 9000)
     end
 
     it 'changes the group and strips :version' do
-      expect(@groups).to receive(:change).with('/app/foo', {:instances => 9000 }, false, false)
+      expect(@groups).to receive(:change).with('/app/foo', {:instances => 9000}, false, false)
       @subject.change!('instances' => 9000, :version => 'old-version')
     end
   end
 
   describe '#roll_back!' do
-    subject { described_class.new({ 'id' => '/app/foo', 'instances' => 10 }, double(Marathon::MarathonInstance)) }
+    subject { described_class.new({'id' => '/app/foo', 'instances' => 10}, double(Marathon::MarathonInstance)) }
 
     it 'changes the group' do
-      expect(subject).to receive(:change!).with({'version' => 'old_version' }, false)
+      expect(subject).to receive(:change!).with({'version' => 'old_version'}, false)
       subject.roll_back!('old_version')
     end
 
     it 'changes the group with force' do
-      expect(subject).to receive(:change!).with({'version' => 'old_version' }, true)
+      expect(subject).to receive(:change!).with({'version' => 'old_version'}, true)
       subject.roll_back!('old_version', true)
     end
   end
@@ -156,7 +156,7 @@ describe Marathon::Group do
   describe '.get' do
     subject { described_class }
 
-      it 'gets the group', :vcr do
+    it 'gets the group', :vcr do
       group = subject.get('/test-group')
       expect(group).to be_instance_of(described_class)
       expect(group.id).to eq('/test-group')
@@ -174,15 +174,15 @@ describe Marathon::Group do
     subject { described_class }
 
     it 'previews changes', :vcr do
-      steps = subject.change('/test-group', { 'instances' => 20 }, false, true)
+      steps = subject.change('/test-group', {'instances' => 20}, false, true)
       expect(steps).to be_instance_of(Array)
     end
 
     it 'changes the group', :vcr do
-      expect(subject.change('/test-group', { 'instances' => 2 }, true))
-        .to be_instance_of(Marathon::DeploymentInfo)
-      expect(subject.change('/test-group', { 'instances' => 1 }, true))
-        .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/test-group', {'instances' => 2}, true))
+          .to be_instance_of(Marathon::DeploymentInfo)
+      expect(subject.change('/test-group', {'instances' => 1}, true))
+          .to be_instance_of(Marathon::DeploymentInfo)
     end
   end
 
@@ -191,7 +191,7 @@ describe Marathon::Group do
 
     it 'deletes the group', :vcr do
       expect(subject.delete('/test-group', true))
-        .to be_instance_of(Marathon::DeploymentInfo)
+          .to be_instance_of(Marathon::DeploymentInfo)
     end
 
     it 'fails deleting not existing app', :vcr do

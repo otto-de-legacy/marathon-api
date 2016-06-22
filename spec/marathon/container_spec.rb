@@ -2,15 +2,15 @@ require 'spec_helper'
 
 def container_helper type
   return {
-    :type => type,
-    :docker => {
-      :image => 'felixb/yocto-httpd',
-      :portMappings => [{:containerPort => 8080}]
-    },
-    :volumes => [{
-      :containerPath => '/data',
-      :hostPath => '/var/opt/foo'
-    }]
+      :type => type,
+      :docker => {
+          :image => 'felixb/yocto-httpd',
+          :portMappings => [{:containerPort => 8080}]
+      },
+      :volumes => [{
+                       :containerPath => '/data',
+                       :hostPath => '/var/opt/foo'
+                   }]
   }
 end
 

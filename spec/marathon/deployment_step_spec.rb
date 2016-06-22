@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 DEPLOYMENT_STEP_EXAMPLE = {
-  "actions" => [
-    { "app" => "app1", "type" => "StartApplication" },
-    { "app" => "app2", "type" => "StartApplication" }
-  ]
+    "actions" => [
+        {"app" => "app1", "type" => "StartApplication"},
+        {"app" => "app2", "type" => "StartApplication"}
+    ]
 }
 
 describe Marathon::DeploymentStep do

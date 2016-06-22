@@ -22,6 +22,7 @@ class Marathon::Deployment < Marathon::Base
   def delete(force = false)
     @marathon_instance.deployments.delete(id, force)
   end
+
   alias :cancel :delete
 
   def to_s
@@ -42,8 +43,9 @@ class Marathon::Deployment < Marathon::Base
     #            is created to restore the previous configuration. If set to true, then the deployment
     #            is still canceled but no rollback deployment is created.
     def delete(id, force = false)
-      Marathon.singleton.deployments.delete(id,force)
+      Marathon.singleton.deployments.delete(id, force)
     end
+
     alias :cancel :delete
     alias :remove :delete
   end
@@ -55,6 +57,7 @@ class Marathon::Deployments
     @marathon_instance = marathon_instance
     @connection = @marathon_instance.connection
   end
+
   # List running deployments.
   def list
     json = @connection.get('/v2/deployments')

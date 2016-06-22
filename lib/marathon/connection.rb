@@ -5,9 +5,9 @@ class Marathon::Connection
   include HTTParty
 
   headers(
-    'Content-Type' => 'application/json',
-    'Accept' => 'application/json',
-    'User-Agent' => "ub0r/Marathon-API #{Marathon::VERSION}"
+      'Content-Type' => 'application/json',
+      'Accept' => 'application/json',
+      'User-Agent' => "ub0r/Marathon-API #{Marathon::VERSION}"
   )
 
   default_timeout 5
@@ -23,8 +23,8 @@ class Marathon::Connection
     @options = options
     if @options[:username] and @options[:password]
       @options[:basic_auth] = {
-        :username => @options[:username],
-        :password => @options[:password]
+          :username => @options[:username],
+          :password => @options[:password]
       }
       @options.delete(:username)
       @options.delete(:password)
@@ -47,14 +47,14 @@ class Marathon::Connection
     "Marathon::Connection { :url => #{url} :options => #{options} }"
   end
 
-private
+  private
 
   # Create URL suffix for a hash of query parameters.
   # URL escaping is done internally.
   # ++query++: Hash of query parameters.
   def query_params(query)
-    query = query.select { |k,v| !v.nil? }
-    URI.escape(query.map { |k,v| "#{k}=#{v}" }.join('&'))
+    query = query.select { |k, v| !v.nil? }
+    URI.escape(query.map { |k, v| "#{k}=#{v}" }.join('&'))
   end
 
   # Create request object.
@@ -68,9 +68,9 @@ private
     headers = opts.delete(:headers) || {}
     opts[:body] = opts[:body].to_json unless opts[:body].nil?
     {
-      :method        => http_method,
-      :url           => "#{@url}#{path}",
-      :query         => query
+        :method => http_method,
+        :url => "#{@url}#{path}",
+        :query => query
     }.merge(@options).merge(opts).reject { |_, v| v.nil? }
   end
 

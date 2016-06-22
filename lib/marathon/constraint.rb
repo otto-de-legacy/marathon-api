@@ -7,7 +7,7 @@ class Marathon::Constraint < Marathon::Base
   def initialize(array)
     raise Marathon::Error::ArgumentError, 'array must be an Array' unless array.is_a?(Array)
     raise Marathon::Error::ArgumentError,
-      'array must be [attribute, operator, parameter] where only parameter is optional' \
+          'array must be [attribute, operator, parameter] where only parameter is optional' \
       unless array.size != 2 or array.size != 3
     super
   end

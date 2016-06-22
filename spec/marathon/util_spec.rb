@@ -46,20 +46,20 @@ describe Marathon::Util do
 
     it 'keywordizes the hash' do
       hash = {
-        'foo'      => 'bar',
-        'f00'      => {'w00h00'  => 'yeah'},
-        'bang'     => [{'tricky' => 'one'}],
-        'env'      => {'foo' => 'bar'},
-        'null'     => nil
+          'foo' => 'bar',
+          'f00' => {'w00h00' => 'yeah'},
+          'bang' => [{'tricky' => 'one'}],
+          'env' => {'foo' => 'bar'},
+          'null' => nil
       }
 
       expect(subject.keywordize_hash!(hash)).to eq({
-        :foo  => 'bar',
-        :f00  => {:w00h00  => 'yeah'},
-        :bang => [{:tricky => 'one'}],
-        :env  => {'foo' => 'bar'},
-        :null => nil
-      })
+                                                       :foo => 'bar',
+                                                       :f00 => {:w00h00 => 'yeah'},
+                                                       :bang => [{:tricky => 'one'}],
+                                                       :env => {'foo' => 'bar'},
+                                                       :null => nil
+                                                   })
       # make sure, it changes the hash w/o creating a new one
       expect(hash[:foo]).to eq('bar')
     end
@@ -70,15 +70,15 @@ describe Marathon::Util do
 
     it 'removes keys from hash' do
       hash = {
-        :foo      => 'bar',
-        :deleteme => {'w00h00'  => 'yeah'},
-        :blah     => [{:deleteme => :foo}, 1]
+          :foo => 'bar',
+          :deleteme => {'w00h00' => 'yeah'},
+          :blah => [{:deleteme => :foo}, 1]
       }
 
       expect(subject.remove_keys(hash, [:deleteme])).to eq({
-        :foo  => 'bar',
-        :blah => [{}, 1]
-      })
+                                                               :foo => 'bar',
+                                                               :blah => [{}, 1]
+                                                           })
       # make sure, it does not changes the original hash
       expect(hash.size).to eq(3)
     end

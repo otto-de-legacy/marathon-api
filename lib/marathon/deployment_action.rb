@@ -10,6 +10,7 @@ class Marathon::DeploymentAction < Marathon::Base
   def type
     info[:type] || info[:action]
   end
+
   alias :action :type
 
   def to_pretty_s

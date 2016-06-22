@@ -48,7 +48,7 @@ describe Marathon do
     it 'adds :basic_auth options for :username and :password' do
       described_class.options = {:username => 'user', :password => 'password'}
       expect(described_class.connection.options)
-        .to eq({:basic_auth => {:username => 'user', :password => 'password'}})
+          .to eq({:basic_auth => {:username => 'user', :password => 'password'}})
 
       # reset connection after running this spec
       described_class.options = nil

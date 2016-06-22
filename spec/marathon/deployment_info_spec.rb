@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 DEPLOYMENT_INFO_EXAMPLE = {
-  'deploymentId' => 'deployment-123',
-  'version' => 'version-456'
+    'deploymentId' => 'deployment-123',
+    'version' => 'version-456'
 }
 
 describe Marathon::DeploymentInfo do

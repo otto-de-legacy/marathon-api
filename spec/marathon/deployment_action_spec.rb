@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-DEPLOYMENT_ACTION_EXAMPLE = { "app" => "app1", "type" => "StartApplication" }
+DEPLOYMENT_ACTION_EXAMPLE = {"app" => "app1", "type" => "StartApplication"}
 
 describe Marathon::DeploymentAction do
 

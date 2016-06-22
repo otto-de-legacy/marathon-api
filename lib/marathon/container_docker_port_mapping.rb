@@ -4,8 +4,8 @@ class Marathon::ContainerDockerPortMapping < Marathon::Base
 
   ACCESSORS = %w[ containerPort hostPort servicePort protocol ]
   DEFAULTS = {
-    :protocol => 'tcp',
-    :hostPort => 0
+      :protocol => 'tcp',
+      :hostPort => 0
   }
 
   # Create a new container docker port mappint object.

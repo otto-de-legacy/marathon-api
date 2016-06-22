@@ -6,8 +6,8 @@ class Marathon::Container < Marathon::Base
   SUPPERTED_TYPES = %w[ DOCKER MESOS]
   ACCESSORS = %w[ type ]
   DEFAULTS = {
-    :type => 'DOCKER',
-    :volumes => []
+      :type => 'DOCKER',
+      :volumes => []
   }
 
   attr_reader :docker, :volumes

@@ -16,10 +16,10 @@ describe Marathon::Base do
 
   describe '#to_json' do
     subject { described_class.new({
-        'app' => { 'id' => '/app/foo' },
-        :foo  => 'blubb',
-        :bar  => 1
-      }) }
+                                      'app' => {'id' => '/app/foo'},
+                                      :foo => 'blubb',
+                                      :bar => 1
+                                  }) }
 
     let(:expected_string) do
       '{"foo":"blubb","bar":1,"app":{"id":"/app/foo"}}'
@@ -30,9 +30,9 @@ describe Marathon::Base do
 
   describe '#attr_readers' do
     subject { described_class.new({
-        'foo' => 'blubb',
-        :bar  => 1
-      }, [:foo, 'bar']) }
+                                      'foo' => 'blubb',
+                                      :bar => 1
+                                  }, [:foo, 'bar']) }
 
     its(:info) { should == {:foo => 'blubb', :bar => 1} }
     its(:foo) { should == 'blubb' }
@@ -41,9 +41,9 @@ describe Marathon::Base do
 
   describe '#attr_readers, from string array' do
     subject { described_class.new({
-        'foo' => 'blubb',
-        :bar  => 1
-      }, %w[foo bar]) }
+                                      'foo' => 'blubb',
+                                      :bar => 1
+                                  }, %w[foo bar]) }
 
     its(:info) { should == {:foo => 'blubb', :bar => 1} }
     its(:foo) { should == 'blubb' }

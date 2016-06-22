@@ -4,7 +4,7 @@ CONTAINER_VOLUME_EXAMPLE = {
     :containerPath => '/data',
     :hostPath => '/var/opt/foo',
     :mode => 'RO'
-  }
+}
 
 describe Marathon::ContainerVolume do
 
@@ -13,14 +13,14 @@ describe Marathon::ContainerVolume do
 
     it 'should fail with invalid mode' do
       expect { subject.new(:containerPath => '/', :hostPath => '/', :mode => 'foo') }
-        .to raise_error(Marathon::Error::ArgumentError, /mode must be one of /)
+          .to raise_error(Marathon::Error::ArgumentError, /mode must be one of /)
     end
 
     it 'should fail with invalid path' do
       expect { subject.new(:hostPath => '/') }
-        .to raise_error(Marathon::Error::ArgumentError, /containerPath .* not be nil/)
+          .to raise_error(Marathon::Error::ArgumentError, /containerPath .* not be nil/)
       expect { subject.new(:containerPath => '/') }
-        .to raise_error(Marathon::Error::ArgumentError, /hostPath .* not be nil/)
+          .to raise_error(Marathon::Error::ArgumentError, /hostPath .* not be nil/)
     end
   end
 
