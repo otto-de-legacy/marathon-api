@@ -122,17 +122,20 @@ class Marathon::App < Marathon::Base
   # Returns a string for listing the application.
   def to_pretty_s
     %Q[
-App ID:     #{id}
-Instances:  #{tasks.size}/#{instances}
-Command:    #{cmd}
-CPUs:       #{cpus}
-Memory:     #{mem} MB
-#{pretty_container}
+    App ID:     #{id}
+    Instances:  #{tasks.size}/#{instances}
+    Command:    #{cmd}
+    CPUs:       #{cpus}
+    Memory:     #{mem} MB
+    #{pretty_container}
     #{pretty_uris}
     #{pretty_env}
     #{pretty_constraints}
-Version:    #{version}
-    ].gsub(/\n\n+/, "\n").strip
+    Version:    #{version}
+    ]
+        .gsub(/\n\s+/, "\n")
+        .gsub(/\n\n+/, "\n")
+        .strip
   end
 
   private
