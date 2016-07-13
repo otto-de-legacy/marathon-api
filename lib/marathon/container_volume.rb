@@ -13,9 +13,6 @@ class Marathon::ContainerVolume < Marathon::Base
     super(Marathon::Util.merge_keywordized_hash(DEFAULTS, hash), ACCESSORS)
     Marathon::Util.validate_choice('mode', mode, %w[RW RO])
     raise Marathon::Error::ArgumentError, 'containerPath must not be nil' unless containerPath
-    raise Marathon::Error::ArgumentError, 'containerPath must be an absolute path' \
-      unless Pathname.new(containerPath).absolute?
-    raise Marathon::Error::ArgumentError, 'hostPath must not be nil' unless hostPath
   end
 
   def to_pretty_s
