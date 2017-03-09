@@ -32,14 +32,6 @@ EXAMPLE_GROUP = {
 
 describe Marathon::Group do
 
-  describe '#init' do
-    it 'fails with group + apps' do
-      expect { described_class.new({:apps => [{:id => 'app'}], :groups => [{:id => 'group'}], :id => '/foo'},
-                                   double(Marathon::MarathonInstance)) }
-          .to raise_error(Marathon::Error::ArgumentError, /Group can have either/)
-    end
-  end
-
   describe '#to_s' do
     subject { described_class.new(EXAMPLE_GROUP) }
 
