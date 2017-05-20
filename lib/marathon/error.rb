@@ -19,6 +19,7 @@ module Marathon::Error
 
   # Raised when there is an unexpected response code / body.
   class UnexpectedResponseError < MarathonError;
+    attr_accessor :response
   end
 
   # Raised when a request times out.
@@ -36,7 +37,9 @@ module Marathon::Error
   # Raise error specific to http response.
   # ++response++: HTTParty response object.
   def from_response(response)
-    error_class(response).new(error_message(response))
+    error_class(response).new(error_message(response)).tap do |err|
+      err.response = response if err.is_a?(UnexpectedResponseError)
+    end
   end
 
   private
@@ -69,6 +72,8 @@ module Marathon::Error
     else
       body
     end
+  rescue JSON::ParserError
+    body
   end
 
   module_function :error_class, :error_message, :from_response

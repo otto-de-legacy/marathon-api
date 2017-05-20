@@ -91,5 +91,9 @@ describe Marathon do
     it 'returns pong' do
       ping.should == "pong\n"
     end
+
+    it 'handles incorrect content type' do
+      ping.should =~ /pong/
+    end
   end
 end

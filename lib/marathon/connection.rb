@@ -88,7 +88,11 @@ class Marathon::Connection
   # ++response++: response from HTTParty call.
   def parse_response(response)
     if response.success?
-      response.parsed_response
+      begin
+        response.parsed_response
+      rescue => err
+        raise Marathon::Error.from_response(response)
+      end
     else
       raise Marathon::Error.from_response(response)
     end
