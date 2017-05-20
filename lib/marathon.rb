@@ -44,7 +44,7 @@ module Marathon
       begin
         connection.get('/ping')
       rescue Marathon::Error::UnexpectedResponseError => err
-        return err.response.body if err.response.code == 200 
+        return err.response.body if err.response.code == 200
         raise err
       end
     end
